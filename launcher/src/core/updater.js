@@ -114,6 +114,17 @@ class Updater extends EventEmitter {
     }
     const inst = await this.installer.verifyCurrent();
     this._set({ installed: inst ? { version: inst.version, ok: inst.ok } : null, notice });
+    // The launcher updates itself first (it may restart here); a failure never blocks the game update.
+    if (this.o.selfUpdate) {
+      let r;
+      try { r = await this.o.selfUpdate(this); } catch (e) {
+        this.log(`launcher self-update failed: ${e.message} ${e.detail || ''}`);
+        notice = `The launcher could not update itself (${e.message}). It will try again later.`;
+        this._set({ notice, selfUpdate: null, progress: null });
+      }
+      if (r === 'restarting') return;
+      this._set({ phase: 'checking', message: 'Checking for updates\u2026', progress: null, selfUpdate: null });
+    }
     if (inst && !inst.ok) this.log(`installed ${inst.version} needs repair: ${inst.problems.slice(0, 5).join(', ')}`);
 
     let latest;
