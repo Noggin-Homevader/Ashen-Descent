@@ -2,16 +2,18 @@
 /** The launcher window: wires the Updater to the title-screen UI over IPC. */
 const path = require('path');
 const fs = require('fs');
-const { app, BrowserWindow, ipcMain, shell, net, Menu, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, net, Menu, dialog, Tray, nativeImage } = require('electron');
 const { loadConfig, Settings } = require('../core/config');
 const { Updater } = require('../core/updater');
 const { current } = require('../core/platform');
 const { layout } = require('../core/installer');
 const { describeError, LauncherError } = require('../core/errors');
 const loc = require('../core/location');
+const mp = require('../core/multiplayer');
 const { createLog } = require('./log');
 
 const RENDERER = path.join(__dirname, '..', 'renderer', 'index.html');
+const ICON = path.join(__dirname, '..', 'renderer', 'icon.png');
 
 function run() {
   // Everything the launcher writes lives under one data folder, split into game/, userdata/ and launcher/.
@@ -28,11 +30,12 @@ function run() {
 
   const log = createLog(path.join(L.launcher, 'logs'));
   log(`launcher ${app.getVersion()} starting; data at ${root} (${source})`);
-  let win = null, updater = null, configError = null, started = false;
+  let win = null, updater = null, configError = null, started = false, config = null, settings = null;
+  let gameServer = null, mpStarted = false; // the relay address handed to the game at launch (null: no party play)
 
   try {
-    const config = loadConfig();
-    const settings = new Settings(path.join(L.launcher, 'settings.json')).load();
+    config = loadConfig();
+    settings = new Settings(path.join(L.launcher, 'settings.json')).load();
     updater = new Updater({
       config, root, settings, log,
       fetch: (url, init) => net.fetch(url, init),
@@ -40,7 +43,8 @@ function run() {
       // Web builds open in this same executable, in game mode, as a separate process.
       webRuntime: (info) => ({
         command: process.execPath,
-        args: [...(process.defaultApp ? [app.getAppPath()] : []), '--ashen-game', info.executable, '--ashen-profile', L.profile, ...info.args],
+        args: [...(process.defaultApp ? [app.getAppPath()] : []), '--ashen-game', info.executable, '--ashen-profile', L.profile,
+          ...(gameServer ? ['--ashen-mp', gameServer] : []), ...info.args],
       }),
     });
   } catch (e) {
@@ -59,7 +63,12 @@ function run() {
   });
   handle('launcher:retry', () => { if (updater) updater.retry(); });
   handle('launcher:play', async () => {
-    try { await updater.play(); return { ok: true }; } catch (e) { return { ok: false, error: describeError(e) }; }
+    try {
+      await updater.play();
+      // The game is open: tuck the launcher into the tray until it closes.
+      hiddenForGame = true; updateTray(); if (win && !win.isDestroyed()) win.hide();
+      return { ok: true };
+    } catch (e) { return { ok: false, error: describeError(e) }; }
   });
   handle('launcher:prerelease', (on) => updater && updater.setAllowPrerelease(on === true));
   handle('launcher:open', (what) => {
@@ -114,11 +123,75 @@ function run() {
       return { ok: false, error: describeError(e) };
     }
   });
+  /* ---- multiplayer: online server, host on this PC, or join a friend ---- */
+  const host = new mp.LocalHost({ port: (config && config.multiplayer && config.multiplayer.hostPort) || mp.DEFAULT_PORT, log });
+  let online = null, onlineStatus = null;
+  const mpPrefs = () => ({ mode: mp.MODES.includes(settings && settings.get('mpMode')) ? settings.get('mpMode') : 'online', join: (settings && settings.get('mpJoin', '')) || '' });
+  const mpState = () => {
+    const { mode, join } = mpPrefs();
+    return {
+      mode, join, server: gameServer,
+      online: online ? { name: online.name, url: online.url, status: onlineStatus } : null,
+      host: { running: host.running, port: host.port, players: host.players, error: host.error, addresses: mp.lanAddresses().map((a) => a.address) },
+    };
+  };
+  const pushMp = () => { if (win && !win.isDestroyed()) win.webContents.send('launcher:mp-state', mpState()); updateTray(); };
+  async function applyMp() {
+    const { mode, join } = mpPrefs();
+    if (mode === 'host') await host.start(); else await host.stop();
+    if (mode === 'online') {
+      if (!online && config) online = await mp.onlineServer((u, i) => net.fetch(u, i), config);
+      if (online) { onlineStatus = { checking: true }; pushMp(); onlineStatus = await mp.health((u, i) => net.fetch(u, i), online.url, 60000); }
+    }
+    gameServer = mode === 'online' ? (online && online.url) || null
+      : mode === 'host' ? (host.running ? `ws://127.0.0.1:${host.port}` : null)
+        : mode === 'join' ? mp.joinUrl(join, host.port) : null;
+    log(`multiplayer: ${mode}${gameServer ? ` -> ${gameServer}` : ' (party play off)'}`);
+    pushMp();
+  }
+  handle('launcher:mp', () => mpState());
+  handle('launcher:mp-set', async (o) => {
+    if (!settings || !o || !mp.MODES.includes(o.mode)) return mpState();
+    if (o.mode === 'join' && !mp.joinUrl(o.join)) return { ...mpState(), error: 'Type your friend\u2019s address, for example 192.168.1.20' };
+    settings.set('mpMode', o.mode);
+    if (typeof o.join === 'string') settings.set('mpJoin', o.join.trim().slice(0, 200));
+    await applyMp();
+    return mpState();
+  });
+
+  /* ---- tray: the launcher waits there while the game runs (and while hosting) ---- */
+  let tray = null, quitting = false, hiddenForGame = false;
+  const showWin = () => { if (!win || win.isDestroyed()) return; if (win.isMinimized()) win.restore(); win.show(); win.focus(); };
+  function updateTray() {
+    const want = hiddenForGame || host.running;
+    if (!want) { if (tray) { tray.destroy(); tray = null; } return; }
+    if (!tray) {
+      tray = new Tray(nativeImage.createFromPath(ICON).resize({ width: 16, height: 16 }));
+      tray.on('click', showWin); tray.on('double-click', showWin);
+    }
+    const playing = updater && updater.state.phase === 'running';
+    tray.setToolTip(`Ashen Descent${playing ? ' \u2014 playing' : ''}${host.running ? ` \u2014 hosting (${host.players} connected)` : ''}`);
+    tray.setContextMenu(Menu.buildFromTemplate([
+      { label: 'Open Ashen Descent launcher', click: showWin },
+      { type: 'separator' },
+      { label: host.running ? 'Quit (stops hosting)' : 'Quit launcher', click: () => { quitting = true; app.quit(); } },
+    ]));
+  }
+  if (updater) {
+    let last = updater.state.phase;
+    updater.on('state', (st) => {
+      if (last === 'running' && st.phase !== 'running' && hiddenForGame) { hiddenForGame = false; showWin(); }
+      last = st.phase;
+      updateTray();
+    });
+  }
+  app.on('before-quit', () => { quitting = true; host.stop(); });
+
   handle('window:minimize', () => win && win.minimize());
   handle('window:close', () => win && win.close());
 
   app.on('second-instance', () => { if (win) { if (win.isMinimized()) win.restore(); win.show(); win.focus(); } });
-  app.on('window-all-closed', () => app.quit());
+  app.on('window-all-closed', () => { if (!host.running || quitting) app.quit(); });
 
   app.whenReady().then(() => {
     if (process.platform !== 'darwin') Menu.setApplicationMenu(null);
@@ -134,8 +207,13 @@ function run() {
     win.once('ready-to-show', () => win.show());
     win.webContents.on('did-finish-load', () => {
       if (!started && updater && !askLocation) { started = true; updater.start(); }
+      if (!mpStarted) { mpStarted = true; applyMp().catch((e) => log(`multiplayer: ${e.message}`)); }
     });
     win.on('close', (e) => {
+      if (host.running && !quitting) {
+        // Hosting keeps running in the tray; Quit there stops it.
+        e.preventDefault(); win.hide(); updateTray(); return;
+      }
       if (updater && updater.installing) {
         // Never leave an install half done on purpose; finish it, then close.
         e.preventDefault();

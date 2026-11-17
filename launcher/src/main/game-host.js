@@ -13,7 +13,8 @@
 const fs = require('fs');
 const path = require('path');
 const { pathToFileURL } = require('url');
-const { app, BrowserWindow, protocol, net, shell, session, Menu } = require('electron');
+const { app, BrowserWindow, protocol, net, shell, session, Menu, ipcMain } = require('electron');
+const { createRoomBridge } = require('../core/room-bridge');
 
 const SCHEME = 'ashen-game';
 
@@ -39,9 +40,22 @@ function run(argv, i) {
   // One game window per profile: a second start just brings the first one forward.
   if (!app.requestSingleInstanceLock()) { app.quit(); return; }
 
+  // Multiplayer: --ashen-mp <ws(s)://server> from the launcher. The connection lives here, in the game's main
+  // process, and the page reaches it through game-preload.js.
+  const mi = argv.indexOf('--ashen-mp');
+  const mpUrl = mi !== -1 && /^wss?:\/\//.test(argv[mi + 1] || '') ? argv[mi + 1] : null;
+
   let win = null;
   app.on('second-instance', () => { if (win) { if (win.isMinimized()) win.restore(); win.focus(); } });
   app.on('window-all-closed', () => app.quit());
+
+  function wireMultiplayer() {
+    const bridge = createRoomBridge({ url: mpUrl, send: (ch, ...a) => { if (win && !win.isDestroyed()) win.webContents.send(ch, ...a); } });
+    for (const [ch, fn] of Object.entries(bridge.handlers)) {
+      ipcMain.handle(ch, async (e, ...a) => { if (!win || e.sender !== win.webContents) throw new Error('refused'); return fn(...a); });
+    }
+    app.on('before-quit', () => bridge.stop());
+  }
 
   app.whenReady().then(() => {
     protocol.handle(SCHEME, (req) => {
@@ -62,6 +76,8 @@ function run(argv, i) {
       width: 1600, height: 900, minWidth: 960, minHeight: 600, show: false, title: 'Ashen Descent',
       backgroundColor: '#050302', autoHideMenuBar: true, icon: path.join(__dirname, '..', 'renderer', 'icon.png'),
       webPreferences: {
+        preload: path.join(__dirname, 'game-preload.js'),
+        additionalArguments: mpUrl ? ['--ashen-mp=1'] : [],
         contextIsolation: true, sandbox: true, nodeIntegration: false,
         // The game keeps party play in step while its window is in the background.
         backgroundThrottling: false,
@@ -77,6 +93,7 @@ function run(argv, i) {
       if (/^https:\/\//.test(url)) shell.openExternal(url);
     });
     win.webContents.setWindowOpenHandler(({ url }) => { if (/^https:\/\//.test(url)) shell.openExternal(url); return { action: 'deny' }; });
+    if (mpUrl) wireMultiplayer();
     win.loadURL(`${SCHEME}://app/${entryRel}`);
   });
 }

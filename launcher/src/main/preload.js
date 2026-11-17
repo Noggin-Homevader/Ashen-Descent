@@ -19,6 +19,9 @@ contextBridge.exposeInMainWorld('ashen', {
   getLocation: () => ipcRenderer.invoke('launcher:location'),
   setLocation: (choice) => ipcRenderer.invoke('launcher:set-location', choice),
   onLocationProgress: (cb) => { ipcRenderer.on('launcher:location-progress', (_e, p) => cb(p)); },
+  getMultiplayer: () => ipcRenderer.invoke('launcher:mp'),
+  setMultiplayer: (o) => ipcRenderer.invoke('launcher:mp-set', o),
+  onMultiplayer: (cb) => { ipcRenderer.on('launcher:mp-state', (_e, s) => cb(s)); },
   minimize: () => ipcRenderer.invoke('window:minimize'),
   close: () => ipcRenderer.invoke('window:close'),
 });

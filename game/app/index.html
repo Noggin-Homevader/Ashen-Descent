@@ -12494,4 +12494,109 @@ function bfpUi(){const el=$('bfp');if(!el)return;const show=!!P&&typeof started!
  for(const x of L){const d=$('bfpb').querySelector(`.bfr[data-k="${CSS.escape(x.k)}"]`);if(!d)continue;d.querySelector('em').textContent=x.t>0?bfpT(x.t):'';const m=BFP.mx[x.k]||x.t||1;d.querySelector('s').style.width=(x.t>0?Math.max(0,Math.min(100,x.t/m*100)):100)+'%'}}
 setInterval(()=>{try{bfpUi()}catch(e){}},150);
 
+/* ================= ACCOUNT NAME =================
+   Players choose an account name the first time they start the game ("Welcome back, <name>" from then on). Accounts
+   made before this keep their id and are asked for a name once. The name is shown in the Vault, can be changed there,
+   and is the default party nickname. */
+ACC.name = '';
+try { const a = JSON.parse(localStorage.getItem('ad_acct') || 'null'); if (a && typeof a.name === 'string') ACC.name = a.name; } catch (e) {}
+accSave = function () { try { localStorage.setItem('ad_acct', JSON.stringify({ id: ACC.id, cr: ACC.cr, name: ACC.name || '' })); } catch (e) {} };
+const ACCN = (v) => String(v || '').normalize('NFC').replace(/[^\p{L}\p{N} _'.\-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 20);
+const accNameOk = (v) => ACCN(v).length >= 2;
+function accSetName(v) {
+  ACC.name = ACCN(v);
+  if (!ACC.id) { ACC.id = 'AD-' + Math.random().toString(36).slice(2, 8).toUpperCase(); ACC.cr = Date.now(); TACCNEW = 1; }
+  accSave();
+  try { if (!localStorage.getItem('ad_nick') && typeof mpSetNick == 'function') mpSetNick(ACC.name); } catch (e) {}
+}
+try { if (ACC.name && !MP.nick) MP.nick = MPC(ACC.name); } catch (e) {}
+
+/* the little form, used on the title screen and in the Vault */
+function accForm(host, { title, cta, onDone, cancel }) {
+  const f = document.createElement('form');
+  f.className = 'accf';
+  f.innerHTML = `<b>${title}</b><input maxlength="20" autocomplete="nickname" spellcheck="false" placeholder="Account name" aria-label="Account name"><small>2 to 20 letters, numbers or spaces</small><div class="accb">${cancel ? '<button type="button" class="accx">Cancel</button>' : ''}<button class="pri" type="submit">${cta}</button></div>`;
+  const inp = f.querySelector('input');
+  inp.value = ACC.name || '';
+  const stop = (e) => e.stopPropagation();
+  ['click', 'mousedown', 'pointerdown', 'keydown'].forEach((t) => f.addEventListener(t, stop));
+  inp.addEventListener('input', () => { f.querySelector('small').textContent = accNameOk(inp.value) ? `You will be known as ${ACCN(inp.value)}` : '2 to 20 letters, numbers or spaces'; });
+  f.addEventListener('submit', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    if (!accNameOk(inp.value)) { f.querySelector('small').textContent = 'Please use at least 2 letters or numbers.'; inp.focus(); return; }
+    accSetName(inp.value); f.remove(); onDone && onDone();
+  });
+  if (cancel) f.querySelector('.accx').addEventListener('click', (e) => { e.stopPropagation(); f.remove(); });
+  host.appendChild(f);
+  setTimeout(() => inp.focus(), 30);
+  return f;
+}
+
+/* title screen: greet by name; ask for one before the first entry */
+{
+  const _ss = splashShow;
+  splashShow = function () {
+    const r = _ss.apply(this, arguments);
+    try {
+      const el = document.getElementById('splash'), sub = el && el.querySelector('.tsub');
+      if (sub) sub.textContent = ACC.name ? `Welcome back, ${ACC.name}` : ACC.id ? 'Choose your account name to continue' : 'Choose your account name on your first click';
+      if (el && !el._accHook) {
+        el._accHook = 1;
+        const ask = () => {
+          if (el.querySelector('.accf')) return;
+          el.classList.add('naming');
+          accForm(el.querySelector('.tarch') || el, {
+            title: ACC.id ? 'Name your account' : 'Choose your account name', cta: 'Enter the Descent',
+            onDone: () => { el.classList.remove('naming'); const s2 = el.querySelector('.tsub'); if (s2) s2.textContent = `Welcome, ${ACC.name}`; el.click(); },
+          });
+        };
+        el.addEventListener('click', (e) => { if (!ACC.name && !el.hidden) { e.stopImmediatePropagation(); ask(); } }, true);
+        addEventListener('keydown', (e) => {
+          if (ACC.name || el.hidden || (e.key !== 'Enter' && e.key !== ' ')) return;
+          if (e.target && e.target.closest && e.target.closest('.accf')) return;
+          e.stopImmediatePropagation(); e.preventDefault(); ask();
+        }, true);
+      }
+    } catch (e) {}
+    return r;
+  };
+}
+
+/* the Vault header: name, id and a Rename button */
+{
+  const _t = title;
+  title = function () {
+    const r = _t.apply(this, arguments);
+    try {
+      const sm = document.querySelector('.vht small');
+      if (sm && ACC.id) {
+        sm.innerHTML = '';
+        const nm = document.createElement('b'); nm.className = 'accn'; nm.textContent = ACC.name || 'Unnamed account';
+        const meta = document.createElement('span'); meta.textContent = ` · ${ACC.id}${ACC.cr ? ' · since ' + new Date(ACC.cr).toLocaleDateString() : ''} `;
+        const rn = document.createElement('button'); rn.className = 'accr'; rn.textContent = ACC.name ? 'Rename' : 'Choose a name';
+        rn.onclick = () => { const h = document.querySelector('.vh'); if (h && !h.querySelector('.accf')) accForm(h, { title: 'Account name', cta: 'Save', cancel: true, onDone: () => title() }); };
+        sm.append(nm, meta, rn);
+      }
+    } catch (e) {}
+    return r;
+  };
+}
+{
+  const css = document.createElement('style');
+  css.textContent = `
+.accf{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;gap:8px;margin:10px auto 0;padding:14px 18px;width:min(360px,90%);border-radius:12px;background:linear-gradient(#1f1610f2,#120c08f2);border:1.5px solid #6a5230;box-shadow:0 8px 30px #000c,0 0 24px #ff6a1a33;cursor:auto}
+.accf b{font:700 17px Almendra,Georgia,serif;letter-spacing:.12em;text-transform:uppercase;color:#ffd78a}
+.accf input{width:100%;box-sizing:border-box;font:600 18px Almendra,Georgia,serif;text-align:center;color:#f0dcb0;background:#0009;border:1.5px solid #5a4528;border-radius:8px;padding:8px 10px;outline:none}
+.accf input:focus{border-color:#ffb347;box-shadow:0 0 0 2px #ff7a2a55}
+.accf small{font-size:12px;color:#a8946e;min-height:1.2em}
+.accb{display:flex;gap:8px;width:100%;justify-content:center}.accb button{min-height:38px}
+#splash.naming .tgo,#splash.naming .tsub{display:none}
+.vh{position:relative;flex-wrap:wrap}.vh .accf{flex-basis:100%;margin:6px 0 0}
+.vht .accn{color:#ffd78a;font:700 15px Almendra,Georgia,serif;letter-spacing:.04em}
+.vht .accr{min-height:24px;padding:1px 8px;font-size:11px;margin-left:4px}`;
+  document.head.appendChild(css);
+}
+/* the title may already be on screen */
+try { const el = document.getElementById('splash'); if (el && !el.hidden) splashShow(); } catch (e) {}
+
 </script></body></html>

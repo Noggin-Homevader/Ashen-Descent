@@ -2,6 +2,16 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.1.0
+
+### New
+- **Account names.** The first time you start, the game asks for an account name and greets you with
+  "Welcome back, *name*" from then on. Existing accounts are asked once. Rename it any time in the Vault.
+  Your account name is also your party nickname.
+- **Party play in the desktop game.** Choose *Party play* in the launcher: play on the online server, host on
+  your PC, or join a friend. Parties work exactly as before (make a party, share the code, step through the
+  portal together).
+
 ## 2.0.0
 
 The first release delivered through the Ashen Descent launcher.

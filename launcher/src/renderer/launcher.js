@@ -110,6 +110,7 @@
     // Settings
     const pre = $('pre'); pre.checked = !!s.allowPrerelease; pre.disabled = busy || s.phase === 'running';
     $('locChange').disabled = busy || s.phase === 'running';
+    $('mpChange').disabled = s.phase === 'running';
 
     // Progress
     const p = s.progress, prog = $('prog'), fill = $('progFill'), txt = $('progText');
@@ -223,6 +224,56 @@
   addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('loc').hidden && !$('loc').dataset.first && !$('loc').classList.contains('moving')) $('loc').hidden = true; });
   api.onLocationProgress && api.onLocationProgress((p) => { $('locFill').style.width = `${p.total ? Math.round((p.done / p.total) * 100) : 0}%`; });
   if (api.getLocation) loadLocation(); else document.querySelector('.locline').hidden = true;
+
+  /* ---- party play ---- */
+  let MPS = null, mpPick = null;
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  function mpSummary(m) {
+    if (!m) return '…';
+    if (m.mode === 'off') return 'Off';
+    if (m.mode === 'host') return m.host.running ? `Hosting · ${m.host.players} connected` : 'Hosting failed';
+    if (m.mode === 'join') return m.server ? `Joining ${m.join}` : 'Join: no address';
+    if (!m.online) return 'Online · server not set up yet';
+    const st = m.online.status;
+    return !st || st.checking ? 'Online · connecting…' : st.ok ? `Online · ${st.players} playing` : 'Online · server unreachable';
+  }
+  function renderMp(m) {
+    MPS = m;
+    $('mpShort').textContent = mpSummary(m);
+    if ($('mpd').hidden) return;
+    for (const b of document.querySelectorAll('.mpc')) b.setAttribute('aria-checked', String(b.dataset.mode === mpPick));
+    const st = m.online && m.online.status;
+    $('mpOnline').innerHTML = !m.online ? 'Play with anyone on the Ashen Descent server.\nNot set up yet: use Host or Join for now.'
+      : `Play with anyone on the Ashen Descent server.\n<i class="dot ${!st || st.checking ? 'wait' : st.ok ? 'on' : 'off'}"></i>${!st || st.checking ? 'Connecting… (a sleeping server can take up to a minute to wake)' : st.ok ? `Online · ${st.players} playing` : `Unreachable (${esc(st.error || 'no answer')})`}`;
+    const addrs = m.host.addresses || [];
+    $('mpHost').innerHTML = `Your friends connect to you. The launcher keeps hosting from the tray while you play.${m.mode === 'host'
+      ? m.host.running ? `\n<i class="dot on"></i>Hosting. Friends join with: <em>${addrs.map(esc).join('</em> or <em>') || 'this PC’s address'}</em>` : `\n<i class="dot off"></i>${esc(m.host.error || 'Not running')}`
+      : '\nSame network: works as is. Over the internet: forward port ' + m.host.port + ' or use a virtual LAN (Tailscale, ZeroTier, Radmin VPN).'}`;
+  }
+  function openMp() {
+    if (!MPS) return;
+    mpPick = MPS.mode; $('mpJoin').value = MPS.join || ''; $('mpMsg').textContent = '';
+    $('mpd').hidden = false; renderMp(MPS);
+  }
+  for (const b of document.querySelectorAll('.mpc')) {
+    const pickIt = () => { mpPick = b.dataset.mode; renderMp(MPS); if (mpPick === 'join') setTimeout(() => $('mpJoin').focus(), 0); };
+    b.addEventListener('click', (e) => { if (e.target.tagName !== 'INPUT') pickIt(); });
+    b.addEventListener('keydown', (e) => { if (e.target === b && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pickIt(); } });
+  }
+  $('mpJoin').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('mpSave').click(); });
+  $('mpChange').addEventListener('click', openMp);
+  $('mpCancel').addEventListener('click', () => { $('mpd').hidden = true; });
+  $('mpSave').addEventListener('click', async () => {
+    $('mpSave').disabled = true; $('mpMsg').textContent = '';
+    try {
+      const m = await api.setMultiplayer({ mode: mpPick, join: $('mpJoin').value });
+      if (m && m.error) { $('mpMsg').textContent = m.error; renderMp(m); return; }
+      if (m && m.mode === 'host' && !m.host.running) { renderMp(m); $('mpMsg').textContent = m.host.error || 'Hosting could not start.'; return; }
+      renderMp(m); $('mpd').hidden = true;
+    } finally { $('mpSave').disabled = false; }
+  });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('mpd').hidden) $('mpd').hidden = true; });
+  if (api.getMultiplayer) { api.getMultiplayer().then(renderMp).catch(() => {}); api.onMultiplayer(renderMp); } else document.querySelector('.mpline').hidden = true;
 
   api.onState(render);
   api.getState().then((s) => { if (s) render(s); });
