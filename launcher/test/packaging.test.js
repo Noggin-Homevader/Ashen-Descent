@@ -30,7 +30,11 @@ test('packaging: the real game package installs through the launcher and matches
   await u.start();
   assert.equal(u.state.phase, 'ready', JSON.stringify(u.state.error));
   assert.equal(u.state.installed.version, game.version);
-  assert.match(u.state.available.notes, /launcher/);
+  // the release notes are this version's changelog section
+  const log = fs.readFileSync(path.join(REPO, 'game', 'CHANGELOG.md'), 'utf8');
+  const sec = log.split(`## ${game.version}`)[1].split(/\n## /)[0];
+  const firstLine = sec.split('\n').map((l) => l.trim()).find((l) => l && !l.startsWith('#'));
+  assert.ok(u.state.available.notes.includes(firstLine), 'notes come from the changelog');
   const installed = fs.readFileSync(path.join(root, 'game', 'versions', game.version, 'index.html'));
   assert.ok(installed.equals(fs.readFileSync(path.join(REPO, 'game', 'app', 'index.html'))), 'installed game is byte-identical');
 });

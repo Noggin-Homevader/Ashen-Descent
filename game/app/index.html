@@ -1659,7 +1659,7 @@ return`<h2>Bag <small>${P.inv.length}/${CAP()}${P.eq.Pack?' \u00b7 '+P.cap+' bag
 function buyG(i){const x=P.sg[i];if(!x)return;const p=gPrice(x);if(P.gold<p)return toast('Not enough Cinders');if(P.inv.length>=CAP())return toast('Bag full');P.gold-=p;P.sg.splice(i,1);P.inv.push(x);toast('Bought '+x.n);showShop()}
 
 const ATC={str:'#e8653a',dex:'#62d65a',vit:'#f0b040',ene:'#5a8cff',lck:'#c870ff'};
-function statHtml(){const s=st(),A=s.A,m=MAINA[P.cls];return`<h2>Attributes <small>${P.pts} points</small></h2><p><small>${P.cls} main attribute: <b>${ATN[m]}</b>. Main attribute gives +2 damage per point and grows by 1 every level. Gear can roll any attribute.</small></p>`+AT.map((k,i)=>{const bs=attrBase(P.cls,k)+(k==m?P.lv-1:0),gr=A[k]-bs-(P.sa[i]||0);return`<div class="it"><button disabled style="text-align:left;border-left:4px solid ${ATC[k]||'#d9a83a'}"><b style="color:${ATC[k]||'inherit'}">${ATN[k]}</b>${k==m?' <small>(main)</small>':''} <b>${A[k]}</b> <small>(${bs} base, ${P.sa[i]||0} spent${gr?', '+gr+' gear':''})</small><br><small>${ATDS[k]}${k==m?', +2 Damage (main)':''}</small></button><button class="pls" style="--c:${ATC[k]||'#d9a83a'}" onclick="if(P.pts>0){P.pts--;P.sa[${i}]=(P.sa[${i}]||0)+1;showOv()}">+</button></div>`}).join('')}
+function statHtml(){const s=st(),A=s.A,m=MAINA[P.cls];return`<h2>Attributes <small>${P.pts} points</small></h2><p><small>${P.cls} main attribute: <b>${ATN[m]}</b>. Main attribute gives +2 damage per point and grows by 1 every level. Gear can roll any attribute.</small></p>`+AT.map((k,i)=>{const bs=attrBase(P.cls,k)+(k==m?P.lv-1:0),gr=A[k]-bs-(P.sa[i]||0);return`<div class="it"><button disabled style="text-align:left;border-left:4px solid ${ATC[k]||'#d9a83a'}"><b style="color:${ATC[k]||'inherit'}">${ATN[k]}</b>${k==m?' <small>(main)</small>':''} <b>${A[k]}</b> <small>(${bs} base, ${P.sa[i]||0} spent${gr?', '+gr+' gear':''})</small><br><small>${ATDS[k]}${k==m?', +2 Damage (main)':''}</small></button><button class="pls"${P.pts>0?'':' disabled title="No attribute points left. Level up to earn more."'} style="--c:${ATC[k]||'#d9a83a'}" onclick="if(P.pts>0){P.pts--;P.sa[${i}]=(P.sa[${i}]||0)+1;showOv()}">+</button></div>`}).join('')}
 
 function drop(e){const il=ilv(),a=[];if(e.hb&&!camp){P.hbk=(P.hbk||0)+1;toast('\u2620 '+e.nm+' falls! The hidden vault is yours.');mkChest(e.x,e.y+40,3,{tr:false});mkChest(e.x+60,e.y+50,2,{tr:false});a.push(fl>10?mkNamed(il+4,P.cls):gear(il+3,2),gear(il+4,3),gear(il+3,2),{k:'mat',t:'core',n:2},{k:'mat',t:'ess',n:4},{k:'mat',t:mt('iron',e),n:6},...(FEOK()&&Math.random()<.12?[{k:'feather',n:1}]:[]));for(let i=0;i<2;i++){const sp=setDrop({boss:1},il);if(sp)a.push(sp)}}else if(e.uq&&!camp){(P.uqd=P.uqd||[]).push(e.uk);toast('\u2620 '+e.nm+' is slain! Loot spills from the corpse.');mkChest(e.x,e.y+40,chTier(2),{tr:false});a.push(gear(il+3,Math.random()<.2?3:2),gear(il+2,2),gear(il+2,2),{k:'mat',t:'core'},{k:'mat',t:'ess',n:2},{k:'mat',t:mt('iron',e),n:5},{k:'mat',t:mt(RM[e.uk],e),n:4});if(Math.random()<.15)a.push(gear(il+4,3));for(let i=0;i<2;i++){const sp=setDrop({boss:1},il);if(sp)a.push(sp)}if(FEOK()&&Math.random()<.03)a.push({k:'feather',n:1})}if(e.boss&&!camp)mkChest(e.x,e.y+40,chTier(2),{tr:false});if(e.wd){a.push(gear(il+2,2),gear(il+2,2),{k:'mat',t:'core'});if(Math.random()<.5)a.push({k:'mat',t:'ess'});if(Math.random()<.1)a.push(gear(il+3,3));toast('The wanderer is slain!')}if(e.cmd){a.push(gear(il+3,2),gear(il+3,2));if(Math.random()<.12)a.push(gear(il+4,3));for(let i=0;i<2;i++){const sp=setDrop({boss:1},il);if(sp)a.push(sp)}a.push({k:'mat',t:'core'});if(Math.random()<.6)a.push({k:'mat',t:'ess'});if(FEOK()&&Math.random()<.012)a.push({k:'feather',n:1});if(Math.random()<.08)a.push({k:'cons',t:'ret',n:1});if(Math.random()<.105)a.push(mkPot('hp',2))}else if(e.grd&&Math.random()<.3)a.push(gear(il+1,1));if(Math.random()<(e.boss?1:.07))a.push(gear(il+(e.boss?2:0),e.boss?2:0));if(e.boss)a.push(gear(il+2,2));if(e.boss&&!camp&&Math.random()<.09){a.push({k:'cons',t:'respec',n:1});setTimeout(()=>toast('A Scroll of Unlearning drops!'),500)}{const sp=setDrop(e,il);if(sp)a.push(sp)}
 
@@ -4435,7 +4435,7 @@ function hud3(){TBAR(tgtE());g.textAlign='center';
 const h=scr3(T.x,T.y,T.r*3*1.05+6+(T._fa||0));if(h){const by=h.y-((T.mut||T.boss||T.cmd||T.grd)?26:14)+Math.sin(t*6)*2;g.save();g.fillStyle=manual?'#ff5a2a':'#ffd23a';g.strokeStyle='#000b';g.lineWidth=2;g.beginPath();g.moveTo(h.x-7,by-9);g.lineTo(h.x+7,by-9);g.lineTo(h.x,by);g.closePath();g.stroke();g.fill();g.restore()}}}}
 for(const e of E){if(DGG&&!(e.vs>0))continue;const z=e.r*3,s=scr3(e.x,e.y,z*1.05+6+(e._fa||0));if(!s)continue;const w=e.r*2*s.k;g.fillStyle='#000a';g.fillRect(s.x-w/2,s.y,w,4);g.fillStyle='#d43';g.fillRect(s.x-w/2,s.y,w*Math.max(0,e.hp/e.mh),4);{const SI=[];if(e.fxs){if(e.fxs.burn)SI.push(['\uD83D\uDD25','#ff8a3a']);if(e.fxs.chill||e.sl>0)SI.push(['\u2744','#9fe8ff']);if(e.fxs.bleed)SI.push(['\uD83E\uDE78','#ff5a5a'])}else if(e.sl>0)SI.push(['\u2744','#9fe8ff']);if(e.ps>0)SI.push(['\u2620','#8be07c']);if(e.st>0)SI.push(['\u26A1','#ffee55']);SI.forEach((q,i)=>{const x_=s.x+(i-(SI.length-1)/2)*17,y_=s.y+13;g.fillStyle='rgba(10,8,6,.78)';g.beginPath();g.arc(x_,y_,8,0,7);g.fill();g.strokeStyle=q[1];g.lineWidth=1.6;g.stroke();g.fillStyle=q[1];g.font='11px system-ui';g.textAlign='center';g.fillText(q[0],x_,y_+4)})}if(e.mut||e.boss||e.cmd||e.grd){g.fillStyle=e.uq?e.uq.col:e.boss?'#ffd23a':e.cmd?'#ffcf5a':e.grd?'#c8d0d8':'#ff8a7a';g.font=(e.cmd?'bold 11px':'10px')+' system-ui';g.fillText((e.uq?'\u2620 ':e.cmd?'\u2605 ':'')+e.nm,s.x,s.y-4)}}
 for(const m of MIN.concat(mpGM())){if(m.t=='banner')continue;const s=scr3(m.x,m.y,m.r*3*1.05+6);if(!s)continue;const w=m.r*2*s.k;g.fillStyle='#000a';g.fillRect(s.x-w/2,s.y,w,3);g.fillStyle=MT[m.t].col;g.fillRect(s.x-w/2,s.y,w*Math.max(0,m.hp/m.mh),3)}
-g.font='11px system-ui';g.fillStyle='#fff8';if(portal){const s=scr3(portal.x,portal.y,78+(window.GHT?GHT(portal.x,portal.y):0));if(s)g.fillText('DOWN',s.x,s.y)}if(camp){g.save();g.textAlign='center';for(const n of CNP){if(n.x<-1000)continue;const s=scr3(n.x,n.y,76);if(!s)continue;g.font='700 13px Almendra,Georgia,serif';const w=Math.max(g.measureText(n.ti).width,70)+22,x0=s.x-w/2,y0=s.y-14;g.fillStyle='rgba(18,10,6,.8)';g.strokeStyle=n.ac;g.lineWidth=1.5;g.beginPath();g.moveTo(x0+6,y0);g.lineTo(x0+w-6,y0);g.lineTo(x0+w,y0+6);g.lineTo(x0+w,y0+28);g.lineTo(x0,y0+28);g.lineTo(x0,y0+6);g.closePath();g.fill();g.stroke();g.fillStyle='#f4e6c4';g.fillText(n.ti,s.x,y0+13);g.font='10px system-ui';g.fillStyle=n.ac;g.fillText(n.rl+' \u00b7 click',s.x,y0+24)}g.restore()}MPlabels(g);
+g.font='11px system-ui';g.fillStyle='#fff8';if(portal){const s=scr3(portal.x,portal.y,78+(window.GHT?GHT(portal.x,portal.y):0));if(s)g.fillText('DOWN',s.x,s.y)}if(camp){g.save();g.textAlign='center';const LB=[];for(const n of CNP){if(n.x<-1000)continue;const s=scr3(n.x,n.y,76);if(!s)continue;g.font='700 13px Almendra,Georgia,serif';const tw=g.measureText(n.ti).width;g.font='10px system-ui';const sw=g.measureText(n.rl+' · click').width;LB.push({n,x:s.x,y:s.y-14,w:Math.max(tw,sw,70)+22})}LB.sort((a,b)=>b.y-a.y);const PLB=[];for(const L of LB){for(let k=0;k<8;k++){const q=PLB.find(q=>Math.abs(L.x-q.x)<(L.w+q.w)/2+4&&Math.abs(L.y-q.y)<32);if(!q)break;L.y=q.y-32}PLB.push(L)}for(const L of PLB){const n=L.n,s={x:L.x,y:L.y+14};g.font='700 13px Almendra,Georgia,serif';const w=L.w,x0=s.x-w/2,y0=s.y-14;g.fillStyle='rgba(18,10,6,.8)';g.strokeStyle=n.ac;g.lineWidth=1.5;g.beginPath();g.moveTo(x0+6,y0);g.lineTo(x0+w-6,y0);g.lineTo(x0+w,y0+6);g.lineTo(x0+w,y0+28);g.lineTo(x0,y0+28);g.lineTo(x0,y0+6);g.closePath();g.fill();g.stroke();g.fillStyle='#f4e6c4';g.fillText(n.ti,s.x,y0+13);g.font='10px system-ui';g.fillStyle=n.ac;g.fillText(n.rl+' \u00b7 click',s.x,y0+24)}g.restore()}MPlabels(g);
 for(const f of FT){const s=scr3(f.x,f.y,28);if(!s)continue;g.font='bold '+(f.z||12)+'px system-ui';g.lineWidth=f.o?4:3;g.strokeStyle=f.o||'rgba(0,0,0,.75)';g.lineJoin='round';g.strokeText(f.s,s.x,s.y);g.fillStyle=f.c;g.fillText(f.s,s.x,s.y)}}
 const HX=h=>{const n=parseInt((h||'#ffffff').slice(1,7),16);return[(n>>16&255)/255,(n>>8&255)/255,(n&255)/255]};
 function lights3(){const t=Date.now()/1000,L=[],cd=[];const wm=DGG?[1,.8,.56]:[1,.88,.66];L.push({x:P.x,y:P.y,h:DGG?80:130,r:DGG?300:280,c:wm.map(v=>v*(DGG?.7:.5))});
@@ -4460,7 +4460,7 @@ hud3();drawHUD()}
 function fit(){const w=$('wrap'),bw=w.clientWidth,bh=w.clientHeight;if(bw<60||bh<60)return;let vw,vh,d=1;
 if(G3.on){d=Math.min(window.devicePixelRatio||1,2);vw=Math.round(bw);vh=Math.round(bh);if(vw*vh*d*d>2.4e6)d=Math.max(.75,Math.sqrt(2.4e6/(vw*vh)))}else{vh=560;vw=Math.max(300,Math.min(1900,Math.round(560*bw/bh)))}
 if(vw!==VW||vh!==VH||d!==DPR){VW=vw;VH=vh;DPR=d;const a=Math.round(vw*d),b=Math.round(vh*d);cv.width=a;cv.height=b;const c3=$('c3');c3.width=a;c3.height=b}}
-try{new ResizeObserver(fit).observe($('wrap'))}catch(e){}addEventListener('resize',fit);
+try{new ResizeObserver(()=>fit()).observe($('wrap'))}catch(e){}addEventListener('resize',()=>fit());
 function set3(on){if(on&&!R3.ready&&!R3.init()){toast('3D is not supported on this device');on=false}G3.on=on;G3.ok=R3.ready;$('wrap').classList.toggle('d3',on);$('c3').style.display=on?'block':'none';fit();$('b3').textContent=on?'View: 3D':'View: 2D';try{localStorage.setItem('ad_3d',on?'1':'0')}catch(e){}if(P&&started&&BG)BG=DGG?mkDG(BK):mkBg(BK,OB)}
 
 let last=performance.now();function loop(t){window.LRAF=performance.now();const dt=Math.min(.05,(t-last)/1000);last=t;if(GAL.on)galFrame(dt);else{update(dt);draw()}requestAnimationFrame(loop)}requestAnimationFrame(loop);
@@ -5962,13 +5962,66 @@ var HERO3D=(()=>{
   if(o.mant&&GEAR&&!(G.Shoulder&&G.Shoulder.sh)){const mc=col(o.mant)||cl;GRL.push({g:o.robe?8:7,pal:[mc,dk(mc,.45),tr,pm,kc('#e0d4b8'),tr,dk(mc,.6),mc,mc,mc,mc,mc,mc,mc,mc,mc]})}
   else if(o.mant&&!(G.Shoulder&&G.Shoulder.sh)){const mc=col(o.mant)||cl;LF([UR(.84,.08,.065),UR(.8,.16,.11),UR(.75,.172,.118)],mc,{seg:16})}
   const FITP=FITR?fitEnv(FITR):null;FITR=null;
+  /* ---- armour detail pass: shapes taken from the measured outline of what is worn (FITP), so details sit on the
+     surface instead of sinking into it or floating off it ---- */
+  if(GA&&!bare){const nm=GA.nm||'',ac=gc(GA,'a'),lc=gc(GA,'l'),hi=c=>c.map(v=>Math.min(1,v*1.25+.06));
+   const env=(y,pad)=>{let rx=.115,rf=.085,rb=.085;if(FITP){const i=Math.max(0,Math.min(FITP.n-1,Math.round((y-FITP.y0)/FITP.dy)));if(FITP.on[i]){rx=FITP.RX[i];rf=FITP.RF[i];rb=FITP.RB[i]}}
+    return UR(y,rx+pad,(rf+rb)/2+pad,(rf-rb)/2)};
+   const front=(y,pad)=>{let rf=.085;if(FITP){const i=Math.max(0,Math.min(FITP.n-1,Math.round((y-FITP.y0)/FITP.dy)));if(FITP.on[i])rf=FITP.RF[i]}return rf+pad};
+   const riv=(x,y,z,c)=>UB(x,y,z,.0052,.0052,.004,c,{lo:1,mt:.9,n:1.2});
+   if(/Plate|Cuirass|Breastplate/.test(nm)||(plate>=1&&!/Surcoat|Tunic|Mail|Brigandine|Vest|Jerkin|Leathers|Coat|Robe/.test(nm))){
+    const pm2=pm||ac;
+    /* a raised centre ridge down the breastplate */
+    for(let k=0;k<6;k++){const y=.79-k*.035;UB(0,y,front(y,.004),.0045,.019,.004,hi(pm2),{lo:1,mt:.9})}
+    /* rolled edge at the neckline and arm openings */
+    LF([env(.832,.004),env(.818,.007)],ac,{open:1,seg:16,em:.05});
+    for(const sd of[-1,1])UB(sd*.104,.775,.02,.006,.05,.03,ac,{lo:1,az:sd*.12});
+    /* fauld: three overlapping lames below the breastplate, each with a rivet at the side and front */
+    for(let k=0;k<3;k++){const y=.575-k*.03,c=k%2?dk(pm2,.7):pm2;LF([env(y+.016,.008+k*.004),env(y-.012,.012+k*.005)],c,{seg:16,mt:.85});
+     LF([env(y-.012,.012+k*.005),env(y-.016,.013+k*.005)],ac,{open:1,seg:16,mt:.9});
+     for(const sd of[-1,1])riv(sd*.085,y,front(y,.012+k*.005)*.82,ac);riv(0,y,front(y,.013+k*.005),ac)}
+    /* rivets along the lower edge of the breastplate */
+    for(let k=0;k<7;k++){const u=k/6,x=-.08+.16*u,y=.61+Math.sin(u*Math.PI)*.02;riv(x,y,front(y,.005)*(1-.25*Math.abs(u-.5)*2),ac)}}
+   else if(/Brigandine/.test(nm)){/* brigandine: rows of rivet heads holding the plates inside the cloth */
+    for(let r=0;r<5;r++)for(let k=0;k<6;k++){const y=.76-r*.045,u=k/5,x=-.075+.15*u;riv(x,y,front(y,.006)*(1-.28*Math.abs(u-.5)*2),ac)}}
+   else if(/Vest|Jerkin|Leathers|Coat/.test(nm)&&!robe){/* stitched side seams and two buckled straps across the chest */
+    for(const sd of[-1,1])for(let k=0;k<9;k++){const y=.79-k*.026;UB(sd*.07,y,front(y,.004)*.9,.0018,.006,.002,hi(lc),{lo:1})}
+    for(const yy of[.735,.665]){LF([env(yy+.009,.006),env(yy-.009,.006)],dk(lc,.7),{seg:16});const bz=front(yy,.01);
+     UB(.045,yy,bz,.012,.013,.004,ac,{lo:1,mt:.85});UB(.045,yy,bz+.002,.006,.007,.003,dk(lc,.6),{lo:1})}}
+   else if(/Mail/.test(nm)){/* a dagged mail hem: small scallops round the bottom edge */
+    for(let k=0;k<12;k++){const a_=k/12*6.2832,y=.47;const R_=env(y,.008),f_=R_._f;UB(Math.cos(a_)*f_[1],y-.012,Math.sin(a_)*f_[2]+f_[3],.012,.012,.004,dk(ac,.9),{lo:1,mt:.7})}}}
   /* ---- neck ---- */
   if(!HSK)LF([UR(.84,.04,.04,-.004),UR(.87,.036,.037,.0),UR(.9,.036,.036,.006)],sk);
   /* ---- cape ---- */
   /* cape and cloak are drawn once the arms are placed, so they can tuck under a shield or weapon carried on the back */
   const CAPEF=(lim,y0,y1)=>{const cz=(y,zl)=>lim!=null&&y>y0&&y<y1?Math.max(zl,lim):zl,SHS=(st.off&&st.off.ot=='shield'&&!offAway&&window.SHKEY&&!(st.wt&&st.bow))?-(ws||1):0;
-  if(o.cape){const cc=col(o.cape),ct=col(o.capetr)||tr,fl_=Math.sin(t*2.3+id)*.012;const R=[];for(let k=0;k<6;k++){const u=k/5,y=.81-u*.52;R.push({c:U([-SHS*(.012+.03*u),y,cz(y,-.09-u*.02-u*u*(.05+mv*.12)+fl_*u)]),rx:.12+u*.05-(SHS?.012+.03*u:0),rz:.012,t:[0,1,0]})}LF(R,cc,{seg:12});const Lb=R[R.length-1];LF([{c:Lb.c,rx:Lb.rx+.002,rz:.015,t:[0,1,0]},{c:add(Lb.c,[0,-.012,0]),rx:Lb.rx+.002,rz:.015,t:[0,1,0]}],ct,{open:1,seg:12,em:.1});for(const sd of[-1,1])UP(sd*.1,.82,.05,.016,.016,.01,tr,{em:.2})}
-  if(o.cloak&&!o.cape){const cc=col(o.cloak)||dk(cl,.7);const R=[];for(let k=0;k<5;k++){const u=k/4,y=.83-u*.42;R.push({c:U([-SHS*(.012+.03*u),y,cz(y,-.08-u*.03-u*u*(.04+mv*.1))]),rx:.13+u*.04-(SHS?.012+.03*u:0),rz:.014,t:[0,1,0]})}LF(R,cc,{seg:12})}};
+  /* the cape hangs as five overlapping panels that follow the curve of the back, so it reads as cloth with folds.
+     Depth comes from the measured outline of whatever is worn on the chest (FITP), so it always sits outside the armour,
+     with extra room under shoulder gear; below the shoulder blades it falls free. It ripples with a travelling wave and
+     sweeps back while running. */
+  const capeSheet=(cc,ct,cloak)=>{const NP=5,rows=cloak?7:9,yT=cloak?.83:.818,yB=cloak?.41:.27,shG=!!G.Shoulder,tw_=Math.sin(t*1.7+id*1.3)*.5+.5;
+   const back=y=>{let d=.088;if(FITP){const i=Math.round((y-FITP.y0)/FITP.dy);const j=Math.max(0,Math.min(FITP.n-1,i));if(FITP.on[j])d=Math.max(d,FITP.RB[j])}return d*B};
+   let blade=0;for(let y=.62;y<=.8;y+=.02)blade=Math.max(blade,back(y));
+   const Pn=[];
+   for(let p=0;p<NP;p++){const s=p/(NP-1)*2-1,R=[];
+    for(let k=0;k<rows;k++){const u=k/(rows-1);let y=yT-(yT-yB)*u;const hw=(.118+u*(cloak?.05:.07))*B;
+     const fall=y<.62?Math.min(1,(.62-y)/.12):0,body=Math.max(back(y),blade*fall+back(y)*(1-fall));
+     const room=.017+(shG&&y>.7?.024*(y-.7)/.12:0);
+     let z=-(body+room)*(1-.3*s*s*(1-.5*fall)),x=s*hw*.8-SHS*(.012+.03*u);
+     const wave=Math.sin(t*2.4-u*5.2+s*1.7+id)*(.005+.017*u*u)*(1+mv*1.4)*(.6+.4*tw_);
+     z+=wave-u*u*(.025+mv*.15);y+=u*u*mv*.045;x+=Math.sin(t*1.9-u*4+p*1.1)*.004*u;
+     const a=s*.5;R.push({c:U([x,y,cz(y,z)]),rx:hw/(NP-1)*1.22,rz:.0062,t:[0,1,0],x:[Math.cos(a),0,Math.sin(a)]})}
+    Pn.push(R);LF(R,p%2?dk(cc,.93):cc,{seg:6})}
+   if(!cloak){/* trimmed hem on every panel */
+    for(let p=0;p<NP;p++){const Lb=Pn[p][rows-1];LF([{c:Lb.c,rx:Lb.rx+.0015,rz:.0085,t:[0,1,0],x:Lb.x},{c:add(Lb.c,[0,-.014,0]),rx:Lb.rx+.0015,rz:.0085,t:[0,1,0],x:Lb.x}],ct,{seg:6,em:.1})}
+    /* a band across the top, straps over the shoulders to clasps at the collar, and a chain between them */
+    {const T0=Pn[0][0].c,T1=Pn[NP-1][0].c;LF([{c:lerp(T0,T1,.0),rx:.012,rz:.012,t:[1,0,0]},{c:lerp(T0,T1,.5),rx:.012,rz:.012,t:[1,0,0]},{c:lerp(T0,T1,1),rx:.012,rz:.012,t:[1,0,0]}],ct,{seg:6,em:.08})}
+    for(const sd of[-1,1]){const top=Pn[sd<0?0:NP-1][0].c,cl=U([sd*.098*B,.818,.058*B]),mid=U([sd*.11*B,.842,-.01*B]);
+     LF([{c:top,rx:.011,rz:.0045,t:[0,0,1]},{c:mid,rx:.011,rz:.0045,t:[0,.6,.8]},{c:cl,rx:.011,rz:.0045,t:[0,-.3,1]}],cc,{seg:5});
+     UP(sd*.098,.818,.064,.017,.017,.008,ct,{em:.25,n:1.1});UP(sd*.098,.818,.072,.008,.008,.005,col(o.gem)||ct,{em:.5})}
+    for(let k=1;k<6;k++){const u=k/6,x=-.098+.196*u,y=.818-Math.sin(u*Math.PI)*.03;UP(x,y,.066+Math.sin(u*Math.PI)*.012,.0055,.0035,.0035,ct,{em:.15,az:k%2?.6:-.6})}}};
+  if(o.cape)capeSheet(col(o.cape),col(o.capetr)||tr,false);
+  if(o.cloak&&!o.cape)capeSheet(col(o.cloak)||dk(cl,.7),null,true)};
   const CAPED=!!(o.cape||o.cloak);
   if(o.standard){const sp=U([0,.75,-.11*B]);PP(sp[0],sp[1]+.2,sp[2],.007,.42,.007,kc('#3a2a18'),{lo:1});PP(sp[0]+.06,sp[1]+.48,sp[2],.06,.09,.005,col(o.standard),{lo:1,az:Math.sin(t*2)*.08});PP(sp[0],sp[1]+.63,sp[2],.014,.02,.014,kc('#d8b04a'),{lo:1,em:.3})}
   if(o.quiver){const qp=U([-.05*(st.ws||1),.72,-.1]);PP(qp[0],qp[1],qp[2],.026,.12,.026,kc('#5a3a1e'),{pv:qp,ax:lean+.2,az:.35*(st.ws||1),lo:1});for(let k=0;k<3;k++)PP(qp[0]+(k-1)*.012,qp[1]+.13,qp[2]-.02,.006,.03,.006,kc('#e8e0d0'),{lo:1})}
@@ -6002,8 +6055,10 @@ var HERO3D=(()=>{
    :KIND=='xbow'?[-1.05,-.45,-.04,1.15,0]:KIND=='bow'?[-.9,-.1,.05,0,0]:[-.5,-.7,.16,0,0];
   /* where each weapon rides when put away (torso space, weapon-side = ws) */
   const anchor=()=>{const s=ws,bk=KIND=='2h'||KIND=='pole'||KIND=='bow'||KIND=='xbow'||wt=='staff',pend=Math.sin(ph)*mv;
-   if(wt=='sword')return{p:[-s*.118,.6,.075],ax:Math.PI+.42+pend*.07,az:-s*.12,tw:-1.5708,hip:1};
-   if(wt=='dagger')return{p:[s*.112,.585,-.01],ax:Math.PI+.2+pend*.05,az:s*.05,tw:-1.5708,hip:1};
+   /* a sword hangs from the belt outside the hip and thigh, hilt forward and tip back as it was worn;
+      a dagger rides at the back of the hip (a kidney-dagger carry), clear of the weapon hand */
+   if(wt=='sword')return{p:[-s*.162,.588,.034],ax:Math.PI+.36+pend*.06,az:-s*.05,tw:-1.5708,hip:1};
+   if(wt=='dagger')return{p:[s*.1,.575,-.098],ax:Math.PI+1.05+pend*.04,az:s*.12,tw:-1.5708,hip:1};
    if(wt=='wand')return{p:[s*.11,.6,.03],ax:Math.PI+.12+pend*.05,az:0,hip:1};
    if(!bk)return{p:[s*.122,.6,.03],ax:Math.PI+.08+pend*.09,az:s*.07,tw:wt=='axe'?-1.5708:0,hip:1};
    if(KIND=='2h')return{p:[s*.1,.93,-.125],ax:Math.PI+.08+pend*.02,az:-s*.5};
@@ -6018,7 +6073,9 @@ var HERO3D=(()=>{
    const pl=[sd*.4,-1,-.3],pn=pl[0]*n[0]+pl[1]*n[1]+pl[2]*n[2];let m=[pl[0]-n[0]*pn,pl[1]-n[1]*pn,pl[2]-n[2]*pn];const ml=Math.hypot(m[0],m[1],m[2])||1;m=mul(m,1/ml);
    const E=add(S,add(mul(n,A_*ca),mul(m,A_*sa))),Tc=add(S,mul(n,Lc)),fd=sub(Tc,E),fl=Math.hypot(fd[0],fd[1],fd[2])||1,dF=mul(fd,1/fl),Wr=add(E,mul(dF,.158));
    return{S,E,Wr,Hd:Tc,FA:-Math.asin(Math.max(-1,Math.min(1,dF[2]))),FZ:Math.atan2(dF[0],-dF[1])}};
-  const relaxed=sd=>FK(sd,-sd*sw*.55-.06+Math.sin(t*1.1+id+sd)*.03,-.18,.13);
+  /* the arm beside a hip scabbard swings a little wider, so the hand passes outside it instead of through it */
+  const HIPSD=AN&&AN.hip&&wt=='sword'?Math.sign(AN.p[0]):0;
+  const relaxed=sd=>FK(sd,-sd*sw*.55-.06+Math.sin(t*1.1+id+sd)*.03,-.18,.13+(sd===HIPSD?.1:0));
   /* the weapon arm */
   let J={},wst=null,wabs=null,wOn=!!wt,offFree=!twoH,offAway=false;const HDEF=[];
   if(wt){const s=ws;
@@ -8466,7 +8523,8 @@ function rowBtn(rx){return[...document.querySelectorAll('#row button')].find(b=>
 function mmBuild(){let m=$('mmenu');if(m)return;m=document.createElement('div');m.id='mmenu';m.className='mm2';($('wrap')||document.body).appendChild(m);
  m.innerHTML=`<button class="mmbook" title="Open your Folio: Character (C), Satchel (B), Skills (K), Contracts (L), Bestiary (J), Fellowship (O)" onclick="this.blur();(!$('ov').hidden&&$('ov').classList.contains('win'))?($('ov').hidden=true):bookOpen(window.FOLLAST||'gear')"><span class="mbk"><i></i><i></i></span><b>Folio</b><i class="bd"></i></button><button class="mmset" title="Settings: options, view, sound, auto-attack, aim, HUD layout" onclick="this.blur();mmMore(this)"><span>⚙</span></button>`}
 function mmMore(btn){let p=$('mmore');if(p&&!p.hidden){p.hidden=true;return}if(!p){p=document.createElement('div');p.id='mmore';document.body.appendChild(p)}
- const ids=['b3','bq','bmu','bsx','bfs','ba','bm'];p.innerHTML=`<button onclick="$('mmore').hidden=true;$('bopt').click()">⚙ Game options</button>`+ids.map(id=>{const b=$(id);return b?`<button onclick="$('${id}').click();setTimeout(()=>mmMore(),0);setTimeout(()=>mmMore(),10)">${b.textContent}</button>`:''}).join('')+`<button onclick="hudEdit(true);$('mmore').hidden=true">✥ Move HUD</button><button onclick="LAY={};laySave();$('mmore').hidden=true;toast('HUD layout reset')">Reset HUD layout</button>`;
+ const MMD={b3:'3D or the classic top-down view',bq:'Lower it if the game stutters',bmu:'Background music',bsx:'Sound effects',bfs:'Fill the whole screen',ba:'Swing at foes in reach without pressing Space',bm:'Mouse: skills fly toward the cursor. Auto: at the nearest foe'};
+ const ids=['b3','bq','bmu','bsx','bfs','ba','bm'].filter(id=>!(id=='bfs'&&window.ASHEN_DESKTOP));p.innerHTML=`<div class="mmh">Quick settings</div>`+ids.map(id=>{const b=$(id);return b&&b.style.display!='none'?`<button title="${MMD[id]||''}" onclick="$('${id}').click();setTimeout(()=>mmMore(),0);setTimeout(()=>mmMore(),10)"><b>${b.textContent}</b><small>${MMD[id]||''}</small></button>`:''}).join('')+`<div class="mmh">Layout</div><button onclick="hudEdit(true);$('mmore').hidden=true"><b>✥ Move HUD</b><small>Drag bars and panels where you like</small></button><button onclick="LAY={};laySave();$('mmore').hidden=true;toast('HUD layout reset')"><b>Reset HUD layout</b><small>Put everything back where it started</small></button><button class="mmopt" onclick="$('mmore').hidden=true;$('bopt').click()"><b>⚙ All options…</b><small>Keys, graphics, accessibility and more</small></button>`;
  p.hidden=false;const r=btn.getBoundingClientRect();p.style.right=(innerWidth-r.right)+'px';p.style.bottom=(innerHeight-r.top+6)+'px'}
 function mmTick(){const m=$('mmenu');if(!m||!P)return;const bd={gear:P.pts||0,skills:P.sp||0,quests:(P.qa||[]).filter(q=>window.qDone&&qDone(q)).length};
  const b=m.querySelector('.mmbook');if(b){const n=bd.gear+bd.skills+bd.quests,i=b.querySelector('.bd');i.textContent=n?n:'';i.hidden=!n;const op=!$('ov').hidden&&$('ov').classList.contains('win');b.classList.toggle('on',op);if(op&&FOLCH.some(c=>c[0]==OT))window.FOLLAST=OT}}
@@ -8552,7 +8610,7 @@ body.hud2 #fxb{bottom:84px!important}
 #mmenu{position:absolute;right:8px;bottom:8px;z-index:5;display:grid;grid-template-columns:repeat(5,32px);gap:4px;padding:5px;border-radius:10px;background:linear-gradient(#2a2016e6,#140e09ee);border:1.5px solid #6a5232;box-shadow:0 6px 18px #000a}
 #mmenu button{position:relative;width:32px;height:32px;min-height:0;padding:0;border-radius:7px;font-size:16px;line-height:1;background:radial-gradient(circle at 40% 30%,#4a3826,#1e160e);border:1.5px solid #6a5232;color:#f0dcb0}
 #mmenu button:hover,#mmenu button.on{border-color:#ffd890;box-shadow:0 0 8px #ffb347}#mmenu .bd{position:absolute;right:-5px;top:-5px;min-width:16px;height:16px;padding:0 3px;border-radius:8px;background:#c0261a;color:#fff;font:800 10px/16px system-ui;font-style:normal}
-#mmore{position:fixed;z-index:70;display:grid;gap:4px;padding:6px;border-radius:10px;background:linear-gradient(#2a2016,#140e09);border:1.5px solid #8a6a30;box-shadow:0 8px 20px #000c}#mmore[hidden]{display:none}#mmore button{min-height:32px;padding:4px 12px;font-size:13px;text-align:left}
+#mmore .mmh{font:700 10px Almendra,Georgia,serif;letter-spacing:.16em;text-transform:uppercase;color:#b8a47a;padding:4px 4px 0}#mmore button{text-align:left;display:flex;flex-direction:column;gap:1px;min-width:230px}#mmore button small{font-size:10.5px;opacity:.62;font-weight:400;line-height:1.25}#mmore .mmopt{border-color:#c8a050}#mmore{position:fixed;z-index:70;display:grid;gap:4px;padding:6px;border-radius:10px;background:linear-gradient(#2a2016,#140e09);border:1.5px solid #8a6a30;box-shadow:0 8px 20px #000c}#mmore[hidden]{display:none}#mmore button{min-height:32px;padding:4px 12px;font-size:13px;text-align:left}
 #lvs{display:none}.lvb2{position:absolute;z-index:5;min-height:0;height:26px;padding:0 12px;border-radius:13px;font:700 12px Almendra,Georgia,serif;letter-spacing:.3px;color:#f4e6c4;background:linear-gradient(#4a3826,#22180f);border:1.5px solid #8a6a3a;box-shadow:0 2px 6px #0009}
 button.lvb2.glow{color:#2a1a06;background:radial-gradient(#ffe27a,#d98a10 75%);border-color:#fff3b0;box-shadow:0 0 12px #ffd23a;animation:lvp 1.2s ease-in-out infinite}button.lvb2 i{font-style:normal;margin-left:4px;font:800 11px system-ui}
 #hedit{position:absolute;inset:0;z-index:30;background:#0006}#hedit .hebar{position:absolute;left:50%;top:10px;transform:translateX(-50%);padding:8px 12px;border-radius:8px;background:#1a120ccc;border:1.5px solid #c8a040;color:#f4e6c4;font-size:13px;display:flex;gap:8px;align-items:center}#hedit .hebar button{min-height:30px;padding:2px 12px}
@@ -10186,7 +10244,16 @@ var FXPASS=(()=>{let PBF_=null,PR_=null,PF=null,PV=null,PT=null,PN=null,PB=null,
   if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));p.u={};for(const n of['uVP','uT','uS','uC1','uC2','uC3','uA','uB','uC','uK','uTx','uE','uO','uR'])p.u[n]=gl.getUniformLocation(p,n);return p};
  const quad=(a,o,X,Y,U)=>{const v=[[-1,-1],[1,-1],[1,1],[-1,-1],[1,1],[-1,1]];for(const[s,t]of v){a.push(o[0]+X[0]*s+Y[0]*t,o[1]+X[1]*s+Y[1]*t,o[2]+X[2]*s+Y[2]*t,s*U[0],U[2]==null?t*U[1]:(t*.5+.5)*U[1])}};
  return function(gl,VP,eye){const F=FXQ.fire,Vx=FXQ.vtx,Tq=FXQ.tex,Nq=FXQ.nova,Bq=FXQ.bub,Hq=FXQ.heal,Lq=FXQ.tele,Rq=FXQ.rib,Uq=FXQ.buff;if(!window.FXWARMQ&&!Uq.length&&!F.length&&!Vx.length&&!Tq.length&&!Nq.length&&!Bq.length&&!Hq.length&&!Lq.length&&!Rq.length)return;if(bad||!gl||!VP){Uq.length=0;Rq.length=0;F.length=0;Vx.length=0;Tq.length=0;Nq.length=0;Bq.length=0;Hq.length=0;Lq.length=0;return}
-  try{if(gl0!==gl){gl0=gl;PF=mk(gl,FS);PV=mk(gl,VF);PT=mk(gl,TF);PN=mk(gl,NF);PB=mk(gl,BF,BVS);PH=mk(gl,HF,BVS);PTL=mk(gl,TLF);PR_=mk(gl,RF);try{PBF_=mk(gl,BFS,BVS)}catch(e){PBF_=null;console.warn('buff fx',e)}buf=gl.createBuffer();TX=new WeakMap();RTX=null}}catch(e){bad=true;console.warn('fxpass',e);return}if(window.FXWARMQ){window.FXWARMQ=0;return}
+  try{if(gl0!==gl){gl0=gl;PF=mk(gl,FS);PV=mk(gl,VF);PT=mk(gl,TF);PN=mk(gl,NF);PB=mk(gl,BF,BVS);PH=mk(gl,HF,BVS);PTL=mk(gl,TLF);PR_=mk(gl,RF);try{PBF_=mk(gl,BFS,BVS)}catch(e){PBF_=null;console.warn('buff fx',e)}buf=gl.createBuffer();TX=new WeakMap();RTX=null}}catch(e){bad=true;console.warn('fxpass',e);return}if(window.FXWARMQ){window.FXWARMQ=0;
+   /* warm-up: one invisible draw with every effect shader while in camp. Linking alone is not enough: Windows browsers
+      (ANGLE on Direct3D) finish compiling a shader on its first real draw, which used to land on the first swing of a fight. */
+   try{const dw=gl.getParameter(gl.DEPTH_WRITEMASK),bl=gl.isEnabled(gl.BLEND),cm=gl.getParameter(gl.COLOR_WRITEMASK),wb=gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,wb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(15),gl.STREAM_DRAW);for(let i=2;i<6;i++)gl.disableVertexAttribArray(i);
+    gl.enableVertexAttribArray(0);gl.enableVertexAttribArray(1);gl.vertexAttribPointer(0,3,gl.FLOAT,false,20,0);gl.vertexAttribPointer(1,2,gl.FLOAT,false,20,12);
+    gl.colorMask(false,false,false,false);gl.depthMask(false);gl.enable(gl.BLEND);
+    for(const p of[PF,PV,PT,PN,PB,PH,PTL,PR_,PBF_]){if(!p)continue;gl.useProgram(p);gl.drawArrays(gl.TRIANGLES,0,3)}
+    gl.colorMask(cm[0],cm[1],cm[2],cm[3]);gl.depthMask(dw);if(!bl)gl.disable(gl.BLEND);gl.deleteBuffer(wb);window.FXWARMED=(window.FXWARMED|0)+1}catch(e){console.warn('fx warm-up',e)}
+   return}
   const t=(performance.now()-T0)/1000;gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.depthMask(false);gl.disable(gl.CULL_FACE);gl.enable(gl.BLEND);
   gl.bindBuffer(gl.ARRAY_BUFFER,buf);for(let i=2;i<6;i++)gl.disableVertexAttribArray(i);gl.enableVertexAttribArray(0);gl.enableVertexAttribArray(1);
   const draw=a=>{gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(a),gl.STREAM_DRAW);gl.vertexAttribPointer(0,3,gl.FLOAT,false,20,0);gl.vertexAttribPointer(1,2,gl.FLOAT,false,20,12);gl.drawArrays(gl.TRIANGLES,0,a.length/5)};
@@ -12487,7 +12554,7 @@ const bfpCol=x=>{if(x.deb)return'#ff7a6a';const k=x.k;return(typeof BUFA!='undef
 const bfpRune=x=>{let r=FXRUNE[x.k];if(r==null){if(x.k.startsWith('zh'))r=14;else if(x.k.startsWith('br'))r=13;else if(x.k=='dot'){const how=(P.dsrc&&P.dsrc.how)||'';r=how=='burn'?0:how=='acid'?11:12}}return r};
 const bfpT=t=>t>=60?Math.floor(t/60)+'m':t>=10?Math.round(t)+'s':(Math.round(t*10)/10)+'s';
 function bfpUi(){const el=$('bfp');if(!el)return;const show=!!P&&typeof started!='undefined'&&started&&!(typeof GAL!='undefined'&&GAL.on)&&!over;if(el.hidden===show)el.hidden=!show;document.body.classList.toggle('bfpon',show);if(!show)return;
- let L=[];try{L=fxList()}catch(e){}const seen={};for(const x of L){seen[x.k]=1;if(!(BFP.mx[x.k]>=x.t)||x.t>BFP.mx[x.k])BFP.mx[x.k]=Math.max(BFP.mx[x.k]||0,x.t||0)}for(const k in BFP.mx)if(!seen[k])delete BFP.mx[k];
+ let L=[];try{L=fxList()}catch(e){}if(!L.length){el.hidden=true;document.body.classList.remove('bfpon');BFP.sig='';BFP.mx={};return}el.hidden=false;const seen={};for(const x of L){seen[x.k]=1;if(!(BFP.mx[x.k]>=x.t)||x.t>BFP.mx[x.k])BFP.mx[x.k]=Math.max(BFP.mx[x.k]||0,x.t||0)}for(const k in BFP.mx)if(!seen[k])delete BFP.mx[k];
  const bu=L.filter(x=>!x.deb),de=L.filter(x=>x.deb);$('bfpn').textContent=L.length?bu.length+(de.length?' · '+de.length:''):'';$('bfpm').textContent=BFP.min?'+':'–';el.classList.toggle('min',BFP.min);if(BFP.min)return;
  const sig=L.map(x=>x.k).join('|');const row=x=>{const r=bfpRune(x),c=bfpCol(x);return`<div class="bfr${x.deb?' d':''}" data-k="${x.k}" style="--c:${c}" title="${String(x.tip||'').replace(/"/g,'&quot;')}"><i>${r!=null&&typeof runeSvg=='function'?runeSvg(r,17,c):x.ic||'•'}</i><b>${x.n}</b><em></em><u><s></s></u></div>`};
  if(sig!==BFP.sig){BFP.sig=sig;$('bfpb').innerHTML=(bu.length?`<div class="bfs">Buffs</div>${bu.map(row).join('')}`:'')+(de.length?`<div class="bfs" style="color:#e08a7a">Debuffs</div>${de.map(row).join('')}`:'')+(L.length?'':'<div class="bfe">No effects on you.</div>')}
@@ -12598,5 +12665,48 @@ function accForm(host, { title, cta, onDone, cancel }) {
 }
 /* the title may already be on screen */
 try { const el = document.getElementById('splash'); if (el && !el.hidden) splashShow(); } catch (e) {}
+
+/* ================= NO MORE HITCH WHEN A FIGHT STARTS =================
+   Measured: the stutter at the start of fights came from fullscreen. Browsers only allow fullscreen from a key or a
+   click, so the game asked for it on the first key press - which was usually the attack key as a fight began. The
+   switch resized the 3D canvas mid-fight, which makes the graphics card reallocate its buffers and stall. Where
+   fullscreen is not allowed at all (inside a web page), the request was refused and repeated on every key and click.
+   - Fullscreen is now entered only from the title screen click (or the Fullscreen button in Settings), never by a
+     key or click during play.
+   - Canvas resizes are batched: several size changes in a row (for example while a window is dragged or a panel
+     slides in) cause one resize instead of one per change. */
+{
+  let allow = false;
+  const _fe = fsEnter;
+  fsEnter = function () { if (!allow) return; allow = false; return _fe.apply(this, arguments); };
+  const once = (fn) => function () { allow = true; try { return fn.apply(this, arguments); } finally { setTimeout(() => { allow = false; }, 0); } };
+  try { togFs = once(togFs); const b = $('bfs'); if (b) b.onclick = togFs; } catch (e) {}
+  /* the title screen click: the one moment fullscreen is asked for automatically */
+  addEventListener('pointerdown', (e) => { const s = document.getElementById('splash'); if (s && !s.hidden && s.contains(e.target) && FSA) { allow = true; setTimeout(() => { allow = false; }, 0); } }, true);
+  addEventListener('keydown', (e) => { const s = document.getElementById('splash'); if (s && !s.hidden && (e.key === 'Enter' || e.key === ' ') && FSA) { allow = true; setTimeout(() => { allow = false; }, 0); } }, true);
+  /* the desktop app has its own window controls (F11): no page fullscreen at all */
+  if (window.ASHEN_DESKTOP) fsEnter = function () {};
+}
+{
+  /* batch canvas resizes: the first change applies at once, later ones within 150 ms are merged */
+  const _fit = fit;
+  let tm = 0, lastRun = 0;
+  fit = function () {
+    const now = performance.now();
+    if (now - lastRun > 150) { lastRun = now; return _fit.apply(this, arguments); }
+    clearTimeout(tm); tm = setTimeout(() => { lastRun = performance.now(); _fit(); }, 150);
+  };
+}
+
+/* ================= CLEARER HUD FOR NEW PLAYERS =================
+   - The DPS meter starts folded for anyone who has never touched it (click + to open it).
+   - Attribute + buttons are greyed out when there are no points to spend.
+   - Role banners on the new-character screen: another panel's .bnr grid rule squeezed the role name into a 52px
+     column so it ran over its description; the banners get their own layout back. */
+try { if (localStorage.getItem('ad_dpsmin') === null) DP.min = true; } catch (e) {}
+{ const st = document.createElement('style');
+  st.textContent = '.pls[disabled]{opacity:.28;filter:grayscale(1);cursor:not-allowed}'
+    + '.bnrs .bnr{display:block!important}.bnrs .bnr small{font-size:13px;margin-top:2px}';
+  document.head.appendChild(st); }
 
 </script></body></html>

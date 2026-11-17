@@ -2,6 +2,32 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.2.0
+
+### Smoother fights
+- **No more hitch when a fight starts.** We measured the start of fights and found two causes. The game asked
+  for fullscreen on your first key press, which was usually the attack key, so the screen resized mid-fight.
+  Fullscreen is now only entered from the title screen or the Fullscreen setting. The second cause was spell
+  effects whose shaders were only prepared the first time they appeared; they are now all prepared in camp.
+- Window resizes are batched, so dragging the window or a panel sliding in no longer causes a burst of resizes.
+
+### Better looking gear
+- **Capes rebuilt.** A cape is now five overlapping cloth panels that follow the shape of whatever armour you
+  wear, so it sits over the armour instead of passing through it. It ripples, sweeps back as you run, and has a
+  trimmed hem, shoulder straps, clasps and a chain across the chest.
+- **Sheaths moved to the hip.** Sword sheaths hang from the belt at your side and daggers sit at the back of the
+  belt, clear of your hand and leg.
+- **Armour detail.** Plate gets a raised centre ridge, rolled edges at the neck and arms, riveted fauld lames
+  below the breastplate, and gilt trim. Brigandine shows its rivet grid, leather gets stitched seams and
+  buckled straps, and mail has a scalloped hem.
+
+### Easier to use
+- Quick settings (⚙) explain what each option does, and the full options are one click away.
+- Camp signs no longer overlap each other.
+- The Effects panel only appears while something is affecting you, and the DPS meter starts folded.
+- Attribute + buttons are greyed out when you have no points to spend.
+- The role banners on the new-character screen no longer run their name into the description.
+
 ## 2.1.0
 
 ### New
