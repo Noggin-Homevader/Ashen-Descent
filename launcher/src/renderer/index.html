@@ -48,6 +48,7 @@
       <h3>Release notes <small id="notesWhen"></small></h3>
       <div id="notes" class="md"><p class="dim">Release notes appear here once the archive has been consulted.</p></div>
     </div>
+    <div class="locline mpline"><span>Party play</span><b id="mpShort">&#x2026;</b><span class="grow"></span><button id="mpChange" class="lnk" title="Play with friends: online server, host on this PC, or join a friend">Settings</button></div>
     <div class="locline"><span>Installed on</span><b id="locShort">&#x2026;</b><span class="grow"></span><button id="locChange" class="lnk" title="Install the game and your saves on another drive">Change</button></div>
     <div class="pf">
       <label class="tog" title="Also offer prerelease builds published for testing"><input type="checkbox" id="pre"><span></span>Include test builds</label>
@@ -72,6 +73,21 @@
       <button id="locCancel" class="lnk">Cancel</button>
       <button id="locOk" class="sec">Install here</button>
     </div>
+  </div>
+</div>
+
+<div id="mpd" class="loc" hidden role="dialog" aria-modal="true" aria-labelledby="mpT">
+  <div class="lbox">
+    <h2 id="mpT">Party play</h2>
+    <p class="lp">Choose how you meet your friends. Make or join a party in the game as usual; everyone in a party must use the same choice here.</p>
+    <div class="mpo" role="radiogroup" aria-label="Party play">
+      <div class="mpc" tabindex="0" data-mode="online" role="radio"><b>Online server</b><span id="mpOnline">Play with anyone on the Ashen Descent server.</span></div>
+      <div class="mpc" tabindex="0" data-mode="host" role="radio"><b>Host on this PC</b><span id="mpHost">Your friends connect to you. The launcher keeps hosting from the tray while you play.</span></div>
+      <div class="mpc" tabindex="0" data-mode="join" role="radio"><b>Join a friend</b><span>Connect to a friend who chose Host.</span><input id="mpJoin" placeholder="Friend&#x2019;s address, e.g. 192.168.1.20" spellcheck="false" autocomplete="off"></div>
+      <div class="mpc" tabindex="0" data-mode="off" role="radio"><b>Off</b><span>Solo only.</span></div>
+    </div>
+    <div id="mpMsg" class="lmsg" role="alert"></div>
+    <div class="lrow"><span class="grow"></span><button id="mpCancel" class="lnk">Cancel</button><button id="mpSave" class="sec">Save</button></div>
   </div>
 </div>
 

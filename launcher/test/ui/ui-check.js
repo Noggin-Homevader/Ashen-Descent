@@ -72,6 +72,9 @@ const NOTES = `## Ashen Descent 2.0 — The Deep Gate opens
       open: () => null, openReleasePage: () => null, minimize: () => null, close: () => null,
       getLocation: async () => window.__mockLoc || { root: '/data/Ashen Descent', source: 'default', ask: false, installed: true, drives: [] },
       setLocation: async (c) => { window.__locSent = c; return { ok: true, restarting: true }; }, onLocationProgress: () => {},
+      getMultiplayer: async () => window.__mockMp || { mode: 'online', join: '', server: 'wss://ashen-relay.onrender.com', online: { name: 'Ashen Descent server', url: 'wss://ashen-relay.onrender.com', status: { ok: true, players: 7 } }, host: { running: false, port: 47130, players: 0, addresses: ['192.168.1.20'] } },
+      setMultiplayer: async (o) => { window.__mpSent = o; const m = { mode: o.mode, join: o.join, server: 'ws://127.0.0.1:47130', online: null, host: { running: o.mode === 'host', port: 47130, players: 2, addresses: ['192.168.1.20', '100.88.12.4'] } }; window.__mockMp = m; return m; },
+      onMultiplayer: () => {},
     };
   });
   const wire = (u) => u.on('state', (s) => page.evaluate((st) => window.__ashenPush(st), s).catch(() => {}));
@@ -134,6 +137,20 @@ const NOTES = `## Ashen Descent 2.0 — The Deep Gate opens
   if (!sent || sent.drive !== 'D:') throw new Error(`expected the launcher to be asked for D:, got ${JSON.stringify(sent)}`);
   await shot('7c-drive-restarting');
   await page.evaluate(() => { document.getElementById('loc').hidden = true; });
+  // 7d. Party play settings: online status, then switch to hosting.
+  await page.click('#mpChange');
+  await page.waitForSelector('#mpd:not([hidden])');
+  await shot('7d-party-online');
+  await page.click('.mpc[data-mode="host"]');
+  await page.click('#mpSave');
+  const mpSent = await page.evaluate(() => window.__mpSent);
+  if (!mpSent || mpSent.mode !== 'host') throw new Error('party mode not sent');
+  await page.click('#mpChange');
+  await shot('7e-party-hosting');
+  await page.click('.mpc[data-mode="join"]');
+  await page.fill('#mpJoin', '192.168.1.20');
+  await shot('7f-party-join');
+  await page.click('#mpCancel');
   // 8. Narrow window
   await page.setViewportSize({ width: 940, height: 620 });
   await shot('8-small-window');

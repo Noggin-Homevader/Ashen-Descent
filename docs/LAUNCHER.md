@@ -152,7 +152,9 @@ open, the launcher shows **Game running** and installs the update once the game 
 **Play** is enabled only when the installed copy passes its file check. The launcher starts the game in its
 install folder, with the manifest's arguments, and records its process id. Play stays disabled while the game
 runs. A second launch is also refused by the game window itself, which brings the running one forward instead.
-When the game exits, the launcher returns to **Ready** and checks for updates again.
+When the game starts, the launcher hides in the system tray. When the game exits, the launcher window comes back,
+returns to **Ready** and checks for updates again. While hosting party play, the launcher also stays in the tray
+when its window is closed (see [MULTIPLAYER.md](MULTIPLAYER.md)).
 
 For web builds the launcher starts a second copy of itself in game mode. That copy opens the game in its own
 window from a private `ashen-game://app/` address that maps onto the installed version folder. The address never
@@ -201,9 +203,9 @@ each OS:
   so. Automatic launcher updates (for example `electron-updater`) would be a separate addition.
 - **Unsigned installers.** Windows SmartScreen and macOS Gatekeeper warn about unsigned apps. Add code-signing
   certificates to the Launcher build workflow before a wide release.
-- **Party play in the desktop game.** The game's party mode uses the real-time "room" service that is provided
-  when the game runs as a Claude artifact. That service does not exist in the desktop runtime, so solo play works
-  there but party play needs a multiplayer backend.
+- **Party play** needs a relay. Host on this PC and Join work immediately on the same network. The shared
+  online server must be deployed once (see [MULTIPLAYER.md](MULTIPLAYER.md)). Players in the browser (artifact)
+  version and in the desktop app cannot be in the same party, because they use different services.
 - **Moving existing saves.** Saves made in a browser or as an artifact stay in that browser. To move a hero into
   the desktop game, use **Copy backup code** in the old game, then **Import backup code** in the desktop game's Vault.
 - **Fonts.** The Almendra title font is downloaded during `npm run dist`. A build made without network access

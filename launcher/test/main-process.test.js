@@ -20,7 +20,7 @@ function stubElectron({ appPath }) {
     }
     loadFile(f) { this.file = f; setImmediate(() => this.webContents.emit('did-finish-load')); }
     loadURL(u) { this.url = u; }
-    isDestroyed() { return false; } show() {} maximize() {} focus() {} restore() {} isMinimized() { return false; } destroy() {} minimize() {}
+    isDestroyed() { return false; } show() { this.visible = true; st.shown = (st.shown || 0) + 1; } hide() { this.visible = false; st.hidden = (st.hidden || 0) + 1; } maximize() {} focus() {} restore() {} isMinimized() { return false; } destroy() {} minimize() {}
   }
   const app = {
     paths: {}, getPath: (n) => app.paths[n] || path.join(st.tmp, n), setPath: (n, p) => { app.paths[n] = p; },
@@ -34,7 +34,9 @@ function stubElectron({ appPath }) {
       ipcMain: { handle: (c, f) => { st.handlers[c] = f; } },
       shell: { openPath: async () => '', openExternal: async (u) => { st.opened = u; } },
       net: { fetch: (u, i) => fetch(u, i) },
-      Menu: { setApplicationMenu() {} },
+      Menu: { setApplicationMenu() {}, buildFromTemplate: (t) => ({ items: t }) },
+      Tray: class { constructor() { st.tray = this; this.alive = true; } on() {} setToolTip(t) { this.tip = t; } setContextMenu(m) { this.menu = m; } destroy() { this.alive = false; st.tray = null; } },
+      nativeImage: { createFromPath: () => ({ resize: () => ({}) }) },
       dialog: { showOpenDialog: async () => ({ canceled: true, filePaths: [] }) },
       protocol: { registerSchemesAsPrivileged: (s) => st.schemes.push(...s), handle: (s, f) => { st.protocol = f; } },
       session: { defaultSession: { setPermissionRequestHandler: (f) => { st.perms = f; } } },
@@ -56,7 +58,7 @@ test('main process: launcher window, IPC and Play wiring', async (t) => {
   gh.addRelease('2.0.0', [makePackage('2.0.0', { 'index.html': '<html>game</html>' })]);
   const dir = tmpDir('main');
   const cfg = path.join(dir, 'launcher.config.json');
-  fs.writeFileSync(cfg, JSON.stringify({ github: { owner: 'Noggin-Homevader', repo: 'Ashen-Descent' }, apiBaseUrl: gh.base }));
+  fs.writeFileSync(cfg, JSON.stringify({ github: { owner: 'Noggin-Homevader', repo: 'Ashen-Descent' }, apiBaseUrl: gh.base, multiplayer: { hostPort: 0 } }));
   const env = { ASHEN_LAUNCHER_CONFIG: cfg, ASHEN_DATA_DIR: path.join(dir, 'data'), ASHEN_TEST_MARKER: path.join(dir, 'launched.json') };
   Object.assign(process.env, env);
   t.after(() => { for (const k of Object.keys(env)) delete process.env[k]; delete process.defaultApp; });
@@ -79,6 +81,11 @@ test('main process: launcher window, IPC and Play wiring', async (t) => {
   await until(async () => (await st.handlers['launcher:get-state'](ok)).phase === 'ready');
   assert.ok(st.sent.some(([c, s]) => c === 'launcher:state' && s.phase === 'downloading'), 'state is pushed to the page');
 
+  // Party play: host on this PC; the game is started with the relay address.
+  const mps = await st.handlers['launcher:mp-set'](ok, { mode: 'host' });
+  assert.equal(mps.host.running, true, JSON.stringify(mps));
+  assert.match(mps.server, /^ws:\/\/127\.0\.0\.1:\d+$/);
+  assert.equal((await st.handlers['launcher:mp-set'](ok, { mode: 'join', join: 'not an address!' })).error !== undefined, true);
   const r = await st.handlers['launcher:play'](ok);
   assert.deepEqual(r, { ok: true });
   await until(() => fs.existsSync(env.ASHEN_TEST_MARKER));
@@ -87,6 +94,8 @@ test('main process: launcher window, IPC and Play wiring', async (t) => {
   assert.equal(m.game, path.join(dir, 'data', 'game', 'versions', '2.0.0', 'index.html'));
   assert.equal(m.profile, path.join(dir, 'data', 'userdata', 'profile'));
   assert.equal(fs.realpathSync(m.cwd), fs.realpathSync(path.join(dir, 'data', 'game', 'versions', '2.0.0')));
+  assert.equal(win.visible, false, 'launcher hidden while the game runs');
+  assert.ok(st.tray && /playing/.test(st.tray.tip), 'tray icon while playing');
   const again = await st.handlers['launcher:play'](ok);
   assert.equal(again.ok, false, 'second Play while running is refused');
   await until(async () => (await st.handlers['launcher:get-state'](ok)).phase === 'ready');
@@ -95,6 +104,12 @@ test('main process: launcher window, IPC and Play wiring', async (t) => {
   assert.equal(L0.root, path.join(dir, 'data')); assert.equal(L0.ask, false, 'no drive question when the data folder is fixed');
   assert.equal((await st.handlers['launcher:set-location'](ok, { drive: '../evil' })).ok, false, 'bad drive refused');
   assert.equal((await st.handlers['launcher:set-location'](ok, { keep: true })).restarting, false);
+  await until(() => win.visible === true);
+  assert.ok(st.tray, 'tray stays while hosting');
+  const launchedArgs = JSON.parse(fs.readFileSync(env.ASHEN_TEST_MARKER, 'utf8')).argv;
+  assert.ok(launchedArgs.includes('--ashen-mp') && launchedArgs[launchedArgs.indexOf('--ashen-mp') + 1] === mps.server, 'the game got the relay address');
+  await st.handlers['launcher:mp-set'](ok, { mode: 'off' });
+  assert.equal(st.tray, null, 'no tray once not hosting and not playing');
   await st.handlers['launcher:release-page'](ok);
   assert.match(st.opened, /^https:\/\/github\.com\/Noggin-Homevader\/Ashen-Descent\/releases/);
   win.webContents.emit('will-navigate', { preventDefault() { this.prevented = true; } });

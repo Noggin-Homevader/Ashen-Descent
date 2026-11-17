@@ -18,6 +18,7 @@ The installer is not code-signed yet: if Windows shows *Windows protected your P
 | `game/game.json` | Game version and the builds to package. |
 | `game/CHANGELOG.md` | Release notes, one section per version. |
 | `launcher/` | The launcher (Electron). See [docs/LAUNCHER.md](docs/LAUNCHER.md). |
+| `server/` | The multiplayer relay as a standalone server (`render.yaml` deploys it). See [docs/MULTIPLAYER.md](docs/MULTIPLAYER.md). |
 | `tools/` | `package-game.js` (packages a release and writes its manifest), `verify-release.js`, `fetch-fonts.js`. |
 | `.github/workflows/` | CI tests, the game release and launcher build workflows (both publish when the version changes on `main`). |
 
