@@ -1,4 +1,6 @@
 {
   "schema": 1,
-  "servers": []
+  "servers": [
+    { "name": "Ashen Descent", "url": "wss://ashen-descent-relay.onrender.com" }
+  ]
 }
