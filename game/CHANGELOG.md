@@ -2,6 +2,13 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.3.1
+
+- **Fixed: classes could not be picked on the new-character screen.** A guard that ignores clicks on class cards
+  for a moment while the game switches to fullscreen was still being armed on every click, although since 2.2.0 the
+  game no longer goes fullscreen on clicks, so every class click was ignored. The guard now only follows a real
+  switch to fullscreen.
+
 ## 2.3.0
 
 ### Online
