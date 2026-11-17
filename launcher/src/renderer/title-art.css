@@ -1,0 +1,20 @@
+/* Title-screen styles from the game (title.js / title2.js). */
+#splash{position:fixed;inset:0;z-index:50;background:radial-gradient(ellipse at 50% 45%,#2a160c 0,#0d0806 60%,#050302 100%);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;transition:opacity .6s,transform .6s}
+#splash[hidden]{display:none}#splash.out{opacity:0;transform:scale(1.06)}
+#splash .tsk{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.tarch{position:relative;width:min(92vw,82vh);aspect-ratio:.9;border-radius:46% 46% 18px 18px/30% 30% 18px 18px;padding:2.5% 4% 4%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;
+ background:radial-gradient(ellipse at 50% 38%,#24140c,#120b07 70%),#120b07;border:3px solid #4a3622;box-shadow:inset 0 0 0 6px #1a110a,inset 0 0 0 8px #6a4a2a,inset 0 0 60px #000,0 0 0 2px #000,0 20px 60px #000,0 0 90px #ff5a1a22}
+.tarch::before{content:'';position:absolute;inset:14px;border-radius:inherit;border:1px solid #8a6a4255;pointer-events:none}
+.trays{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;background:repeating-conic-gradient(from 0deg at 50% 46%,#ff7a2a10 0 4deg,transparent 4deg 13deg);-webkit-mask:radial-gradient(circle at 50% 46%,#000 10%,transparent 62%);mask:radial-gradient(circle at 50% 46%,#000 10%,transparent 62%);animation:trot 60s linear infinite}
+@keyframes trot{to{transform:rotate(360deg)}}
+.tstage{position:relative;width:100%;aspect-ratio:1}
+.tport{position:absolute;left:50%;top:52%;width:52%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;box-shadow:0 0 50px #ff6a1a55,0 0 0 5px #1a0f08,0 0 0 8px #6a4a2a,0 0 0 10px #1a0f08}
+.tlogo{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.tgk{animation:tgk 2.4s ease-in-out infinite}@keyframes tgk{50%{stroke:#ffb347;opacity:.65}}
+.tgo{margin-top:auto;font:700 clamp(18px,3.4vmin,30px) Almendra,Georgia,serif;letter-spacing:.32em;text-transform:uppercase;color:#f0dcb0;text-shadow:0 0 12px #ff6a1a,0 2px 0 #000;animation:tgo 1.8s ease-in-out infinite}
+@keyframes tgo{50%{opacity:.45;letter-spacing:.36em}}.tsub{font-size:12px;color:#a8946e;margin-top:6px;letter-spacing:.08em}
+
+.tstage .tport{box-shadow:0 0 50px #ff6a1a66,0 0 0 2px #0a0604!important}
+.tstage .tring{position:absolute;left:50%;top:52%;width:91.4%;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;overflow:visible;filter:drop-shadow(0 6px 10px #000c)}
+.tring .trc{fill:none;stroke:#ffb35a;stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;animation:trc 3.2s ease-in-out infinite}
+@keyframes trc{0%,100%{stroke:#ff8a2a;opacity:.75}50%{stroke:#ffe0a0;opacity:1}}
+.tring .trk{animation:trk 2.4s ease-in-out infinite}@keyframes trk{50%{opacity:.6}}

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ashen Descent</title>
+<link rel="stylesheet" href="title-art.css">
+<link rel="stylesheet" href="launcher.css">
+</head>
+<body class="booting">
+<canvas class="tsk" id="embers" aria-hidden="true"></canvas>
+
+<header class="tbar">
+  <span class="brand">Ashen Descent</span>
+  <span class="grow"></span>
+  <button class="wbtn" id="wmin" title="Minimise" aria-label="Minimise">&#x2013;</button>
+  <button class="wbtn x" id="wclose" title="Close" aria-label="Close">&#x2715;</button>
+</header>
+
+<main class="stage">
+  <section class="hero">
+    <div class="tarch">
+      <div class="trays"></div>
+      <div class="tstage" id="tstage"><canvas class="tport" id="portal" aria-hidden="true"></canvas></div>
+      <div class="cta">
+        <button id="play" class="play" disabled>
+          <span class="pl-rune" aria-hidden="true"></span><span id="playLabel">Checking&#x2026;</span>
+        </button>
+        <div id="status" class="status" role="status" aria-live="polite">Starting&#x2026;</div>
+      </div>
+    </div>
+  </section>
+
+  <aside class="panel" aria-label="Game version and release notes">
+    <div class="ph"><b>Chronicle</b><span id="chan" class="chan">Stable</span></div>
+    <div class="vers">
+      <div><em>Installed</em><b id="vInst">&#x2014;</b></div>
+      <div><em>Latest</em><b id="vAvail">&#x2014;</b></div>
+    </div>
+    <div id="alert" class="alert" hidden role="alert">
+      <b id="aTitle"></b>
+      <p id="aText"></p>
+      <div class="arow"><button id="retry" class="sec">Retry</button><button id="logs" class="lnk">Open log</button></div>
+    </div>
+    <div id="note" class="note" hidden></div>
+    <div class="notes">
+      <h3>Release notes <small id="notesWhen"></small></h3>
+      <div id="notes" class="md"><p class="dim">Release notes appear here once the archive has been consulted.</p></div>
+    </div>
+    <div class="pf">
+      <label class="tog" title="Also offer prerelease builds published for testing"><input type="checkbox" id="pre"><span></span>Include test builds</label>
+      <span class="grow"></span>
+      <button id="saves" class="lnk" title="Open the folder with your saves, screenshots and mods">Saves</button>
+      <button id="releases" class="lnk" title="Open the releases page on GitHub">Releases</button>
+    </div>
+  </aside>
+</main>
+
+<footer class="bar">
+  <div class="prog" id="prog" aria-hidden="true"><i id="progFill"></i></div>
+  <span id="progText" class="ptxt"></span>
+  <span class="grow"></span>
+  <span id="lver" class="lver"></span>
+</footer>
+
+<script src="title-art.js"></script>
+<script src="markdown.js"></script>
+<script src="launcher.js"></script>
+</body>
+</html>

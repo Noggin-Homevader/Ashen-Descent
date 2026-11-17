@@ -1,0 +1,14 @@
+{
+  "productName": "Ashen Descent",
+  "gameId": "ashen-descent",
+  "github": {
+    "owner": "Noggin-Homevader",
+    "repo": "Ashen-Descent"
+  },
+  "apiBaseUrl": "https://api.github.com",
+  "tagPrefix": "v",
+  "manifestAssetName": "ashen-manifest.json",
+  "allowPrerelease": false,
+  "requestTimeoutMs": 20000,
+  "downloadStallTimeoutMs": 30000
+}
