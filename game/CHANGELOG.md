@@ -2,6 +2,38 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.3.0
+
+### Online
+- **Parties are easier to find.** Fellowship (in the Folio) now opens with a Party card: form or join a party from
+  anywhere, even on your own; friends can join later with the code or an invite. The Muster Board on the Guildhall wall
+  still has the full party list.
+- **Old launchers are named as the problem.** A game opened by a launcher from before online play (1.1 and older)
+  says so when it opens, and on the Social and Muster pages, with where to get the new launcher, instead of talking
+  about claude.ai.
+
+### Combat and gear
+- **Weapon enchantments.** Brannoch's new Enchant tab (Cinder Forge) binds an element into the weapon you hold for 12
+  of its motes and 200 cinders. The weapon glows along its edge in that element's light and gives the element off as
+  it moves: flames lick up a fire blade, frost, storm, shadow and the rest drift off it as motes. The first
+  enchantment adds 8% damage (at least 1); enchanting again changes the element. Your party sees it too.
+- **No more trail line on strikes.** The thick line that traced the weapon tip on every swing is gone; a strike shows
+  only its slice, and the head of the slice throws off the element's own particles.
+- **Shields look like themselves.** The same shield name can come out as one of a few fitting patterns (a Round
+  Shield may be round, a targe or spiked; a Kite may be a kite or a heater; a Tower may be a tower or a pavise; Aegis
+  and Holy shields can be winged, and a rare Legendary one has the dragon pattern). Each shield is also painted in one
+  of eight heraldic colours, some with a second livery on the trim. A shield's look is fixed: it is worked out from
+  its name and level.
+- **Every ward has its own look.** Shield skills no longer share one bubble:
+  - Bulwark and the Tidebinder's Aegis and Leviathan are wide, low domes.
+  - Stoneskin, Granite Hide, Plague Carapace and Molten Shell hug the body, with orbiting stones, rising plague or a
+    ring of flames.
+  - Ice Barrier is a crystal cage of light, and Arcane Ward turns three tilted rune rings.
+  - Holy Shield has a halo and rays, and Wind Guard a spiral of wind.
+  - Bubble Ward fills with rising bubbles, Spirit Ward with circling leaves of light, and Soul Shield with circling
+    ghost lights.
+  - Warsong Ward pulses rings outward, and Abyssal Shell turns a dark wave at your feet.
+
 ## 2.2.1
 
 - **One smooth start.** The game window now appears once, already full size, with the title screen painted, and
