@@ -57,7 +57,7 @@
       "createStartMenuShortcut": true,
       "shortcutName": "Ashen Descent",
       "deleteAppDataOnUninstall": false,
-      "artifactName": "AshenDescent-Setup-${version}.${ext}"
+      "artifactName": "AshenDescent-Setup.${ext}"
     },
     "mac": {
       "target": [
