@@ -70,6 +70,8 @@ const NOTES = `## Ashen Descent 2.0 — The Deep Gate opens
       retry: () => window.__ashenCall('retry'), play: () => window.__ashenCall('play'),
       setAllowPrerelease: (on) => window.__ashenCall('setAllowPrerelease', on),
       open: () => null, openReleasePage: () => null, minimize: () => null, close: () => null,
+      getLocation: async () => window.__mockLoc || { root: '/data/Ashen Descent', source: 'default', ask: false, installed: true, drives: [] },
+      setLocation: async (c) => { window.__locSent = c; return { ok: true, restarting: true }; }, onLocationProgress: () => {},
     };
   });
   const wire = (u) => u.on('state', (s) => page.evaluate((st) => window.__ashenPush(st), s).catch(() => {}));
@@ -113,6 +115,25 @@ const NOTES = `## Ashen Descent 2.0 — The Deep Gate opens
   updater = new Updater({ config: gh.config({ requestTimeoutMs: 2000 }), root: root2, fetch, platform: { os: 'windows', arch: 'x64' }, launcherVersion: '1.0.0', webRuntime });
   wire(updater); await updater.start(); await page.evaluate((s) => window.__ashenPush(s), updater.state);
   await shot('7-failed');
+  // 7b. First-run drive picker (Windows): C: nearly full, so D: is suggested; E: has too little room.
+  await page.addInitScript(() => {
+    const GB = 1024 ** 3, C = 'C:\\Users\\Jaspu\\AppData\\Roaming\\Ashen Descent';
+    window.__mockLoc = { root: C, source: 'default', ask: true, installed: false, platform: 'win32', drives: [
+      { letter: 'C:', free: 1.2 * GB, total: 237 * GB, system: true, root: C },
+      { letter: 'D:', free: 812 * GB, total: 931 * GB, system: false, root: 'D:\\Ashen Descent' },
+      { letter: 'E:', free: 0.2 * GB, total: 64 * GB, system: false, root: 'E:\\Ashen Descent' }] };
+  });
+  await page.reload();
+  await page.waitForSelector('#loc:not([hidden])');
+  await shot('7b-drive-picker');
+  const suggested = await page.textContent('#locPath');
+  if (suggested !== 'D:\\Ashen Descent') throw new Error(`drive picker should suggest D: when C: is nearly full, got ${suggested}`);
+  if (!(await page.isDisabled('.drv.low'))) throw new Error('a drive without room should not be selectable');
+  await page.click('#locOk');
+  const sent = await page.evaluate(() => window.__locSent);
+  if (!sent || sent.drive !== 'D:') throw new Error(`expected the launcher to be asked for D:, got ${JSON.stringify(sent)}`);
+  await shot('7c-drive-restarting');
+  await page.evaluate(() => { document.getElementById('loc').hidden = true; });
   // 8. Narrow window
   await page.setViewportSize({ width: 940, height: 620 });
   await shot('8-small-window');

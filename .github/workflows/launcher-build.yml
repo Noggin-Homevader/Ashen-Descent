@@ -48,10 +48,47 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false' # unsigned until signing certificates are added (see docs/LAUNCHER.md)
         run: npm run dist
+      - name: Test the Windows install script on the built zip
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $env:LOCALAPPDATA = Join-Path $env:RUNNER_TEMP 'lad'
+          $env:APPDATA = Join-Path $env:RUNNER_TEMP 'rad'
+          New-Item -ItemType Directory -Force $env:LOCALAPPDATA, $env:APPDATA | Out-Null
+          $env:ASHEN_LOCAL_ZIP = (Resolve-Path dist/launcher/AshenDescent-win-x64.zip).Path
+          $env:ASHEN_NO_PAUSE = '1'; $env:ASHEN_NO_LAUNCH = '1'
+          $sys = $env:SystemDrive
+          # System drive: first install, then an update over it.
+          $env:ASHEN_DRIVE = $sys
+          foreach ($run in 1, 2) {
+            cmd /c tools\windows\AshenDescent-Install.cmd
+            if ($LASTEXITCODE -ne 0) { throw "install script failed (run $run)" }
+            if (-not (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\Ashen Descent\Ashen Descent.exe'))) { throw "launcher not installed (run $run)" }
+          }
+          $loc = Get-Content -Raw (Join-Path $env:APPDATA 'Ashen Descent\location.json') | ConvertFrom-Json
+          if ($loc.dataDir -ne (Join-Path $env:APPDATA 'Ashen Descent')) { throw "location.json points to $($loc.dataDir)" }
+          if (-not (Test-Path (Join-Path ([Environment]::GetFolderPath('Desktop')) 'Ashen Descent.lnk'))) { throw 'desktop shortcut missing' }
+          if (Test-Path (Join-Path $env:LOCALAPPDATA 'Ashen Descent Setup')) { throw 'work folder not cleaned up' }
+          # Another drive, when the runner has one.
+          $other = [IO.DriveInfo]::GetDrives() | Where-Object { $_.IsReady -and $_.DriveType -eq 'Fixed' -and $_.Name.TrimEnd('\') -ne $sys } | Select-Object -First 1
+          if ($other) {
+            $d = $other.Name.TrimEnd('\')
+            $env:ASHEN_DRIVE = $d
+            cmd /c tools\windows\AshenDescent-Install.cmd
+            if ($LASTEXITCODE -ne 0) { throw "install script failed on $d" }
+            if (-not (Test-Path "$d\Ashen Descent\Launcher\Ashen Descent.exe")) { throw "launcher not installed on $d" }
+            $loc = Get-Content -Raw (Join-Path $env:APPDATA 'Ashen Descent\location.json') | ConvertFrom-Json
+            if ($loc.dataDir -ne "$d\Ashen Descent") { throw "location.json points to $($loc.dataDir), expected $d\Ashen Descent" }
+            $lnk = (New-Object -ComObject WScript.Shell).CreateShortcut((Join-Path ([Environment]::GetFolderPath('Desktop')) 'Ashen Descent.lnk'))
+            if ($lnk.TargetPath -ne "$d\Ashen Descent\Launcher\Ashen Descent.exe") { throw "shortcut points to $($lnk.TargetPath)" }
+            Write-Host "installed on $d OK"
+          }
+          Write-Host 'install script OK'
       - uses: actions/upload-artifact@v4
         with:
           name: launcher-${{ matrix.os }}
           path: |
+            dist/launcher/*.zip
             dist/launcher/*.exe
             dist/launcher/*.dmg
             dist/launcher/*.AppImage
@@ -87,11 +124,14 @@ jobs:
           V: ${{ steps.v.outputs.version }}
         run: |
           set -euo pipefail
+          cp tools/windows/AshenDescent-Install.cmd out/
           ls -la out
-          ls out/*.exe >/dev/null
+          ls out/*.exe out/AshenDescent-win-x64.zip >/dev/null
           {
             echo "**Windows:** download **AshenDescent-Setup.exe** and double-click it. It installs in a few seconds, adds desktop and Start menu shortcuts, opens the launcher, and the launcher downloads the game."
             echo "The installer is not code-signed yet, so Windows may show *Windows protected your PC*: choose **More info**, then **Run anyway**."
+            echo ""
+            echo "**If the setup .exe fails** (for example *Extract: error writing to file*): download **AshenDescent-Install.cmd** and double-click it. It downloads **AshenDescent-win-x64.zip**, installs the launcher to your user folder without using the Temp folder, adds shortcuts and opens it. You can also unzip AshenDescent-win-x64.zip anywhere and run *Ashen Descent.exe*."
             echo ""
             echo "**macOS:** open the .dmg and drag Ashen Descent to Applications (first launch: right-click the app, then Open)."
             echo "**Linux:** make the .AppImage executable and run it."

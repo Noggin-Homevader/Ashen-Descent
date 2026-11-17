@@ -1,7 +1,7 @@
 {
   "name": "ashen-descent-launcher",
   "productName": "Ashen Descent",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Launcher and automatic updater for Ashen Descent",
   "author": "Noggin-Homevader",
@@ -45,13 +45,22 @@
           "arch": [
             "x64"
           ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
         }
       ],
-      "icon": "launcher/build/icon.png"
+      "icon": "launcher/build/icon.png",
+      "artifactName": "AshenDescent-${os}-${arch}.${ext}"
     },
     "nsis": {
-      "oneClick": true,
+      "oneClick": false,
       "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
       "runAfterFinish": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,

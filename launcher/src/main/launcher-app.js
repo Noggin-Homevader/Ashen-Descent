@@ -1,31 +1,33 @@
 'use strict';
 /** The launcher window: wires the Updater to the title-screen UI over IPC. */
 const path = require('path');
-const { app, BrowserWindow, ipcMain, shell, net, Menu } = require('electron');
+const fs = require('fs');
+const { app, BrowserWindow, ipcMain, shell, net, Menu, dialog } = require('electron');
 const { loadConfig, Settings } = require('../core/config');
 const { Updater } = require('../core/updater');
 const { current } = require('../core/platform');
 const { layout } = require('../core/installer');
-const { describeError } = require('../core/errors');
+const { describeError, LauncherError } = require('../core/errors');
+const loc = require('../core/location');
 const { createLog } = require('./log');
 
 const RENDERER = path.join(__dirname, '..', 'renderer', 'index.html');
 
-function dataRoot() {
-  // Everything the launcher writes lives under one folder, split into game/, userdata/ and launcher/.
-  // ASHEN_DATA_DIR overrides it (portable installs, testing).
-  return process.env.ASHEN_DATA_DIR ? path.resolve(process.env.ASHEN_DATA_DIR) : path.join(app.getPath('appData'), 'Ashen Descent');
-}
-
 function run() {
-  const root = dataRoot();
+  // Everything the launcher writes lives under one data folder, split into game/, userdata/ and launcher/.
+  // It is %APPDATA%\Ashen Descent unless the player chose another drive (location.json) or ASHEN_DATA_DIR is set.
+  const appData = app.getPath('appData');
+  const { root, source } = loc.resolveRoot(appData);
   const L = layout(root);
+  // First start on Windows with nothing installed: ask which drive to install on before downloading anything.
+  let askLocation = source === 'default' && process.platform === 'win32' && !loc.hasInstall(root) && !process.env.ASHEN_SKIP_LOCATION;
+  let moving = null;
   // Keep Chromium's own cache and storage for the launcher window out of the game and save folders.
   app.setPath('userData', path.join(L.launcher, 'electron'));
   if (!app.requestSingleInstanceLock()) { app.quit(); return; }
 
   const log = createLog(path.join(L.launcher, 'logs'));
-  log(`launcher ${app.getVersion()} starting; data at ${root}`);
+  log(`launcher ${app.getVersion()} starting; data at ${root} (${source})`);
   let win = null, updater = null, configError = null, started = false;
 
   try {
@@ -61,7 +63,7 @@ function run() {
   });
   handle('launcher:prerelease', (on) => updater && updater.setAllowPrerelease(on === true));
   handle('launcher:open', (what) => {
-    const dirs = { saves: L.userdata, game: L.game, logs: path.join(L.launcher, 'logs') };
+    const dirs = { saves: L.userdata, game: L.game, logs: path.join(L.launcher, 'logs'), root };
     if (dirs[what]) return shell.openPath(dirs[what]);
   });
   handle('launcher:release-page', () => {
@@ -70,6 +72,47 @@ function run() {
     const gh = (u) => typeof u === 'string' && /^https:\/\/github\.com\//.test(u);
     const url = gh(s && s.available && s.available.htmlUrl) ? s.available.htmlUrl : fallback;
     if (gh(url)) return shell.openExternal(url);
+  });
+  /* ---- install location ---- */
+  const locationState = async () => {
+    const drives = (await loc.listDrives()).map((d) => ({ ...d, root: loc.rootForDrive(d.letter, appData) }));
+    return { root, source, ask: askLocation, installed: loc.hasInstall(root), drives, moving, platform: process.platform, freeHere: await loc.freeSpace(root) };
+  };
+  const relaunch = () => { log('restarting for the new install location'); if (updater) updater.abort(); app.relaunch(); app.exit(0); };
+  handle('launcher:location', locationState);
+  handle('launcher:set-location', async (choice) => {
+    try {
+      let target;
+      if (choice && choice.browse) {
+        const r = await dialog.showOpenDialog(win, { title: 'Choose a folder for Ashen Descent', properties: ['openDirectory', 'createDirectory'], defaultPath: path.dirname(root) });
+        if (r.canceled || !r.filePaths[0]) return { ok: false, canceled: true };
+        target = path.basename(r.filePaths[0]).toLowerCase() === loc.FOLDER.toLowerCase() ? r.filePaths[0] : path.join(r.filePaths[0], loc.FOLDER);
+      } else if (choice && typeof choice.drive === 'string' && /^[A-Za-z]:\\?$/.test(choice.drive)) {
+        target = loc.rootForDrive(choice.drive, appData);
+      } else if (choice && choice.keep) {
+        target = root;
+      } else throw new LauncherError('config', 'Unknown location.', { retryable: false });
+      target = path.resolve(target);
+      if (updater && (updater.busy || updater.game.isRunning())) throw new LauncherError('game-running', 'Close the game and wait for any update to finish, then try again.', { retryable: false });
+      if (target === path.resolve(root)) {
+        loc.writeLocation(appData, root);
+        if (askLocation) { askLocation = false; if (updater && !started) { started = true; updater.start(); } }
+        return { ok: true, restarting: false };
+      }
+      try { fs.mkdirSync(target, { recursive: true }); const t = path.join(target, `.write-test-${process.pid}`); fs.writeFileSync(t, ''); fs.unlinkSync(t); } catch (e) {
+        throw new LauncherError('install', `Cannot write to ${target} (${e.code || e.message}).`, { detail: 'Choose another drive or folder.', retryable: false });
+      }
+      if (!loc.hasInstall(root)) { loc.writeLocation(appData, target); setTimeout(relaunch, 300); return { ok: true, restarting: true }; }
+      moving = { done: 0, total: 0, to: target };
+      log(`moving installation from ${root} to ${target}`);
+      await loc.moveData({ from: root, to: target, appData, onProgress: (p) => { moving = { ...p, to: target }; if (win && !win.isDestroyed()) win.webContents.send('launcher:location-progress', moving); } });
+      setTimeout(relaunch, 300);
+      return { ok: true, restarting: true };
+    } catch (e) {
+      moving = null;
+      log(`location change failed: ${e.message}`);
+      return { ok: false, error: describeError(e) };
+    }
   });
   handle('window:minimize', () => win && win.minimize());
   handle('window:close', () => win && win.close());
@@ -90,7 +133,7 @@ function run() {
     win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
     win.once('ready-to-show', () => win.show());
     win.webContents.on('did-finish-load', () => {
-      if (!started && updater) { started = true; updater.start(); }
+      if (!started && updater && !askLocation) { started = true; updater.start(); }
     });
     win.on('close', (e) => {
       if (updater && updater.installing) {

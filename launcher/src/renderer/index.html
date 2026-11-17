@@ -48,6 +48,7 @@
       <h3>Release notes <small id="notesWhen"></small></h3>
       <div id="notes" class="md"><p class="dim">Release notes appear here once the archive has been consulted.</p></div>
     </div>
+    <div class="locline"><span>Installed on</span><b id="locShort">&#x2026;</b><span class="grow"></span><button id="locChange" class="lnk" title="Install the game and your saves on another drive">Change</button></div>
     <div class="pf">
       <label class="tog" title="Also offer prerelease builds published for testing"><input type="checkbox" id="pre"><span></span>Include test builds</label>
       <span class="grow"></span>
@@ -56,6 +57,23 @@
     </div>
   </aside>
 </main>
+
+<div id="loc" class="loc" hidden role="dialog" aria-modal="true" aria-labelledby="locT">
+  <div class="lbox">
+    <h2 id="locT">Choose where to install</h2>
+    <p id="locP" class="lp"></p>
+    <div id="drives" class="drives" role="radiogroup" aria-label="Drives"></div>
+    <div class="lpath"><em>Folder</em><b id="locPath"></b></div>
+    <div id="locMsg" class="lmsg" role="alert"></div>
+    <div class="prog lprog" id="locProg"><i id="locFill"></i></div>
+    <div class="lrow">
+      <button id="locBrowse" class="lnk">Other folder&#x2026;</button>
+      <span class="grow"></span>
+      <button id="locCancel" class="lnk">Cancel</button>
+      <button id="locOk" class="sec">Install here</button>
+    </div>
+  </div>
+</div>
 
 <footer class="bar">
   <div class="prog" id="prog" aria-hidden="true"><i id="progFill"></i></div>
