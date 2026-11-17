@@ -2,6 +2,20 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.2.1
+
+- **One smooth start.** The game window now appears once, already full size, with the title screen painted, and
+  the launcher stays on screen until then. Before, the window showed up blank and then jumped to full size.
+- **Less work in the background.** The title screen's swirling portal and embers kept rendering, out of sight, for
+  the whole session after you clicked past them. They now stop when the title screen is put away. This removes a
+  freeze after clicking the title and frees the graphics card during play.
+- **Sheaths hang like the real thing.** A sword now hangs from two straps on the belt: a short one to a metal
+  locket at the throat and a longer one to a ring band further down. The throat sits forward on the hip with the
+  hilt angled forward, and the scabbard leans back about 35 degrees so the tip trails behind the calf, close to
+  the leg.
+- **Online by default.** The Social page explains when you are playing offline or while the server is waking up,
+  instead of talking about claude.ai.
+
 ## 2.2.0
 
 ### Smoother fights

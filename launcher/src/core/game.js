@@ -72,7 +72,17 @@ class GameRunner extends EventEmitter {
       const env = { ...process.env, ...this.env };
       delete env.ELECTRON_RUN_AS_NODE; // the web runtime must start as an app, not as plain Node
       try {
-        child = this.spawn(cmd, args, { cwd: info.cwd, stdio: 'ignore', windowsHide: false, detached: false, env });
+        // The desktop game prints 'ashen:shown' once its window is on screen, so the launcher can step aside then.
+        const web = info.runtime === 'web';
+        child = this.spawn(cmd, args, { cwd: info.cwd, stdio: web ? ['ignore', 'pipe', 'ignore'] : 'ignore', windowsHide: false, detached: false, env });
+        if (web && child.stdout) {
+          let buf = '';
+          child.stdout.setEncoding('utf8');
+          child.stdout.on('data', (d) => {
+            buf = (buf + d).slice(-4096);
+            if (buf.includes('ashen:shown')) { buf = ''; this.emit('shown'); }
+          });
+        }
       } catch (e) {
         return reject(new LauncherError('launch', `Could not start the game: ${e.message}`, { cause: e }));
       }

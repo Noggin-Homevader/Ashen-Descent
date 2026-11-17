@@ -67,9 +67,20 @@ function run() {
   handle('launcher:retry', () => { if (updater) updater.retry(); });
   handle('launcher:play', async () => {
     try {
+      // Online is the normal way to play: make sure the game gets the server even if the first lookup failed.
+      if (mpPrefs().mode === 'online' && !gameServer) {
+        try { if (await findOnline()) { gameServer = online.url; log(`multiplayer: online -> ${gameServer}`); pushMp(); } } catch (e) { log(`multiplayer: ${e.message}`); }
+      }
+      // Stay on screen until the game window is up, then tuck into the tray until it closes (no empty gap between).
+      let tucked = false;
+      const tuck = () => {
+        if (tucked) return; tucked = true; clearTimeout(fallback);
+        if (!updater.game.isRunning()) return;
+        hiddenForGame = true; updateTray(); if (win && !win.isDestroyed()) win.hide();
+      };
+      const fallback = setTimeout(tuck, 15000);
+      updater.game.once('shown', tuck);
       await updater.play();
-      // The game is open: tuck the launcher into the tray until it closes.
-      hiddenForGame = true; updateTray(); if (win && !win.isDestroyed()) win.hide();
       return { ok: true };
     } catch (e) { return { ok: false, error: describeError(e) }; }
   });
@@ -139,11 +150,18 @@ function run() {
     };
   };
   const pushMp = () => { if (win && !win.isDestroyed()) win.webContents.send('launcher:mp-state', mpState()); updateTray(); };
+  // Look the online server up (again) if it is not known yet: it may have been set up after the launcher started.
+  async function findOnline() {
+    if (!online && config) online = await mp.onlineServer((u, i) => net.fetch(u, i), config);
+    return online;
+  }
   async function applyMp() {
     const { mode, join } = mpPrefs();
     if (mode === 'host') await host.start(); else await host.stop();
     if (mode === 'online') {
-      if (!online && config) online = await mp.onlineServer((u, i) => net.fetch(u, i), config);
+      await findOnline();
+      // The game gets the address straight away; a sleeping server wakes while the game reconnects on its own.
+      gameServer = online ? online.url : null;
       if (online) { onlineStatus = { checking: true }; pushMp(); onlineStatus = await mp.health((u, i) => net.fetch(u, i), online.url, 60000); }
     }
     gameServer = mode === 'online' ? (online && online.url) || null

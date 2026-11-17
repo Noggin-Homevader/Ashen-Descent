@@ -4977,7 +4977,7 @@ function socHtml(){
  let h=`<div class="sohd"><i></i><b>The Ember Hearth</b><i></i></div><p class="sosub">Friends, codes and fireside company.</p>`;
  if(SOC.msg)h+=`<p class="somsg">${MPE(SOC.msg)}</p>`;
  if(!me){h+=`<div class="socard soid"><h3>Create your name</h3><p><small>Your name and a 5-digit number make your friend code. Friends add you with it.</small></p><div class="sorow"><input id="socname" maxlength="14" placeholder="Your name" autocomplete="off"><button class="pri" onclick="socName()">Create</button></div></div>`;return h}
- h+=`<div class="socard soid"><div class="sotk"><small>YOUR FRIEND CODE</small><b>${MPE(MP.nick.replace(/\s/g,''))}<em>${SOC.d}</em></b><button onclick="socCopy()">Copy</button></div><div class="sorow"><input id="socname" maxlength="14" value="${MPE(MP.nick)}" autocomplete="off"><button onclick="socName()">Change name</button></div><small class="sonote">${MP.ok?(MP.conn?'<span class="sodot on"></span>You are visible to friends in the camp.':'<span class="sodot"></span>Connecting...'):'<span class="sodot"></span>Online play is not available in this view. Friends show up when the game is opened from claude.ai while signed in.'}</small></div>`;
+ h+=`<div class="socard soid"><div class="sotk"><small>YOUR FRIEND CODE</small><b>${MPE(MP.nick.replace(/\s/g,''))}<em>${SOC.d}</em></b><button onclick="socCopy()">Copy</button></div><div class="sorow"><input id="socname" maxlength="14" value="${MPE(MP.nick)}" autocomplete="off"><button onclick="socName()">Change name</button></div><small class="sonote">${MP.ok?(MP.conn?'<span class="sodot on"></span>You are visible to friends in the camp.':'<span class="sodot"></span>'+(window.ASHEN_DESKTOP?'Connecting to the Ashen Descent world... (after a quiet spell the server takes up to a minute to wake)':'Connecting...')):'<span class="sodot"></span>'+(window.ASHEN_DESKTOP?'Playing offline: the launcher could not reach the Ashen Descent server when the game started. Check your internet connection, then close the game and press Play in the launcher again.':'Online play is not available in this view. Friends show up when the game is opened from claude.ai while signed in.')}</small></div>`;
  h+=`<div class="socard"><h3>Add a friend</h3><div class="sorow"><input id="socadd" maxlength="19" placeholder="Name12345" autocomplete="off" autocapitalize="off"><button class="pri" onclick="socAdd()">Add</button></div></div>`;
  h+=`<h3 class="soh">Friends <small>${SOC.fr.filter(f=>by[f.c]).length} online / ${SOC.fr.length}</small></h3>`;
  if(!SOC.fr.length)h+=`<p class="sonone">No friends yet. Share your code, or add adventurers who are in the camp right now below.</p>`;
@@ -4994,7 +4994,7 @@ function partyPanel(keep){
  const ni=document.activeElement&&document.activeElement.id=='mpnick'?{v:document.activeElement.value,s:document.activeElement.selectionStart}:null,ji=document.activeElement&&document.activeElement.id=='mpcode'?{v:document.activeElement.value,s:document.activeElement.selectionStart}:null;
  const pa=MP.party,lob=mpLobby().filter(p=>!(p.isMe&&p.sameTab));
  let h=`<div class="stall" style="--a1:#2b4a7a;--a2:#e8c878"><div class="awn"></div><h1 class="shopm">Muster Board</h1><p><small>Gather a party at the fire, then descend together.</small></p>`;
- if(!MP.ok){h+=`<p class="mpw">Online play is not available in this view. Parties work when the game is opened from claude.ai while signed in, and friends need access to the page (a share with Contributor access or higher).</p>`}
+ if(!MP.ok){h+=`<p class="mpw">${window.ASHEN_DESKTOP?'Playing offline: the launcher could not reach the Ashen Descent server when the game started. Check your internet connection, then close the game and press Play in the launcher again.':'Online play is not available in this view. Parties work when the game is opened from claude.ai while signed in, and friends need access to the page (a share with Contributor access or higher).'}</p>`}
  else{
   h+=`<div class="mpnk"><label>Your name <input id="mpnick" maxlength="14" value="${MPE(MP.nick)}" placeholder="Wanderer"></label><span class="mps ${MP.conn?'ok':''}">${MP.conn?'Online':'Connecting...'}</span></div>`;
   if(MP.msg)h+=`<p class="mpw">${MPE(MP.msg)}</p>`;
@@ -6057,7 +6057,7 @@ var HERO3D=(()=>{
   const anchor=()=>{const s=ws,bk=KIND=='2h'||KIND=='pole'||KIND=='bow'||KIND=='xbow'||wt=='staff',pend=Math.sin(ph)*mv;
    /* a sword hangs from the belt outside the hip and thigh, hilt forward and tip back as it was worn;
       a dagger rides at the back of the hip (a kidney-dagger carry), clear of the weapon hand */
-   if(wt=='sword')return{p:[-s*.162,.588,.034],ax:Math.PI+.36+pend*.06,az:-s*.05,tw:-1.5708,hip:1};
+   if(wt=='sword')return{p:[-s*.15,.6,.056],ax:Math.PI+.6+pend*.05,az:-s*.022,tw:-1.5708,hip:1,sus:1};
    if(wt=='dagger')return{p:[s*.1,.575,-.098],ax:Math.PI+1.05+pend*.04,az:s*.12,tw:-1.5708,hip:1};
    if(wt=='wand')return{p:[s*.11,.6,.03],ax:Math.PI+.12+pend*.05,az:0,hip:1};
    if(!bk)return{p:[s*.122,.6,.03],ax:Math.PI+.08+pend*.09,az:s*.07,tw:wt=='axe'?-1.5708:0,hip:1};
@@ -6066,7 +6066,7 @@ var HERO3D=(()=>{
    return{p:[s*.07,.74,-.125],ax:-.08+pend*.02,az:s*.6}};
   const AN=wt?anchor():null;if(AN&&CAPED&&!AN.hip)AN.p[2]-=.035;
   /* hip scabbards hang outside robes, coats and plate skirts instead of sinking into them */
-  if(AN&&AN.hip){const bulk=robe?.06:coat?.04:plate>=1?.025:mail?.015:0;if(bulk){AN.p[0]+=Math.sign(AN.p[0]||ws)*bulk;AN.az*=1+bulk*14;AN.p[2]+=bulk*.25}}const ANW=AN?U([AN.p[0]*B,AN.p[1],AN.p[2]*B]):null;
+  if(AN&&AN.hip){const bulk=robe?.06:coat?.04:plate>=1?.025:mail?.015:0;if(bulk){AN.p[0]+=Math.sign(AN.p[0]||ws)*bulk;if(!AN.sus)AN.az*=1+bulk*14;AN.p[2]+=bulk*.25}}const ANW=AN?U([AN.p[0]*B,AN.p[1],AN.p[2]*B]):null;
   if(AN){AN.ax+=lean}
   const FK=(sd,ang,eb,ab)=>{const S=U([sd*.138*B,.795,-.004]),az=sd*ab,dU=dirOf(ang+lean,az),E=add(S,mul(dU,.18)),dF=dirOf(ang+lean+eb,az),Wr=add(E,mul(dF,.158));return{S,E,Wr,Hd:add(Wr,mul(dF,.04)),FA:ang+lean+eb,FZ:az}};
   const IK=(sd,T)=>{const S=U([sd*.138*B,.795,-.004]),A_=.18,B_=.198,d=sub(T,S),L=Math.hypot(d[0],d[1],d[2])||1e-4,Lc=Math.max(.06,Math.min(A_+B_-.003,L)),n=mul(d,1/L),ca=(A_*A_+Lc*Lc-B_*B_)/(2*A_*Lc),sa=Math.sqrt(Math.max(0,1-ca*ca));
@@ -6137,7 +6137,15 @@ var HERO3D=(()=>{
      LF([{c:pt(.9),rx:Rn.rx*1.06,rz:Rn.rz*1.1,x:XA_},{c:pt(1.01),rx:.006,rz:.006,x:XA_}],mt,TO_)}
     else{const R=[];for(const u of[.02,.08,.5,.86,1])R.push({c:add(A0,mul(ax_,u*len)),rx:u>.95?hw*.45:u>.8?hw*.92:hw,rz:u>.95?ht*.8:ht,x:XA_});LF(R,lc,SH_?SH_.bo:{seg:8});if(SH_&&window.SHDECO)SHDECO(LF,PP,A0,ax_,XA_,len,kk,SH_,add,mul);
     LF([{c:A0,rx:hw*1.13,rz:ht*1.3,x:XA_},{c:add(A0,mul(ax_,.04*SK_)),rx:hw*1.13,rz:ht*1.3,x:XA_}],mt,TO_);LF([{c:add(A0,mul(ax_,.86*len)),rx:hw*.96,rz:ht*1.1,x:XA_},{c:add(A0,mul(ax_,len*1.01)),rx:.006,rz:.006,x:XA_}],mt,TO_)}
-    const bl=U([ws*(wt=='sword'?-.09:.1)*B,.6,.06]);PP(bl[0],bl[1],bl[2],.012,.03,.008,lc,{lo:1,ax:lean})}
+    if(AN.sus){/* two-point suspension, as swords were worn: a short strap from the front of the belt to the locket at the
+       throat, and a longer one from behind the hip to a ring band a quarter of the way down, which tips the scabbard back */
+     const sx=Math.sign(AN.p[0])*(Math.abs(AN.p[0])-.012),bF=U([sx*B,.605,(AN.p[2]+.022)*B]),bR=U([sx*B,.605,(AN.p[2]-.075)*B]),
+      lowU=Math.min(.26,.13/Math.max(.2,len/SK_)),rA=add(A0,mul(ax_,.012*SK_)),rB=add(A0,mul(ax_,lowU*len)),SX=[1,0,0],
+      strap=(a,b)=>LF([{c:a,rx:.0048,rz:.0048,x:SX},{c:b,rx:.0048,rz:.0048,x:SX}],lc,{seg:6});
+     strap(bF,rA);strap(bR,rB);
+     LF([{c:add(rB,mul(ax_,-.008)),rx:hw*1.1,rz:ht*1.28,x:XA_},{c:add(rB,mul(ax_,.008)),rx:hw*1.1,rz:ht*1.28,x:XA_}],mt,TO_);
+     for(const q of[bF,bR])PP(q[0],q[1],q[2],.009,.009,.006,mt,{lo:1,ax:lean})}
+    else{const bl=U([ws*(wt=='sword'?-.09:.1)*B,.6,.06]);PP(bl[0],bl[1],bl[2],.012,.03,.008,lc,{lo:1,ax:lean})}}
    if(!AN.hip){const s=ws,PTS=[[-s*.105,.585,-.1,0,0,-1],[-s*.05,.65,-.112,0,0,-1],[0,.71,-.114,0,0,-1],[s*.06,.78,-.106,0,0,-1],[s*.11,.84,-.07,0,.6,-.8],[s*.125,.872,0,0,1,0],[s*.11,.84,.07,0,.6,.8],[s*.06,.78,.104,0,0,1],[0,.71,.114,0,0,1],[-s*.05,.65,.11,0,0,1],[-s*.105,.585,.097,0,0,1]];
     const sR=PTS.map(q=>{const c=U([q[0]*B,q[1],q[2]*B]),c2=U([q[0]*B+q[3],q[1]+q[4],q[2]*B+q[5]]);return{c,rx:.0055,rz:.017*B,x:[c2[0]-c[0],c2[1]-c[1],c2[2]-c[2]]}});LF(sR,lc,{seg:6,open:0});
     for(const k of[1,3,7,9]){const q=PTS[k];UP(q[0]*B+q[5]*.004,q[1],q[2]*B+q[5]*.006,.004,.004,.003,mt,{lo:1})}const bq=PTS[8];UP(bq[0]*B,bq[1],bq[2]*B+.008,.014,.016,.004,mt,{lo:1,n:.5});UP(bq[0]*B,bq[1],bq[2]*B+.011,.008,.01,.003,lc,{lo:1,n:.5})}}
@@ -10797,14 +10805,14 @@ var TPORT=(()=>{let gl=null,pr=null,cv=null,raf=0,t0=performance.now();
  function init(c){cv=c;gl=c.getContext('webgl',{premultipliedAlpha:true,alpha:true});if(!gl)return false;const sh=(t,s)=>{const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o};
   pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(pr);if(!gl.getProgramParameter(pr,gl.LINK_STATUS))return false;
   const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);return true}
- function frame(){raf=0;if(!cv||!cv.isConnected)return;const w=cv.clientWidth*Math.min(2,devicePixelRatio||1)|0;if(cv.width!==w){cv.width=w;cv.height=w}
+ function frame(){raf=0;if(!cv||!cv.isConnected||cv.closest('[hidden]'))return;/* stops once the title screen is put away */const w=cv.clientWidth*Math.min(2,devicePixelRatio||1)|0;if(cv.width!==w){cv.width=w;cv.height=w}
   gl.viewport(0,0,cv.width,cv.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);gl.useProgram(pr);const l=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,2,gl.FLOAT,false,0,0);
   gl.uniform1f(gl.getUniformLocation(pr,'T'),(performance.now()-t0)/1000);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);raf=requestAnimationFrame(frame)}
  return{mount(c){try{if(c!==cv){if(!init(c))return}if(!raf)raf=requestAnimationFrame(frame)}catch(e){}}}})();
 
 /* drifting embers and ash behind the splash */
 function tEmbers(cv){const g=cv.getContext('2d'),P_=[];let last=performance.now();
- function step(){if(!cv.isConnected)return;const w=cv.width=cv.clientWidth,h=cv.height=cv.clientHeight,n=performance.now(),dt=Math.min(.05,(n-last)/1000);last=n;
+ function step(){if(!cv.isConnected||cv.closest('[hidden]'))return;const w=cv.width=cv.clientWidth,h=cv.height=cv.clientHeight,n=performance.now(),dt=Math.min(.05,(n-last)/1000);last=n;
   while(P_.length<70)P_.push({x:Math.random()*w,y:h+Math.random()*h*.5,v:20+Math.random()*50,s:1+Math.random()*2.5,a:Math.random()*6,e:Math.random()<.6});
   g.clearRect(0,0,w,h);for(const p of P_){p.y-=p.v*dt;p.a+=dt;p.x+=Math.sin(p.a)*12*dt;if(p.y<-10){p.y=h+10;p.x=Math.random()*w}
    const k=Math.max(0,Math.min(1,p.y/h));g.globalAlpha=(p.e?.85:.4)*k;g.fillStyle=p.e?(p.s>2.4?'#ffd890':'#ff7a2a'):'#8a827a';g.beginPath();g.arc(p.x,p.y,p.s,0,7);g.fill()}g.globalAlpha=1;requestAnimationFrame(step)}step()}

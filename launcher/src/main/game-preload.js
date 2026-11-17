@@ -110,3 +110,16 @@ contextBridge.exposeInMainWorld('claude', {
 
 // Lets the game tell it is running in the desktop app.
 contextBridge.exposeInMainWorld('ASHEN_DESKTOP', { multiplayer: enabled });
+
+// Tell the window it can appear: once the title screen (or the vault) is on the page and has been painted.
+if (typeof document !== 'undefined') {
+  const visible = (el) => el && !el.hidden && el.getClientRects().length > 0;
+  const check = () => {
+    if (visible(document.getElementById('splash')) || visible(document.querySelector('#st.vault'))) {
+      requestAnimationFrame(() => requestAnimationFrame(() => ipcRenderer.send('game:ready')));
+      return;
+    }
+    setTimeout(check, 50);
+  };
+  if (document.readyState === 'loading') addEventListener('DOMContentLoaded', check, { once: true }); else check();
+}

@@ -152,13 +152,13 @@ test('game window: the room API the game uses works across two desktop games', a
     const main = new Map(), pageListeners = new Map(), exposed = {};
     const webContents = { send: (ch, ...a) => { for (const f of pageListeners.get(ch) || []) f({}, ...a); } };
     const win = Object.assign(new EventEmitter(), { webContents, once() {}, loadURL() {}, isDestroyed: () => false, maximize() {}, show() {} });
-    webContents.on = () => {}; webContents.setWindowOpenHandler = () => {};
+    webContents.on = () => {}; webContents.once = () => {}; webContents.setWindowOpenHandler = () => {};
     const stub = {
       app: { setPath() {}, setName() {}, requestSingleInstanceLock: () => true, on() {}, quit() {}, exit() {}, getPath: () => '/tmp', whenReady: () => Promise.resolve() },
       BrowserWindow: function () { return win; },
       protocol: { registerSchemesAsPrivileged() {}, handle() {} }, net: { fetch() {} }, shell: {}, Menu: { setApplicationMenu() {} },
       session: { defaultSession: { setPermissionRequestHandler() {} } },
-      ipcMain: { handle: (ch, f) => main.set(ch, f) },
+      ipcMain: { handle: (ch, f) => main.set(ch, f), once() {} },
       contextBridge: { exposeInMainWorld: (k, v) => { exposed[k] = v; } },
       ipcRenderer: {
         invoke: async (ch, ...a) => JSON.parse(JSON.stringify((await main.get(ch)({ sender: webContents }, ...a)) ?? null)),
