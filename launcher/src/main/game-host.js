@@ -91,12 +91,12 @@ function run(argv, i) {
     let shown = false;
     const reveal = () => {
       if (shown || !win || win.isDestroyed()) return; shown = true;
-      win.maximize(); win.show(); win.focus();
+      win.maximize(); win.show(); if (win.focus) win.focus();
       try { process.stdout.write('ashen:shown\n'); } catch {}
     };
     ipcMain.once('game:ready', reveal);
-    win.webContents.once('did-finish-load', () => setTimeout(reveal, 8000));
-    setTimeout(reveal, 20000);
+    win.webContents.once('did-finish-load', () => setTimeout(reveal, 8000).unref?.());
+    setTimeout(reveal, 20000).unref?.();
     win.webContents.on('before-input-event', (e, input) => {
       if (input.type === 'keyDown' && input.key === 'F11') { win.setFullScreen(!win.isFullScreen()); e.preventDefault(); }
     });

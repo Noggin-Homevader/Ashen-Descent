@@ -13,6 +13,11 @@ Each release's section becomes its release notes in the launcher. Add a section 
   locket at the throat and a longer one to a ring band further down. The throat sits forward on the hip with the
   hilt angled forward, and the scabbard leans back about 35 degrees so the tip trails behind the calf, close to
   the leg.
+- **New unique: the Bandit King's Reaver.** A War Axe for Warriors with its own model, made from the Bandit Axe:
+  a curved, leather-banded haft with an iron spike at each end, a notched crescent blade and a hooked back. It never
+  appears as an ordinary named drop. From floor 4 down it can drop from bosses (2%), commanders, uniques and hidden
+  bosses (0.5%), and very rarely from anything else. Its stats beat every other named weapon: a third more damage,
+  plus strength, vitality, critical chance, attack speed and health.
 - **Online by default.** The Social page explains when you are playing offline or while the server is waking up,
   instead of talking about claude.ai.
 

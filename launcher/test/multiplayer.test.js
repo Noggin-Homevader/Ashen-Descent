@@ -151,7 +151,7 @@ test('game window: the room API the game uses works across two desktop games', a
   function player() {
     const main = new Map(), pageListeners = new Map(), exposed = {};
     const webContents = { send: (ch, ...a) => { for (const f of pageListeners.get(ch) || []) f({}, ...a); } };
-    const win = Object.assign(new EventEmitter(), { webContents, once() {}, loadURL() {}, isDestroyed: () => false, maximize() {}, show() {} });
+    const win = Object.assign(new EventEmitter(), { webContents, once() {}, loadURL() {}, isDestroyed: () => false, maximize() {}, show() {}, focus() {} });
     webContents.on = () => {}; webContents.once = () => {}; webContents.setWindowOpenHandler = () => {};
     const stub = {
       app: { setPath() {}, setName() {}, requestSingleInstanceLock: () => true, on() {}, quit() {}, exit() {}, getPath: () => '/tmp', whenReady: () => Promise.resolve() },
