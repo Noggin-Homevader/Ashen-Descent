@@ -18,6 +18,15 @@ Each release's section becomes its release notes in the launcher. Add a section 
   appears as an ordinary named drop. From floor 4 down it can drop from bosses (2%), commanders, uniques and hidden
   bosses (0.5%), and very rarely from anything else. Its stats beat every other named weapon: a third more damage,
   plus strength, vitality, critical chance, attack speed and health.
+- **Melee swings flow.** Melee skills drew a thin line made of ten straight pieces that shot out to the skill's
+  full range, so they read as long, kinked hairlines. A swing is now a crescent of light that follows the blade: the
+  head sweeps across with the swing and a tail fades behind it; a crisp white edge softens into the element's
+  colours, thick at the head and tapering to points; and it stays at weapon reach. Gale's three strokes now follow
+  one another with a gentle sway instead of shivering.
+- **Dome bases are rune circles of what the dome gives.** Instead of a plain glyph and rings, the ground under a
+  dome is a rune circle built from its effects: Vor (Ward) for the damage it turns aside, Sel (Life) if it heals,
+  Vey (Wind) if it stops arrows. These run round a band between two circles and sit large at the points of a
+  star, with the dome's element rune at the heart. The flat bright band where the dome meets the ground is gone.
 - **Online by default.** The Social page explains when you are playing offline or while the server is waking up,
   instead of talking about claude.ai.
 
