@@ -61,7 +61,7 @@
     let label;
     switch (s.phase) {
       case 'checking': label = 'Checking…'; break;
-      case 'downloading': label = inst ? 'Updating…' : 'Downloading…'; break;
+      case 'downloading': label = s.selfUpdate || inst ? 'Updating…' : 'Downloading…'; break;
       case 'installing': label = 'Installing…'; break;
       case 'verifying': label = 'Verifying…'; break;
       case 'running': label = 'Game running'; break;
@@ -119,7 +119,7 @@
     prog.classList.toggle('ind', s.phase === 'verifying' || (s.phase === 'installing' && !(p && p.total)));
     if (s.phase === 'downloading' && p) {
       fill.style.width = `${Math.round((p.fraction || 0) * 1000) / 10}%`;
-      const v = s.available ? s.available.version : '';
+      const v = s.selfUpdate ? `launcher ${s.selfUpdate.version}` : s.available ? s.available.version : '';
       txt.textContent = `Downloading ${v} — ${bytes(p.received)} of ${bytes(p.total)}${p.speed > 0 ? ` · ${bytes(p.speed)}/s · ${eta(p.total - p.received, p.speed)}` : ''}`;
     } else if (s.phase === 'installing') {
       fill.style.width = `${Math.round(((p && p.fraction) || 0) * 100)}%`;

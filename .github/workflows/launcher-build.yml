@@ -84,6 +84,25 @@ jobs:
             Write-Host "installed on $d OK"
           }
           Write-Host 'install script OK'
+      - name: Test the launcher self-update folder swap (zip installs)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $T = Join-Path $env:RUNNER_TEMP 'swap'
+          Remove-Item -Recurse -Force $T -ErrorAction SilentlyContinue
+          Expand-Archive dist/launcher/AshenDescent-win-x64.zip "$T\Launcher"
+          Expand-Archive dist/launcher/AshenDescent-win-x64.zip "$T\Launcher.update"
+          Set-Content "$T\Launcher.update\new-version.txt" 'new'
+          # Something holding the old launcher's place until it exits, like the real launcher does.
+          $p = Start-Process powershell -ArgumentList '-NoProfile', '-Command', 'Start-Sleep 4' -PassThru
+          $env:SWAP_PID = $p.Id; $env:SWAP_APP = "$T\Launcher"
+          node -e "const {swapScript}=require('./launcher/src/core/self-update');require('fs').writeFileSync(process.env.RUNNER_TEMP+'/swap.cmd',swapScript({pid:+process.env.SWAP_PID,appDir:process.env.SWAP_APP,staging:process.env.SWAP_APP+'.update',start:false}))"
+          cmd /d /c "$env:RUNNER_TEMP\swap.cmd"
+          if (-not (Test-Path "$T\Launcher\new-version.txt")) { throw 'the new launcher was not swapped in' }
+          if (-not (Test-Path "$T\Launcher\Ashen Descent.exe")) { throw 'launcher exe missing after swap' }
+          if (Test-Path "$T\Launcher.update") { throw 'staging folder left behind' }
+          if (Test-Path "$T\Launcher.old") { throw 'old folder left behind' }
+          Write-Host 'self-update swap OK'
       - uses: actions/upload-artifact@v4
         with:
           name: launcher-${{ matrix.os }}
@@ -125,6 +144,7 @@ jobs:
         run: |
           set -euo pipefail
           cp tools/windows/AshenDescent-Install.cmd out/
+          node tools/launcher-manifest.js out "$V"   # lets installed launchers update themselves
           ls -la out
           ls out/*.exe out/AshenDescent-win-x64.zip >/dev/null
           {

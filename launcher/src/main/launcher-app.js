@@ -10,6 +10,8 @@ const { layout } = require('../core/installer');
 const { describeError, LauncherError } = require('../core/errors');
 const loc = require('../core/location');
 const mp = require('../core/multiplayer');
+const { SelfUpdater, detectInstallKind, swapScript } = require('../core/self-update');
+const { spawn } = require('child_process');
 const { createLog } = require('./log');
 
 const RENDERER = path.join(__dirname, '..', 'renderer', 'index.html');
@@ -41,6 +43,7 @@ function run() {
       fetch: (url, init) => net.fetch(url, init),
       platform: current(), launcherVersion: app.getVersion(),
       // Web builds open in this same executable, in game mode, as a separate process.
+      selfUpdate: (u) => selfUpdate(u),
       webRuntime: (info) => ({
         command: process.execPath,
         args: [...(process.defaultApp ? [app.getAppPath()] : []), '--ashen-game', info.executable, '--ashen-profile', L.profile,
@@ -158,6 +161,56 @@ function run() {
     await applyMp();
     return mpState();
   });
+
+  /* ---- the launcher updating itself (see core/self-update.js) ---- */
+  const installKind = detectInstallKind();
+  let su = null;
+  async function selfUpdate(u) {
+    if (!su) su = new SelfUpdater({ github: u.github, fetch: (a, i) => net.fetch(a, i), currentVersion: app.getVersion(), platform: current(), kind: installKind, dir: path.join(L.launcher, 'update'), execPath: process.execPath, log });
+    if (!su.canUpdate) return;
+    u._set({ message: 'Checking for launcher updates\u2026' });
+    const info = await su.check({ allowPrerelease: !!(settings && settings.get('allowPrerelease') === true) });
+    if (!info) return;
+    log(`launcher update ${info.version} available (${info.build.kind})`);
+    if (!info.applies) {
+      u._set({ notice: `Launcher ${info.version} is available. Use Releases to download it (macOS apps cannot update themselves yet).` });
+      return;
+    }
+    if (u.game.isRunning() || host.players > 0) { log('launcher update waits: the game is running or friends are connected'); return; }
+    const total = info.build.size;
+    u._set({ phase: 'downloading', canPlay: false, canRetry: false, message: `Updating the launcher to ${info.version}\u2026`, selfUpdate: { version: info.version }, progress: { kind: 'download', received: 0, total, speed: 0, fraction: 0 } });
+    const prep = await su.prepare(info, { onProgress: (p) => u._set({ progress: { kind: 'download', received: p.received, total: p.total, speed: p.speed, fraction: p.total ? p.received / p.total : 0 } }) });
+    if (u.game.isRunning()) return;
+    u._set({ phase: 'installing', message: `Restarting to finish the launcher update to ${info.version}\u2026`, progress: null });
+    log(`applying launcher update ${info.version}`);
+    applySelfUpdate(info, prep);
+    return 'restarting';
+  }
+  function applySelfUpdate(info, prep) {
+    const detached = { detached: true, stdio: 'ignore', windowsHide: true };
+    if (info.build.kind === 'nsis') {
+      // The setup installs silently over this copy (same folder) and starts the launcher again.
+      spawn(prep.file, ['--updated', '/S', '--force-run'], detached).unref();
+    } else if (info.build.kind === 'zip') {
+      const script = path.join(L.launcher, 'update', 'swap-launcher.cmd');
+      fs.writeFileSync(script, swapScript({ pid: process.pid, appDir: path.dirname(process.execPath), staging: prep.staging }));
+      spawn(process.env.ComSpec || 'cmd.exe', ['/d', '/c', script], detached).unref();
+    } else if (info.build.kind === 'appimage') {
+      const target = process.env.APPIMAGE;
+      fs.copyFileSync(prep.file, `${target}.new`);
+      fs.chmodSync(`${target}.new`, 0o755);
+      fs.renameSync(`${target}.new`, target);
+      spawn(target, [], detached).unref();
+    }
+    quitting = true;
+    setTimeout(() => app.quit(), 400);
+  }
+  // Look for launcher and game updates every 30 minutes while the launcher is idle (also while it sits in the tray).
+  setInterval(() => {
+    if (!updater || updater.busy || !started) return;
+    if (!['ready', 'failed'].includes(updater.state.phase) || updater.game.isRunning()) return;
+    updater.check();
+  }, 30 * 60e3).unref?.();
 
   /* ---- tray: the launcher waits there while the game runs (and while hosting) ---- */
   let tray = null, quitting = false, hiddenForGame = false;

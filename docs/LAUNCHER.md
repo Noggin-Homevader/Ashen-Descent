@@ -147,6 +147,27 @@ launcher is detected and replaced.
 **The game must be closed.** Files are never replaced while the game runs. If an update is found while the game is
 open, the launcher shows **Game running** and installs the update once the game closes.
 
+## Updating itself
+
+Each update check (when the launcher opens, when the game closes, and every 30 minutes while it is idle or in
+the tray) looks for a newer **launcher** first and then for a newer **game**. Launcher releases are tagged
+`launcher-vX.Y.Z` and carry `launcher-manifest.json`, written by `tools/launcher-manifest.js` in the Launcher build
+workflow. The manifest gives, for each platform and install type, the file, its size and its SHA-256. The update is
+downloaded like a game package (resumable, checksum-verified) and applied according to how the launcher was
+installed:
+
+| Installed with | How it updates |
+|---|---|
+| `AshenDescent-Setup.exe` | Runs the new setup silently over the same folder (`/S --updated --force-run`), which starts the launcher again. |
+| `AshenDescent-Install.cmd` or the zip | Unpacks the new version next to the program folder. A small script waits for the launcher to close, swaps the folders (putting the old one back if that fails) and starts it again. The swap is tested on Windows in the build workflow. |
+| Linux AppImage | Replaces the AppImage file and starts it again. |
+| macOS | Says that a new version is available. Unsigned Mac apps cannot replace themselves safely. |
+
+The launcher never updates itself while the game is running (the game runs from the launcher's own program file)
+or while friends are connected to it as host; it waits for the next check. Launcher updates follow the same
+**Include test builds** setting as the game. Launchers before 1.3.0 cannot update themselves, so install 1.3.0 once
+by hand.
+
 ## Playing
 
 **Play** is enabled only when the installed copy passes its file check. The launcher starts the game in its
@@ -198,9 +219,6 @@ each OS:
 
 ## Limitations
 
-- **No launcher self-update.** The launcher updates the game, not itself. New launcher versions are published as
-  `launcher-v*` releases. A game release can require one with `minLauncherVersion`, and older launchers then say
-  so. Automatic launcher updates (for example `electron-updater`) would be a separate addition.
 - **Unsigned installers.** Windows SmartScreen and macOS Gatekeeper warn about unsigned apps. Add code-signing
   certificates to the Launcher build workflow before a wide release.
 - **Party play** needs a relay. Host on this PC and Join work immediately on the same network. The shared
