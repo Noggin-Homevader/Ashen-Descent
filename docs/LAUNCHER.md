@@ -95,6 +95,22 @@ Ashen Descent/
   launcher/                   launcher settings, release cache, logs/launcher.log
 ```
 
+**Choosing a drive.** On Windows, the first time the launcher starts with nothing installed it asks which drive
+to use. It lists every fixed drive with its free space, suggests a roomier drive when the Windows drive is nearly
+full, and refuses drives with less than 500 MB free. **Other folder…** picks any folder. On the Windows drive the
+data folder stays in `%APPDATA%\Ashen Descent`; on any other drive it is `<drive>:\Ashen Descent`. The choice is
+saved in `%APPDATA%\Ashen Descent\location.json`, and the launcher restarts to use it.
+
+**Moving later.** **Change** in the launcher's panel moves an existing installation, saves included, to another
+drive. It is disabled while the game runs or an update is installing. The move copies `game/`, `userdata/` and the
+launcher's settings, checks every copied file's size, switches `location.json`, and only then deletes the old
+copies. If anything fails, the copy is removed and the old installation is untouched.
+
+**The launcher program itself.** The setup `.exe` is a normal installer wizard with a folder page, so it can go
+on any drive. The alternative installer, `AshenDescent-Install.cmd`, asks for a drive. It installs the launcher to
+`<drive>:\Ashen Descent\Launcher` (or `%LOCALAPPDATA%\Programs\Ashen Descent` on the Windows drive), records the
+same drive for the game, and never uses the Temp folder.
+
 The launcher program itself is installed separately (Program Files, Applications, or the AppImage).
 **Saves** in the launcher opens `userdata/`.
 

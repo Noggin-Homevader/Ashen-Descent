@@ -109,6 +109,7 @@
 
     // Settings
     const pre = $('pre'); pre.checked = !!s.allowPrerelease; pre.disabled = busy || s.phase === 'running';
+    $('locChange').disabled = busy || s.phase === 'running';
 
     // Progress
     const p = s.progress, prog = $('prog'), fill = $('progFill'), txt = $('progText');
@@ -149,6 +150,79 @@
     if (e.key === 'Enter' && document.activeElement === document.body && S && S.canPlay && !$('play').disabled) $('play').click();
   });
   api.onClosing && api.onClosing(() => { $('status').textContent = 'Finishing the installation before closing…'; });
+
+  /* ---- install location (which drive the game and saves go on) ---- */
+  let LOC = null, pick = null;
+  const LOW = 500 * 1048576;
+  async function loadLocation() {
+    try { LOC = await api.getLocation(); } catch { LOC = null; }
+    if (!LOC) return;
+    $('locShort').textContent = LOC.root; $('locShort').title = LOC.root;
+    if (LOC.ask && $('loc').hidden) openLoc(true);
+  }
+  function openLoc(first) {
+    const d = $('loc');
+    d.hidden = false; d.classList.remove('moving'); d.dataset.first = first ? '1' : '';
+    $('locMsg').textContent = '';
+    $('locCancel').hidden = !!first;
+    $('locT').textContent = first ? 'Choose where to install' : 'Change install location';
+    $('locP').textContent = first
+      ? 'Ashen Descent, its updates and your saves are stored on the drive you choose. The game needs about 100 MB.'
+      : LOC.installed ? 'Your game and saves will be moved to the drive you choose. The launcher restarts when the move is done.' : 'Choose where the game will be installed.';
+    $('locOk').textContent = first ? 'Install here' : LOC.installed ? 'Move here' : 'Use this drive';
+    const cur = LOC.drives.find((x) => LOC.root.toUpperCase().startsWith(x.letter.toUpperCase()));
+    pick = cur ? cur.letter : null;
+    // First run on a nearly full drive: suggest the drive with the most room instead.
+    if (first && (!cur || cur.free < 2 * 1024 ** 3)) { const best = LOC.drives.filter((x) => x.free >= LOW).sort((a, b) => b.free - a.free)[0]; if (best) pick = best.letter; }
+    renderDrives();
+    setTimeout(() => $('locOk').focus(), 0);
+  }
+  function renderDrives() {
+    const box = $('drives');
+    box.innerHTML = '';
+    for (const x of LOC.drives) {
+      const b = document.createElement('button');
+      b.className = `drv${x.free < LOW ? ' low' : ''}`;
+      b.setAttribute('role', 'radio');
+      b.setAttribute('aria-checked', String(x.letter === pick));
+      b.disabled = x.free < LOW;
+      b.title = x.free < LOW ? 'Not enough free space' : `Install on ${x.letter}`;
+      b.innerHTML = `<b>${x.letter}<small>${x.system ? 'Windows' : ''}</small></b><span>${bytes(x.free)} free of ${bytes(x.total)}</span><u><s style="width:${Math.max(0, Math.min(100, Math.round((1 - x.free / x.total) * 100)))}%"></s></u>`;
+      b.addEventListener('click', () => { pick = x.letter; renderDrives(); });
+      box.appendChild(b);
+    }
+    box.hidden = !LOC.drives.length;
+    const d = LOC.drives.find((x) => x.letter === pick);
+    $('locPath').textContent = d ? d.root : LOC.root;
+  }
+  async function submitLoc(choice) {
+    const box = $('loc');
+    $('locMsg').textContent = '';
+    const btns = [...box.querySelectorAll('button')];
+    btns.forEach((b) => { b.disabled = true; });
+    if (LOC.installed && !choice.keep && !choice.browse) { box.classList.add('moving'); $('locP').textContent = 'Moving your game and saves… Please keep the launcher open.'; }
+    let r;
+    try { r = await api.setLocation(choice); } catch (e) { r = { ok: false, error: { title: 'The location could not be changed', detail: String(e && e.message || e) } }; }
+    if (r && r.ok) {
+      if (r.restarting) { $('locP').textContent = 'Restarting the launcher…'; return; }
+      box.hidden = true; loadLocation(); return;
+    }
+    btns.forEach((b) => { b.disabled = false; });
+    box.classList.remove('moving');
+    renderDrives();
+    if (r && r.error) $('locMsg').textContent = `${r.error.title}. ${r.error.detail || ''}`.trim();
+  }
+  $('locChange').addEventListener('click', () => { if (LOC) openLoc(false); });
+  $('locCancel').addEventListener('click', () => { $('loc').hidden = true; });
+  $('locBrowse').addEventListener('click', () => submitLoc({ browse: true }));
+  $('locOk').addEventListener('click', () => {
+    const d = LOC.drives.find((x) => x.letter === pick);
+    if (!d || d.root.toUpperCase() === LOC.root.toUpperCase()) return submitLoc({ keep: true });
+    submitLoc({ drive: d.letter });
+  });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('loc').hidden && !$('loc').dataset.first && !$('loc').classList.contains('moving')) $('loc').hidden = true; });
+  api.onLocationProgress && api.onLocationProgress((p) => { $('locFill').style.width = `${p.total ? Math.round((p.done / p.total) * 100) : 0}%`; });
+  if (api.getLocation) loadLocation(); else document.querySelector('.locline').hidden = true;
 
   api.onState(render);
   api.getState().then((s) => { if (s) render(s); });

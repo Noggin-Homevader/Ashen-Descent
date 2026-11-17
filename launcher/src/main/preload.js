@@ -16,6 +16,9 @@ contextBridge.exposeInMainWorld('ashen', {
   setAllowPrerelease: (on) => ipcRenderer.invoke('launcher:prerelease', !!on),
   open: (what) => ipcRenderer.invoke('launcher:open', String(what)),
   openReleasePage: () => ipcRenderer.invoke('launcher:release-page'),
+  getLocation: () => ipcRenderer.invoke('launcher:location'),
+  setLocation: (choice) => ipcRenderer.invoke('launcher:set-location', choice),
+  onLocationProgress: (cb) => { ipcRenderer.on('launcher:location-progress', (_e, p) => cb(p)); },
   minimize: () => ipcRenderer.invoke('window:minimize'),
   close: () => ipcRenderer.invoke('window:close'),
 });

@@ -25,7 +25,7 @@ function stubElectron({ appPath }) {
   const app = {
     paths: {}, getPath: (n) => app.paths[n] || path.join(st.tmp, n), setPath: (n, p) => { app.paths[n] = p; },
     requestSingleInstanceLock: () => true, on() {}, whenReady: () => Promise.resolve(), getVersion: () => '1.0.0',
-    getAppPath: () => appPath, quit: () => { st.quit++; }, exit: () => { st.quit++; }, setName() {},
+    getAppPath: () => appPath, relaunch() { st.relaunched = true; }, quit: () => { st.quit++; }, exit: () => { st.quit++; }, setName() {},
   };
   return {
     st,
@@ -35,6 +35,7 @@ function stubElectron({ appPath }) {
       shell: { openPath: async () => '', openExternal: async (u) => { st.opened = u; } },
       net: { fetch: (u, i) => fetch(u, i) },
       Menu: { setApplicationMenu() {} },
+      dialog: { showOpenDialog: async () => ({ canceled: true, filePaths: [] }) },
       protocol: { registerSchemesAsPrivileged: (s) => st.schemes.push(...s), handle: (s, f) => { st.protocol = f; } },
       session: { defaultSession: { setPermissionRequestHandler: (f) => { st.perms = f; } } },
     },
@@ -90,6 +91,10 @@ test('main process: launcher window, IPC and Play wiring', async (t) => {
   assert.equal(again.ok, false, 'second Play while running is refused');
   await until(async () => (await st.handlers['launcher:get-state'](ok)).phase === 'ready');
 
+  const L0 = await st.handlers['launcher:location'](ok);
+  assert.equal(L0.root, path.join(dir, 'data')); assert.equal(L0.ask, false, 'no drive question when the data folder is fixed');
+  assert.equal((await st.handlers['launcher:set-location'](ok, { drive: '../evil' })).ok, false, 'bad drive refused');
+  assert.equal((await st.handlers['launcher:set-location'](ok, { keep: true })).restarting, false);
   await st.handlers['launcher:release-page'](ok);
   assert.match(st.opened, /^https:\/\/github\.com\/Noggin-Homevader\/Ashen-Descent\/releases/);
   win.webContents.emit('will-navigate', { preventDefault() { this.prevented = true; } });
