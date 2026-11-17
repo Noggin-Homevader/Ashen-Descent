@@ -131,6 +131,8 @@ button.sec { background: linear-gradient(#d9552e, #8c2514); border-color: #ffb34
 /* party play */
 .mpo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .mpc { cursor: pointer; border-radius: 8px; background: linear-gradient(#2a2016, #1a130d); border: 1.5px solid var(--line); box-shadow: inset 0 1px 0 #ffffff12; display: flex; flex-direction: column; align-items: stretch; gap: 4px; text-align: left; padding: 10px 12px; min-height: 0; }
+.mpc[data-mode="online"], .mpsub { grid-column: 1 / -1; }
+.mpsub { font-size: 12px; letter-spacing: .04em; color: var(--muted, #b8a47a); margin: 6px 2px -2px; }
 .mpc:hover, .mpc:focus-visible { border-color: #a8843a; outline: none; }
 .mpc b { font: 700 16px var(--serif); color: var(--gold); }
 .mpc span { font-size: 12px; color: var(--dim); white-space: pre-line; }

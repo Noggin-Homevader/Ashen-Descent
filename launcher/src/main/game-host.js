@@ -13,7 +13,7 @@
 const fs = require('fs');
 const path = require('path');
 const { pathToFileURL } = require('url');
-const { app, BrowserWindow, protocol, net, shell, session, Menu, ipcMain } = require('electron');
+const { app, BrowserWindow, protocol, net, shell, session, Menu, ipcMain, screen } = require('electron');
 const { createRoomBridge } = require('../core/room-bridge');
 
 const SCHEME = 'ashen-game';
@@ -72,8 +72,11 @@ function run(argv, i) {
     session.defaultSession.setPermissionRequestHandler((_wc, perm, cb) => cb(allowed.has(perm)));
     if (process.platform !== 'darwin') Menu.setApplicationMenu(null);
 
+    // Open at the size it will have: one window appearing once, full size, instead of a small one that then grows.
+    let area = { x: undefined, y: undefined, width: 1600, height: 900 };
+    try { area = screen.getPrimaryDisplay().workArea; } catch {}
     win = new BrowserWindow({
-      width: 1600, height: 900, minWidth: 960, minHeight: 600, show: false, title: 'Ashen Descent',
+      x: area.x, y: area.y, width: area.width, height: area.height, minWidth: 960, minHeight: 600, show: false, title: 'Ashen Descent',
       backgroundColor: '#050302', autoHideMenuBar: true, icon: path.join(__dirname, '..', 'renderer', 'icon.png'),
       webPreferences: {
         preload: path.join(__dirname, 'game-preload.js'),
@@ -83,7 +86,17 @@ function run(argv, i) {
         backgroundThrottling: false,
       },
     });
-    win.once('ready-to-show', () => { win.maximize(); win.show(); });
+    // Show the window once the title screen has painted (the page says so), never a blank window while it loads.
+    // The launcher waits for the 'shown' line on stdout before it tucks itself into the tray.
+    let shown = false;
+    const reveal = () => {
+      if (shown || !win || win.isDestroyed()) return; shown = true;
+      win.maximize(); win.show(); if (win.focus) win.focus();
+      try { process.stdout.write('ashen:shown\n'); } catch {}
+    };
+    ipcMain.once('game:ready', reveal);
+    win.webContents.once('did-finish-load', () => setTimeout(reveal, 8000).unref?.());
+    setTimeout(reveal, 20000).unref?.();
     win.webContents.on('before-input-event', (e, input) => {
       if (input.type === 'keyDown' && input.key === 'F11') { win.setFullScreen(!win.isFullScreen()); e.preventDefault(); }
     });

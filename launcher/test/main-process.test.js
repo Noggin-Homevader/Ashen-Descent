@@ -31,7 +31,7 @@ function stubElectron({ appPath }) {
     st,
     electron: {
       app, BrowserWindow,
-      ipcMain: { handle: (c, f) => { st.handlers[c] = f; } },
+      ipcMain: { handle: (c, f) => { st.handlers[c] = f; }, once: (c, f) => { st.onceIpc = { ...st.onceIpc, [c]: f }; } },
       shell: { openPath: async () => '', openExternal: async (u) => { st.opened = u; } },
       net: { fetch: (u, i) => fetch(u, i) },
       Menu: { setApplicationMenu() {}, buildFromTemplate: (t) => ({ items: t }) },
@@ -94,7 +94,8 @@ test('main process: launcher window, IPC and Play wiring', async (t) => {
   assert.equal(m.game, path.join(dir, 'data', 'game', 'versions', '2.0.0', 'index.html'));
   assert.equal(m.profile, path.join(dir, 'data', 'userdata', 'profile'));
   assert.equal(fs.realpathSync(m.cwd), fs.realpathSync(path.join(dir, 'data', 'game', 'versions', '2.0.0')));
-  assert.equal(win.visible, false, 'launcher hidden while the game runs');
+  await until(() => win.visible === false);
+  assert.equal(win.visible, false, 'launcher steps aside once the game window is up');
   assert.ok(st.tray && /playing/.test(st.tray.tip), 'tray icon while playing');
   const again = await st.handlers['launcher:play'](ok);
   assert.equal(again.ok, false, 'second Play while running is refused');
@@ -108,7 +109,8 @@ test('main process: launcher window, IPC and Play wiring', async (t) => {
   assert.ok(st.tray, 'tray stays while hosting');
   const launchedArgs = JSON.parse(fs.readFileSync(env.ASHEN_TEST_MARKER, 'utf8')).argv;
   assert.ok(launchedArgs.includes('--ashen-mp') && launchedArgs[launchedArgs.indexOf('--ashen-mp') + 1] === mps.server, 'the game got the relay address');
-  await st.handlers['launcher:mp-set'](ok, { mode: 'off' });
+  assert.equal((await st.handlers['launcher:mp-set'](ok, { mode: 'off' })).mode, 'host', 'there is no "off": online is the normal way to play');
+  await st.handlers['launcher:mp-set'](ok, { mode: 'join', join: '192.168.1.20' });
   assert.equal(st.tray, null, 'no tray once not hosting and not playing');
   await st.handlers['launcher:release-page'](ok);
   assert.match(st.opened, /^https:\/\/github\.com\/Noggin-Homevader\/Ashen-Descent\/releases/);
@@ -134,6 +136,9 @@ test('main process: game host serves only the install folder and keeps saves in 
   await until(() => st.windows.length === 1);
   const win = st.windows[0];
   assert.equal(win.url, 'ashen-game://app/index.html');
+  assert.equal(win.opts.show, false, 'no blank window: it appears once the title screen has painted');
+  st.onceIpc['game:ready']();
+  assert.equal(win.visible, true, 'shown when the page says the title screen is up');
   assert.equal(electron.app.paths.userData, profile, 'browser storage (saves) lives in userdata/profile');
   assert.equal(win.opts.webPreferences.backgroundThrottling, false);
   assert.equal(st.schemes[0].scheme, 'ashen-game');

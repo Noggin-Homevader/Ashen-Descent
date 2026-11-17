@@ -68,3 +68,9 @@ before.
 - `launcher/test/ui/party-check.js` (needs Playwright): two copies of the real game connected through the relay.
   The leader makes a party, the friend joins with the code, the leader opens the portal, and both must arrive on
   the same floor with the same monsters.
+
+## Online by default (launcher 1.4.0)
+
+The launcher always plays online unless someone picks home-network play in its World settings; there is no "off".
+If the server address could not be looked up when the launcher started, it looks again when Play is pressed, and
+it hands the game the address without waiting for a sleeping server to wake (the game reconnects on its own).

@@ -15,7 +15,7 @@ const os = require('os');
 const { createRelayServer } = require('./relay');
 
 const DEFAULT_PORT = 47130;
-const MODES = ['online', 'host', 'join', 'off'];
+const MODES = ['online', 'host', 'join']; // a saved 'off' from older launchers counts as 'online'
 
 function lanAddresses() {
   const out = [];

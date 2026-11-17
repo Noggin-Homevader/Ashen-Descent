@@ -2,6 +2,34 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.2.1
+
+- **One smooth start.** The game window now appears once, already full size, with the title screen painted, and
+  the launcher stays on screen until then. Before, the window showed up blank and then jumped to full size.
+- **Less work in the background.** The title screen's swirling portal and embers kept rendering, out of sight, for
+  the whole session after you clicked past them. They now stop when the title screen is put away. This removes a
+  freeze after clicking the title and frees the graphics card during play.
+- **Sheaths hang like the real thing.** A sword now hangs from two straps on the belt: a short one to a metal
+  locket at the throat and a longer one to a ring band further down. The throat sits forward on the hip with the
+  hilt angled forward, and the scabbard leans back about 35 degrees so the tip trails behind the calf, close to
+  the leg.
+- **New unique: the Bandit King's Reaver.** A War Axe for Warriors with its own model, made from the Bandit Axe:
+  a curved, leather-banded haft with an iron spike at each end, a notched crescent blade and a hooked back. It never
+  appears as an ordinary named drop. From floor 4 down it can drop from bosses (2%), commanders, uniques and hidden
+  bosses (0.5%), and very rarely from anything else. Its stats beat every other named weapon: a third more damage,
+  plus strength, vitality, critical chance, attack speed and health.
+- **Melee swings flow.** Melee skills drew a thin line made of ten straight pieces that shot out to the skill's
+  full range, so they read as long, kinked hairlines. A swing is now a crescent of light that follows the blade: the
+  head sweeps across with the swing and a tail fades behind it; a crisp white edge softens into the element's
+  colours, thick at the head and tapering to points; and it stays at weapon reach. Gale's three strokes now follow
+  one another with a gentle sway instead of shivering.
+- **Dome bases are rune circles of what the dome gives.** Instead of a plain glyph and rings, the ground under a
+  dome is a rune circle built from its effects: Vor (Ward) for the damage it turns aside, Sel (Life) if it heals,
+  Vey (Wind) if it stops arrows. These run round a band between two circles and sit large at the points of a
+  star, with the dome's element rune at the heart. The flat bright band where the dome meets the ground is gone.
+- **Online by default.** The Social page explains when you are playing offline or while the server is waking up,
+  instead of talking about claude.ai.
+
 ## 2.2.0
 
 ### Smoother fights
