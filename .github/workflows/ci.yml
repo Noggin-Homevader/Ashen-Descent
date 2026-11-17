@@ -24,7 +24,7 @@ jobs:
           node-version: 22
       # The launcher's update code has no dependencies, so the tests need no npm install.
       - name: Launcher tests
-        run: node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./tools/gh-annotate-reporter.mjs --test-reporter-destination=stdout "launcher/test/*.test.js"
+        run: node --test --test-timeout=120000 --test-force-exit --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./tools/gh-annotate-reporter.mjs --test-reporter-destination=stdout "launcher/test/*.test.js"
 
   package:
     name: Package the game (dry run)
