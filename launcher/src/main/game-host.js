@@ -60,7 +60,7 @@ function run(argv, i) {
 
     win = new BrowserWindow({
       width: 1600, height: 900, minWidth: 960, minHeight: 600, show: false, title: 'Ashen Descent',
-      backgroundColor: '#050302', autoHideMenuBar: true, icon: path.join(__dirname, '..', '..', 'build', 'icon.png'),
+      backgroundColor: '#050302', autoHideMenuBar: true, icon: path.join(__dirname, '..', 'renderer', 'icon.png'),
       webPreferences: {
         contextIsolation: true, sandbox: true, nodeIntegration: false,
         // The game keeps party play in step while its window is in the background.

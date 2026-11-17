@@ -5,8 +5,10 @@ through towns, and fighting Floor Bosses.
 
 ## Playing
 
-Install the **Ashen Descent launcher** from this repository's Releases page (the `launcher-v…` releases). It
-downloads the game the first time, keeps it up to date from published game releases, and starts it with **Play**.
+**Windows:** download [AshenDescent-Setup.exe](https://github.com/Noggin-Homevader/Ashen-Descent/releases/latest/download/AshenDescent-Setup.exe)
+and double-click it. It installs, opens the launcher, and the launcher downloads the game and keeps it up to date.
+The installer is not code-signed yet: if Windows shows *Windows protected your PC*, choose **More info**, then
+**Run anyway**. macOS and Linux builds are on the [latest release](https://github.com/Noggin-Homevader/Ashen-Descent/releases/latest).
 
 ## Repository layout
 
@@ -17,12 +19,12 @@ downloads the game the first time, keeps it up to date from published game relea
 | `game/CHANGELOG.md` | Release notes, one section per version. |
 | `launcher/` | The launcher (Electron). See [docs/LAUNCHER.md](docs/LAUNCHER.md). |
 | `tools/` | `package-game.js` (packages a release and writes its manifest), `verify-release.js`, `fetch-fonts.js`. |
-| `.github/workflows/` | CI tests, the game release workflow (creates draft releases) and the launcher build. |
+| `.github/workflows/` | CI tests, the game release and launcher build workflows (both publish when the version changes on `main`). |
 
 ## For maintainers
 
-- **Publish a game update:** bump `game/game.json`, add a changelog section, push a `vX.Y.Z` tag, then publish
-  the draft release that the workflow creates. Full steps and the manifest format are in
+- **Publish a game update:** bump `game/game.json`, add a changelog section and merge to `main`; the release is
+  published automatically. Full steps and the manifest format are in
   [docs/RELEASES.md](docs/RELEASES.md).
 - **Build the launcher:** `npm install && npm run dist`, or run the *Launcher build* workflow. See
   [docs/LAUNCHER.md](docs/LAUNCHER.md).

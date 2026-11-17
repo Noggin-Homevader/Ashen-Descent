@@ -1,17 +1,31 @@
 name: Launcher build
 
-# Builds the launcher installers for Windows, macOS and Linux.
-# - Run it by hand (Actions > Launcher build > Run workflow) to get the installers as workflow artifacts.
-# - Push a tag like launcher-v1.0.1 to also attach them to a DRAFT release for that tag.
-# Launcher releases use the "launcher-v" prefix, so the launcher never mistakes them for game updates.
+# Builds the launcher installers for Windows, macOS and Linux and, when main has a launcher version (package.json)
+# that has not been released yet, PUBLISHES release launcher-vX.Y.Z as the repository's latest release.
+# The Windows installer always has the same name, so this link always downloads the newest launcher:
+#   https://github.com/Noggin-Homevader/Ashen-Descent/releases/latest/download/AshenDescent-Setup.exe
+# Launcher releases use the "launcher-v" prefix, so launchers never mistake them for game updates.
 
 on:
   push:
-    tags: ['launcher-v*']
+    branches: [main]
+    paths:
+      - 'package.json'
+      - 'launcher/**'
+      - '.github/workflows/launcher-build.yml'
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'launcher/**'
+      - '.github/workflows/launcher-build.yml'
   workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: launcher-build-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -26,14 +40,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Check the tag matches package.json
-        if: startsWith(github.ref, 'refs/tags/launcher-v')
-        shell: bash
-        run: |
-          v=$(node -p "require('./package.json').version")
-          [ "launcher-v$v" = "${GITHUB_REF_NAME}" ] || { echo "Tag ${GITHUB_REF_NAME} does not match package.json version $v" >&2; exit 1; }
       - run: npm install --no-audit --no-fund
+      # Full tests run on every OS in the CI workflow; here they gate the build once.
       - run: npm test
+        if: runner.os == 'Linux'
       - name: Build installers
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false' # unsigned until signing certificates are added (see docs/LAUNCHER.md)
@@ -47,20 +57,44 @@ jobs:
             dist/launcher/*.AppImage
           if-no-files-found: error
 
-  draft-release:
-    if: startsWith(github.ref, 'refs/tags/launcher-v')
+  release:
+    # Publish whatever built, even if one OS failed, so a Windows installer is not held back by a macOS problem.
+    if: ${{ !cancelled() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
     needs: build
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
     steps:
+      - uses: actions/checkout@v4
+      - name: Is this version already released?
+        id: v
+        run: |
+          v=$(node -p "require('./package.json').version")
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          if gh release view "launcher-v$v" >/dev/null 2>&1; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Launcher v$v is already released. Bump the version in package.json to release again." >> "$GITHUB_STEP_SUMMARY"
+          fi
       - uses: actions/download-artifact@v4
+        if: steps.v.outputs.skip != 'true'
         with:
           path: out
           merge-multiple: true
-      - name: Create the draft launcher release
+      - name: Publish the launcher release
+        if: steps.v.outputs.skip != 'true'
         env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
+          V: ${{ steps.v.outputs.version }}
         run: |
-          gh release create "$GITHUB_REF_NAME" out/* --draft --verify-tag \
-            --title "Ashen Descent Launcher ${GITHUB_REF_NAME#launcher-v}" \
-            --notes "Install the launcher once; it keeps the game up to date by itself."
+          set -euo pipefail
+          ls -la out
+          ls out/*.exe >/dev/null
+          {
+            echo "**Windows:** download **AshenDescent-Setup.exe** and double-click it. It installs in a few seconds, adds desktop and Start menu shortcuts, opens the launcher, and the launcher downloads the game."
+            echo "The installer is not code-signed yet, so Windows may show *Windows protected your PC*: choose **More info**, then **Run anyway**."
+            echo ""
+            echo "**macOS:** open the .dmg and drag Ashen Descent to Applications (first launch: right-click the app, then Open)."
+            echo "**Linux:** make the .AppImage executable and run it."
+          } > notes.md
+          gh release create "launcher-v$V" out/* --target "$GITHUB_SHA" --title "Ashen Descent Launcher $V" --notes-file notes.md --latest
+          echo "Published launcher-v$V. Download: https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/AshenDescent-Setup.exe" >> "$GITHUB_STEP_SUMMARY"

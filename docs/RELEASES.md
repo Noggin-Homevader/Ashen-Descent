@@ -11,19 +11,15 @@ GitHub's automatic "Source code" archives are never treated as playable updates.
    `2.1.0` for new content, `3.0.0` for changes that break saves. Use a prerelease suffix (`2.1.0-beta.1`) for
    test builds.
 3. Add a `## 2.0.1` section at the top of `game/CHANGELOG.md`. It becomes the release notes in the launcher.
-4. Optional local check: `node tools/package-game.js --tag v2.0.1 && node tools/verify-release.js dist/game --tag v2.0.1`
-5. Commit, then tag and push:
-   ```sh
-   git tag v2.0.1
-   git push origin main v2.0.1
-   ```
-6. The **Game release** workflow runs the tests, packages the game, verifies the files and creates a
-   **draft** release with them.
-7. Open the draft on GitHub, check the notes and assets, and press **Publish release**. Launchers pick it up the
-   next time they open.
+4. Optional local check: `node tools/package-game.js && node tools/verify-release.js dist/game`
+5. Merge the change to `main` (or push it there).
+6. The **Game release** workflow sees a version that has no release yet. It runs the tests, packages the game,
+   verifies the files and **publishes** release `vX.Y.Z`. Launchers pick it up the next time they open.
 
-Tags with a prerelease part (`v2.1.0-beta.1`) become GitHub prereleases. Launchers only offer them to players
-who switch on **Include test builds**.
+Versions with a prerelease part (`2.1.0-beta.1`) are published as GitHub prereleases. Launchers only offer them
+to players who switch on **Include test builds**. Pushing to `main` without changing the version releases
+nothing. Game releases are published with "latest" turned off, so the repository's latest release is always the
+launcher and its download link never changes.
 
 To pull a bad release, unpublish it (turn it back into a draft) or delete it. Launchers that already installed it
 keep it until a newer version is published; they never downgrade automatically.

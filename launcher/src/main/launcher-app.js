@@ -83,7 +83,7 @@ function run() {
       width: 1180, height: 740, minWidth: 940, minHeight: 620,
       frame: false, titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : undefined,
       backgroundColor: '#050302', show: false, title: 'Ashen Descent',
-      icon: path.join(__dirname, '..', '..', 'build', 'icon.png'),
+      icon: path.join(__dirname, '..', 'renderer', 'icon.png'),
       webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, sandbox: true, nodeIntegration: false, spellcheck: false },
     });
     win.webContents.on('will-navigate', (e) => e.preventDefault());

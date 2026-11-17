@@ -35,9 +35,13 @@ Useful environment variables, mainly for development:
 | `ASHEN_LAUNCHER_CONFIG` | Read this config file instead of `launcher/launcher.config.json`. |
 | `ASHEN_LOG_STDOUT=1` | Also print the log to the terminal. |
 
-Installers are built for Windows (NSIS, per-user), macOS (DMG, x64 and arm64) and Linux (AppImage) by the
-**Launcher build** workflow. Run it from the Actions tab to get the installers as workflow artifacts. Push a
-`launcher-vX.Y.Z` tag that matches `package.json` to attach them to a draft release.
+Installers are built for Windows (a one-click NSIS installer: double-click, it installs per user without admin
+rights, adds desktop and Start menu shortcuts and opens the launcher), macOS (DMG, x64 and arm64) and Linux
+(AppImage) by the **Launcher build** workflow. That workflow runs on pull requests (build only) and on `main`.
+When `main` has a `package.json` version with no `launcher-vX.Y.Z` release yet, it publishes that release as the
+repository's latest. The Windows installer always has the same name, so this link always gets the newest launcher:
+
+https://github.com/Noggin-Homevader/Ashen-Descent/releases/latest/download/AshenDescent-Setup.exe
 
 ## Configuration
 
