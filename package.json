@@ -1,0 +1,63 @@
+{
+  "name": "ashen-descent-launcher",
+  "productName": "Ashen Descent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Launcher and automatic updater for Ashen Descent",
+  "author": "Noggin-Homevader",
+  "homepage": "https://github.com/Noggin-Homevader/Ashen-Descent",
+  "license": "UNLICENSED",
+  "main": "launcher/src/main/main.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test \"launcher/test/*.test.js\"",
+    "test:ui": "node launcher/test/ui/ui-check.js",
+    "package:game": "node tools/package-game.js",
+    "verify:release": "node tools/verify-release.js dist/game",
+    "fetch:fonts": "node tools/fetch-fonts.js",
+    "dist": "node tools/fetch-fonts.js && electron-builder --publish never"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "io.github.nogginhomevader.ashendescent",
+    "productName": "Ashen Descent",
+    "artifactName": "AshenDescentLauncher-${version}-${os}-${arch}.${ext}",
+    "directories": {
+      "output": "dist/launcher",
+      "buildResources": "launcher/build"
+    },
+    "files": [
+      "package.json",
+      "launcher/launcher.config.json",
+      "launcher/src/**/*",
+      "launcher/build/icon.png"
+    ],
+    "asar": true,
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "icon": "launcher/build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "Ashen Descent"
+    },
+    "mac": {
+      "target": [{ "target": "dmg", "arch": ["x64", "arm64"] }],
+      "category": "public.app-category.role-playing-games",
+      "icon": "launcher/build/icon.png"
+    },
+    "linux": {
+      "target": [{ "target": "AppImage", "arch": ["x64"] }],
+      "category": "Game",
+      "icon": "launcher/build/icon.png"
+    }
+  }
+}

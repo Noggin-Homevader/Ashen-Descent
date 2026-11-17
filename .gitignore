@@ -1,0 +1,7 @@
+node_modules/
+dist/
+launcher/test/ui/out/
+launcher/src/renderer/fonts/
+*.log
+.DS_Store
+Thumbs.db

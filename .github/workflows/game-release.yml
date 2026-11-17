@@ -1,0 +1,57 @@
+name: Game release
+
+# Pushing a tag like v2.0.1 packages the game and creates a DRAFT GitHub release with the package, the launcher
+# manifest and checksums. Players see nothing until a maintainer reviews the draft and presses "Publish release".
+# Tags with a prerelease part (v2.1.0-beta.1) become prereleases, which launchers only offer with
+# "Include test builds" switched on.
+
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to package (e.g. v2.0.1)
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: game-release-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Launcher tests
+        run: node --test "launcher/test/*.test.js"
+      - name: Package the game and write the manifest
+        run: node tools/package-game.js --tag "$TAG" --out dist/game
+      - name: Verify the release files
+        run: node tools/verify-release.js dist/game --tag "$TAG"
+      - name: Create the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "A release for $TAG already exists. Delete it or bump the version; releases are never overwritten." >&2
+            exit 1
+          fi
+          flags=(--draft --verify-tag)
+          if [[ "$TAG" == *-* ]]; then flags+=(--prerelease); fi
+          gh release create "$TAG" dist/game/* \
+            --title "Ashen Descent ${TAG#v}" \
+            --notes-file dist/game/release-notes.md \
+            "${flags[@]}"
+          echo "Draft release $TAG created. Review it on GitHub, then press Publish release." >> "$GITHUB_STEP_SUMMARY"

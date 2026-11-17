@@ -1,0 +1,17 @@
+{
+  "name": "ashen-descent",
+  "version": "2.0.0",
+  "minLauncherVersion": "1.0.0",
+  "builds": [
+    {
+      "os": "any",
+      "arch": "any",
+      "runtime": "web",
+      "appDir": "app",
+      "executable": "index.html",
+      "args": [],
+      "requiredFiles": ["index.html"],
+      "preserve": []
+    }
+  ]
+}
