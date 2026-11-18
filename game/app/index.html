@@ -4997,7 +4997,7 @@ h+=`<div class="socard"><h3>Add a friend</h3><div class="sorow"><input id="socad
  const cand=pe.filter(p=>!SOC.fr.some(f=>f.c==p.presence.fc));
  h+=`<h3 class="soh">In the camp now <small>${cand.length}</small></h3>`+(cand.length?`<div class="sofl">`+cand.map(p=>{const q=p.presence;return`<div class="sofr on"><span class="socr" style="--h:${socHue(q.cls)}"><b>${MPE((q.n||'?')[0].toUpperCase())}</b><i class="sost"></i></span><span class="sofi"><b>${MPE(q.n)}</b><small>${MPE(q.cls)} Lv ${q.lv}</small><small class="sofc">${MPE(q.fc)}</small></span><span class="soac"><button class="pri" onclick="socAdd('${MPE(q.fc)}')">Add</button></span></div>`}).join('')+`</div>`:`<p class="sonone">Nobody else is around right now.</p>`);
  return h}
-function mpRefresh(){if(OT=='social'&&!$('ov').hidden&&!(document.activeElement&&/^soc/.test(document.activeElement.id||'')))showOv();if(MP.pnl&&!$('ov').hidden&&SHN=='mus')partyPanel(true);else MP.pnl=false;DP.txt='';MP.ptx='';const b=$('bp');if(b)b.classList.toggle('on',!!MP.party)}
+function mpRefresh(){if(OT=='social'&&!$('ov').hidden&&$('ovc').querySelector('.soid')&&!(document.activeElement&&/^soc/.test(document.activeElement.id||'')))showOv();if(MP.pnl&&!$('ov').hidden&&SHN=='mus')partyPanel(true);else MP.pnl=false;DP.txt='';MP.ptx='';const b=$('bp');if(b)b.classList.toggle('on',!!MP.party)}
 function partyPanel(keep){
  SHN='mus';MP.pnl=true;
  const ni=document.activeElement&&document.activeElement.id=='mpnick'?{v:document.activeElement.value,s:document.activeElement.selectionStart}:null,ji=document.activeElement&&document.activeElement.id=='mpcode'?{v:document.activeElement.value,s:document.activeElement.selectionStart}:null;
@@ -12942,7 +12942,9 @@ var PERF3=(()=>{const R={on:true,ring:[],cur:null,rec:null,quiet:0,saved:0,lastS
  const lt=[];try{new PerformanceObserver(l=>{for(const e of l.getEntries())lt.push([Math.round(e.startTime),Math.round(e.duration)])}).observe({type:'longtask',buffered:false})}catch(e){}
  const heap=()=>{try{return performance.memory?performance.memory.usedJSHeapSize/1048576:0}catch(e){return 0}};
  const near=()=>{try{if(typeof camp!='undefined'&&camp)return 0;let n=0;for(const e of E){if(e.dead||e.hp<=0||e.ally)continue;if(Math.hypot(e.x-P.x,e.y-P.y)<300)n++}return n}catch(e){return 0}};
- const sysInfo=()=>{try{const c=document.getElementById('c3')||document.querySelector('canvas'),gl=c&&(c.getContext('webgl2')||c.getContext('webgl'));let gpu='';try{const x=gl&&gl.getExtension('WEBGL_debug_renderer_info');gpu=x?gl.getParameter(x.UNMASKED_RENDERER_WEBGL):''}catch(e){}
+ let GPUN=null;const gpuName=()=>{if(GPUN!==null)return GPUN;GPUN='';try{const c=document.getElementById('c3')||document.querySelector('canvas'),gl=c&&(c.getContext('webgl2')||c.getContext('webgl'));const x=gl&&gl.getExtension('WEBGL_debug_renderer_info');GPUN=x?String(gl.getParameter(x.UNMASKED_RENDERER_WEBGL)):''}catch(e){}return GPUN};
+ setTimeout(()=>{try{(window.requestIdleCallback||setTimeout)(()=>gpuName())}catch(e){}},8000);
+ const sysInfo=()=>{try{const gpu=gpuName();
   return{when:new Date().toISOString(),version:(window.ASHEN_VERSION||document.title||''),desktop:!!window.ASHEN_DESKTOP,ua:navigator.userAgent,gpu,dpr:devicePixelRatio,screen:[screen.width,screen.height],window:[innerWidth,innerHeight],
    canvases:[...document.querySelectorAll('canvas')].filter(q=>q.offsetParent).slice(0,4).map(q=>[q.id||q.className,q.width,q.height]),gfx:typeof GFX!='undefined'?GFX:null,fx:!!window.FXON,floor:typeof fl!='undefined'?fl:null,cls:P&&P.cls}}catch(e){return{err:String(e)}}};
  let prevT=0,prevHeap=heap();
@@ -12952,13 +12954,22 @@ var PERF3=(()=>{const R={on:true,ring:[],cur:null,rec:null,quiet:0,saved:0,lastS
    if(R.rec){R.rec.frames.push(f);if(t-R.rec.t0>6000)finish()}
    else{const n=f.near;if(n===0)R.quiet+=f.ms;else{if(R.quiet>5000&&R.saved<3&&t-R.lastSave>60000)start(t,n);R.quiet=0}}}
   prevT=t;R.cur=nf()}catch(e){}requestAnimationFrame(tick)}
- function start(t,n){R.rec={t0:t,info:sysInfo(),frames:R.ring.slice(-Math.min(R.ring.length,120)),trigger:{enemiesNear:n}};lt.length=0}
- function finish(){const r=R.rec;R.rec=null;R.saved++;R.lastSave=performance.now();try{
+ function start(t,n){R.rec={t0:t,info:sysInfo(),frames:R.ring.slice(-Math.min(R.ring.length,120)),trigger:{enemiesNear:n}};lt.length=0;
+  try{if(typeof Profiler=='function')R.rec.prof=new Profiler({sampleInterval:5,maxBufferSize:40000})}catch(e){R.rec.profErr=String(e).slice(0,120)}}
+ /* which functions ran during each slow frame (self = the function itself, incl = it or anything it called) */
+ function freezeStacks(trace,F){try{const fr=trace.frames,st=trace.stacks,nm=i=>{const f=fr[i];return(f.name||'(anon)')+':'+(f.line||0)},out=[];
+  for(const f of F.filter(f=>f.ms>60&&f.t>=F.t0).sort((x,y)=>y.ms-x.ms).slice(0,6)){const a=f.t-f.ms,b=f.t,self={},incl={};let n=0;
+   for(const smp of trace.samples){if(smp.timestamp<a||smp.timestamp>b||smp.stackId==null)continue;n++;let sid=smp.stackId,first=true;const seen=new Set();
+    while(sid!=null){const s_=st[sid],k=nm(s_.frameId);if(first){self[k]=(self[k]||0)+1;first=false}if(!seen.has(k)){incl[k]=(incl[k]||0)+1;seen.add(k)}sid=s_.parentId}}
+   const top=o=>Object.entries(o).sort((x,y)=>y[1]-x[1]).slice(0,14).map(([k,v])=>k+' '+Math.round(100*v/Math.max(1,n))+'%');
+   out.push({frame_ms:f.ms,at_ms_from_fight:Math.round(f.t-F.t0),samples:n,self:top(self),incl:top(incl)})}return out}catch(e){return[{err:String(e)}]}}
+ async function finish(){const r=R.rec;R.rec=null;R.saved++;R.lastSave=performance.now();let trace=null;try{if(r.prof)trace=await r.prof.stop()}catch(e){r.profErr=String(e).slice(0,120)}try{
   const F=r.frames,iv=F.map(f=>f.ms).sort((a,b)=>a-b),pct=p=>iv[Math.min(iv.length-1,Math.floor(p*iv.length))];
   const why=f=>{const js=f.upd+f.drw,parts=[];if(f.links)parts.push('shader compile ('+f.links+' programs, '+f.linkMs+' ms)');if(f.gc>=2)parts.push('garbage collection ('+f.gc+' MB freed)');if(f.upMB>=6||f.texMB>=4)parts.push('upload to GPU ('+f.upMB+' MB buffers, '+f.texMB+' MB textures)');
    if(js>f.ms*.6)parts.push('game code ('+js.toFixed(0)+' ms: update '+f.upd+', draw '+f.drw+' incl. monsters '+f.mon+', hero '+f.hero+', effects '+f.fx+')');if(!parts.length)parts.push('graphics card / browser (game code only '+js.toFixed(0)+' ms of '+f.ms+')');return parts.join('; ')};
   const worst=F.slice().sort((a,b)=>b.ms-a.ms).slice(0,12).map(f=>Object.assign({at_ms_from_fight:Math.round(f.t-r.t0),why:why(f)},f));
-  const rep={info:r.info,trigger:r.trigger,summary:{frames:F.length,fps_avg:+(1000/(iv.reduce((a,b)=>a+b,0)/iv.length)).toFixed(1),frame_ms_p50:pct(.5),p95:pct(.95),p99:pct(.99),max:iv[iv.length-1],
+  r.frames.t0=r.t0;const freezes=trace?freezeStacks(trace,r.frames):null;
+  const rep={info:r.info,trigger:r.trigger,profiler:trace?'on':(r.profErr||'not available'),freezes,summary:{frames:F.length,fps_avg:+(1000/(iv.reduce((a,b)=>a+b,0)/iv.length)).toFixed(1),frame_ms_p50:pct(.5),p95:pct(.95),p99:pct(.99),max:iv[iv.length-1],
    over_33ms:iv.filter(x=>x>33.4).length,over_50ms:iv.filter(x=>x>50).length,over_100ms:iv.filter(x=>x>100).length,shader_links:F.reduce((a,f)=>a+f.links,0),gc_events:F.filter(f=>f.gc>=2).length,
    upload_MB_total:+F.reduce((a,f)=>a+f.upMB,0).toFixed(1),long_tasks:lt.slice(0,40)},worst,frames:F};
   const txt=JSON.stringify(rep);

@@ -58,7 +58,7 @@ function run(argv, i) {
   }
 
   app.whenReady().then(() => {
-    protocol.handle(SCHEME, (req) => {
+    protocol.handle(SCHEME, async (req) => {
       let u;
       try { u = new URL(req.url); } catch { return new Response('Bad request', { status: 400 }); }
       if (u.hostname !== 'app') return new Response('Not found', { status: 404 });
@@ -66,7 +66,11 @@ function run(argv, i) {
       try { rel = decodeURIComponent(u.pathname).replace(/^\/+/, ''); } catch { return new Response('Bad request', { status: 400 }); }
       const abs = path.resolve(root, rel || entryRel);
       if (!inside(root, abs)) return new Response('Forbidden', { status: 403 });
-      return net.fetch(pathToFileURL(abs).toString());
+      const res = await net.fetch(pathToFileURL(abs).toString());
+      // The game page may profile itself (the JS Self-Profiling API) to report what a freeze was spent on.
+      if (!/\.html?$/i.test(abs)) return res;
+      const h = new Headers(res.headers); h.set('Document-Policy', 'js-profiling');
+      return new Response(res.body, { status: res.status, statusText: res.statusText, headers: h });
     });
     const allowed = new Set(['fullscreen', 'pointerLock', 'clipboard-sanitized-write']);
     session.defaultSession.setPermissionRequestHandler((_wc, perm, cb) => cb(allowed.has(perm)));
