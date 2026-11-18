@@ -2,6 +2,32 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.3.5
+
+- **A Healing Fountain in town.** It stands in the plaza south of the campfire, between the Personal Chest and the
+  Ashen Crystal: an octagonal stone basin with a two-tier centre piece, water spilling from bowl to bowl, a glowing
+  heart-crystal with a jet of water, four crystal lamps and a ring of turning Life runes. Stand near it to restore
+  health and mana over time (faster while you stand still), or press F to drink for a quick burst.
+- **Fixed: F (and other keys) stopped working.** After typing in a text box, such as the party code or name in
+  Fellowship, the box kept the keyboard after its window closed, and the game ignores keys typed into text boxes.
+  A key pressed while a hidden box has the keyboard now goes to the game.
+- **Fixed: party experience.** Party members who were not the leader missed experience for kills, most often their
+  own killing blows. The leader now announces every kill and each member takes their share once.
+- **Fixed: the Gift window could not be closed.** Cancel and choosing a player now close it.
+- **Items you cannot pick up no longer take over F.** With a full bag, a nearby item shows "Bag full" and talking,
+  shops and stairs come first. Tomes show their name in prompts.
+- **Options: Character select and Main menu.** In camp they save first. In the dungeon you are asked to click
+  twice, since progress since your last save in camp is lost.
+- **Spells look like their element on the ground.** Ground spells and bursts are no longer a jelly bubble: Fire is a
+  ring of flames, Water a whirlpool, Ice frost and standing shards, Earth jagged rock spikes and glowing cracks,
+  Lightning arcs and a charged edge, Nature vines, sprouts and spores, Holy shafts of light, Wind spiralling
+  streaks, Shadow and Death dark wisps, Arcane orbiting motes.
+- **No more cast ball.** Spells such as the Assassin's Deathtouch flashed a large glowing disc and a dashed ring
+  beside the hero, left over from the old top-down view. Weapon swings also drew a second flat arc. Both are gone.
+- **Buffs that raise two stats show both runes** in their casting circle.
+- **Camera and walls.** The camera now pulls in at once when a wall comes between it and your hero, and checks a
+  wider path, so walls no longer hide the character.
+
 ## 2.3.4
 
 - **Fixed: shop windows turned into the Fellowship page.** After opening Fellowship (for example to form a party), any

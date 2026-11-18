@@ -2479,7 +2479,7 @@ if(e.boss&&(e.bc=(e.bc??3)-dt)<=0){e.bc=3.5;for(let i=0;i<8;i++){const a=i*Math.
 if(e.race=='bat'&&e.ag){const w=Math.sin(Date.now()/230+(e.id||0)*3)*85*dt;e.x+=-dy*w;e.y+=dx*w}if(e.race=='golem'&&!e.cmd&&!e.grd&&d<130){e.gs=(e.gs??2.5)-dt;if(e.gs<=0){e.gs=6;e.at=.34;ZN.push({x:e.x,y:e.y,t:.9,r:92,src:e,t0:Date.now(),dm:e.dm*1.5});shake(2)}}e.x=Math.max(10,Math.min(W-10,e.x));e.y=Math.max(50,Math.min(H-10,e.y));push(e,e.r*.6);if(e.boss&&(e.sc=(e.sc??4)-dt)<=0){e.sc=5;ZN.push({x:P.x,y:P.y,t:1.1,r:75,src:e,t0:Date.now(),dm:e.dm*1.6})}}}catch(_er){if(window.errNote)errNote('monster',_er)}finally{P=_r}}else mpGW(dt);
 if(CMDR&&!CMDS&&E.includes(CMDR)&&dist(CMDR,P)<480){CMDS=1;toast('War horns sound... a Commander and his guard are near');shake(4)}mpG()||SEP();MNU(dt);CP.forEach(c=>c.t-=dt);CP=CP.filter(c=>c.t>0);for(const p of PR.slice()){HOME(p,dt);p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.hx){const h=p.hx;h.a=(h.a||0)+dt;const sp_=Math.hypot(p.vx,p.vy)||1,off=Math.sin(h.a*h.fr+h.ph)*h.am*Math.min(1,h.a*5);p.x+=-p.vy/sp_*(off-(h.l||0));p.y+=p.vx/sp_*(off-(h.l||0));h.l=off}p.life-=dt;pz(p.x,p.y,G3.on?18:0,p.c2&&Math.random()<.4?p.c2:p.c,(p.sz||4)*.5,.22+.05*(p.tr||0),0,0,R(-6,6),0,1);let rm=p.life<=0||p.x<0||p.x>W||p.y<0||p.y>H||OB.some(o=>dist(p,o)<o.r*.8)||(DGG&&cellAt(p.x,p.y)==1)||WBLK(p);
 if(p.f=='p'){if(!p.vo)for(const e of E)if(dist(p,e)<e.r+4&&!(p.h&&p.h.includes(e))){PH(p,e);if(p.pr>0){p.pr--;(p.h=p.h||[]).push(e)}else{rm=true;break}}}else if(p.g){}else if(mpPHit(p)){rm=true}else{const mm=MIN.find(q=>q.t!='banner'&&q.hp>0&&dist(p,q)<q.r+4);if(mm){hurtM(mm,p.k);rm=true}}if(rm&&p.boom&&!p.ex&&p.f=='p')BOOM(p,null);if(rm)PR=PR.filter(x=>x!=p)}
-CHU();for(const o of GR.slice())if(dist(o,P)<24&&room(o.i)){put(o.i);GR=GR.filter(x=>x!=o);toast('Picked up '+iname(o.i).replace(/<[^>]+>/g,' ').split('  ')[0].trim())}
+CHU();for(const o of GR.slice())if(dist(o,P)<24&&room(o.i)){put(o.i);GR=GR.filter(x=>x!=o);toast('Picked up '+INAME(o.i))}
 if(DGG&&(EXT-=dt)<=0){EXT=.12;reveal();if(EXD)mmRebuild()}
 if(!portal&&!camp&&started&&!mpG()&&(!E.length||(DGG&&!E.some(e=>e.boss)&&E.length<=ETO*.3))){portal=DGG?{x:DGX.exit.x,y:DGX.exit.y}:{x:W/2,y:80};toast(E.length?'The seal weakens. The way down opens at the far end of the halls.':'The way down opens. Loot, then step in.');try{mpFloorRevive()}catch(e){}}
 tpUpd(dt);campFx(dt);if(portal&&started){if(Math.random()<dt*24){const a=R(0,6.28),r=R(8,46);pz(portal.x+R(-24,24),portal.y+R(-6,6),G3.on?R(6,70):0,Math.random()<.5?ptl().a:ptl().b,2.4,R(1,1.8),R(-8,8),R(-8,8),R(40,80),0,1)}if(Math.random()<dt*12)pz(portal.x+R(-80,80),portal.y+R(-60,40),G3.on?80:0,'#9a948e',2,R(1.6,2.6),R(-6,6),R(-4,4),R(-26,-14),0,0);for(const bx of[-66,66])if(Math.random()<dt*9)pz(portal.x+bx+R(-3,3),portal.y+34,G3.on?30:0,ptl().a,2,R(.8,1.4),R(-5,5),0,R(30,55),0,1)}if(portal&&DGG&&!camp&&started){const pd=dist(P,portal);if(!DGX.amb&&pd<340){DGX.amb=1;if(Math.random()<(fl<3?.15:.25)){AMBUSH(['The gate is guarded! Shapes lunge from the dark!','An ambush at the exit! Hold your ground!','Something was waiting by the stairs...'][RI(0,2)],fl>=6?3:2)}}else if(!DGX.amb2&&pd<130){DGX.amb2=1;if(Math.random()<.1)AMBUSH('One last ambush at the threshold!',2)}}
@@ -2850,6 +2850,7 @@ for(const n of CNP){const L=TLAY[n.id];if(L){if(!(window.SHOP3&&SHOP3(n,L,{m,J,H
   m.cyl(n.x,0,n.y,40,6,16,J(stone2,.05),BR);for(let k=0;k<4;k++){const a=k*1.5708+.785,x=n.x+Math.cos(a)*36,z=n.y+Math.sin(a)*36;m.cyl(x,6,z,3,30,6,H_('#3a3a40'));m.blob(x,40,z,3.6,4.4,3.6,H_('#9fd8ff'),0,6,3,1);tor.push({x,y:z,nx:0,ny:0,_y:40})}continue}
  if(n.id=='mus'){rects.push([n.x+30,n.y-36,n.x+86,n.y+20]);continue}}
 for(const[cx,cz,fx,fz]of[[180,110,0,1],[460,110,0,1],[W/2-430,110,0,1],[W/2+430,110,0,1],[W-460,110,0,1],[W-180,110,0,1],[180,H-110,0,-1],[470,H-110,0,-1],[760,H-110,0,-1],[W-760,H-110,0,-1],[W-470,H-110,0,-1],[W-180,H-110,0,-1],[90,370,1,0],[90,870,1,0],[90,1370,1,0],[W-90,370,-1,0],[W-90,870,-1,0],[W-90,1370,-1,0],[W/2-420,380,0,1],[W/2+420,380,0,1]])house(cx,cz,42,40,fx,fz);
+if(window.FOUNTAIN)FOUNTAIN(m,J,H_,rects,tor,T);
 /* theme dressing across the town */
 const far=(x,z)=>rects.every(r=>x<r[0]-30||x>r[2]+30||z<r[1]-30||z>r[3]+30)&&Math.abs(x-W/2)>110&&Math.hypot(x-FP.x,z-FP.y)>240;
 for(let k=0;k<130;k++){const x=R(60,W-60),z=R(160,H-160);if(!far(x,z))continue;
@@ -4385,9 +4386,9 @@ const T=[C3.sx+rx*C3.so,(window.CAMTY||44)+(camp&&window.GHT?GHT(C3.sx,C3.sy):0)
 const WH=(x,y)=>{if(!DGG){const m=camp?20:0;if(x<m||x>W-m||y<m||y>H-m)return camp?600:80;if(camp&&window.TOWNR)for(const r of TOWNR)if(x>r[0]&&x<r[2]&&y>r[1]&&y<r[3])return r.h?GHT(x,y)+12:600;return -1}const i=Math.floor(x/CSZ),j=Math.floor(y/CSZ),g=(a,b)=>a<0||b<0||a>=DGW||b>=DGH?1:DGG[b*DGW+a];if(g(i,j)!=1)return-1;if(g(i,j-1)!=1||g(i,j-2)!=1||g(i,j-3)!=1)return 40;return(BK=='cave'||BK=='ember')?112:BK=='mount'?155:72};
 const blk=(p,D)=>{const c=Math.cos(p),s=Math.sin(p);for(let d=8;d<=D;d+=5){const w=WH(T[0]-fx*c*d,T[2]-fy*c*d);if(w>=0&&T[1]+s*d<w+8)return d}return 0};
 let pe=C3.pt,D=C3.dst;
-if(DGG){const CHg=window.DGCH,c=Math.cos(pe),s=Math.sin(pe);for(let d=6;d<=D;d+=4){const x=T[0]-fx*c*d,z=T[2]-fy*c*d,y=T[1]+s*d,i=Math.floor(x/CSZ),j=Math.floor(z/CSZ);let b=i<0||j<0||i>=DGW||j>=DGH||DGG[j*DGW+i]==1;if(!b&&CHg&&y>CHg[j*DGW+i]-12)b=true;if(!b)for(let q=0;q<4;q++){const ox=x+(q&1?7:-7),oz=z+(q&2?7:-7),ii=Math.floor(ox/CSZ),jj=Math.floor(oz/CSZ);if(ii<0||jj<0||ii>=DGW||jj>=DGH||DGG[jj*DGW+ii]==1){b=true;break}}if(!b)for(const o of OB){if(o.sm)continue;if((o.x-x)**2+(o.y-z)**2<(o.r+10)**2){b=true;break}}if(b){D=Math.max(22,d-8);break}}}
+if(DGG){const CHg=window.DGCH,c=Math.cos(pe),s=Math.sin(pe);for(let d=6;d<=D;d+=4){const x=T[0]-fx*c*d,z=T[2]-fy*c*d,y=T[1]+s*d,i=Math.floor(x/CSZ),j=Math.floor(z/CSZ);let b=i<0||j<0||i>=DGW||j>=DGH||DGG[j*DGW+i]==1;if(!b&&CHg&&y>CHg[j*DGW+i]-12)b=true;if(!b)for(let q=0;q<4;q++){const ox=x+(q&1?11:-11),oz=z+(q&2?11:-11),ii=Math.floor(ox/CSZ),jj=Math.floor(oz/CSZ);if(ii<0||jj<0||ii>=DGW||jj>=DGH||DGG[jj*DGW+ii]==1){b=true;break}}if(!b)for(const o of OB){if(o.sm)continue;if((o.x-x)**2+(o.y-z)**2<(o.r+10)**2){b=true;break}}if(b){D=Math.max(18,d-10);break}}}
 else{const hit=blk(pe,D);if(hit)D=Math.max(camp?50:26,hit-12)}
-if(fresh||C3.pe===undefined){C3.pe=pe;C3.cd=D}else{C3.pe+=(pe-C3.pe)*(pe>C3.pe?.3:.07);{const nw_=performance.now();if(D<C3.cd-3){C3.cd+=(D-C3.cd)*.3;C3.hz=nw_}else if(D>C3.cd+3&&nw_-(C3.hz||0)>900)C3.cd+=(D-C3.cd)*.035}}
+if(fresh||C3.pe===undefined){C3.pe=pe;C3.cd=D}else{C3.pe+=(pe-C3.pe)*(pe>C3.pe?.3:.07);{const nw_=performance.now();if(D<C3.cd-1){C3.cd=D;C3.hz=nw_}else if(D>C3.cd+3&&nw_-(C3.hz||0)>900)C3.cd+=(D-C3.cd)*.035}}
 const ph=C3.pe,ch=Math.cos(ph),sh=Math.sin(ph),F=[fx*ch,-sh,fy*ch],d=C3.cd;
 const sx=SHK>.3?R(-SHK,SHK)*.8:0,sz=SHK>.3?R(-SHK,SHK)*.8:0;SHK*=.88;
 const eye=[T[0]-F[0]*d+sx,Math.max(9,T[1]-F[1]*d),T[2]-F[2]*d+sz],ctr=[eye[0]+F[0]*100,eye[1]+F[1]*100,eye[2]+F[2]*100],proj=R3.M4.persp(C3.fov,VW/VH,6,3200),view=R3.M4.look(eye,ctr);
@@ -5125,7 +5126,7 @@ function mpSnapIn(m){const r=MP.run;if(!r||r.host)return;if(m.f!==undefined&&(m.
  if(m.po&&!portal)portal={x:m.po[0],y:m.po[1]};
  if(Array.isArray(m.gr))MP.rdy=m.gr;
  if(Array.isArray(m.kl))for(const n of m.kl){const e=em.get(n);if(e&&!e.dead)deathE(e,1)}
- if(m.al&&m.al.b){try{const bs=atob(m.al.b),n=m.al.n|0;for(const e of E){if(e.nid===undefined||e.nid>=n||e.dead)continue;const on=(bs.charCodeAt(e.nid>>3)>>(e.nid&7))&1;if(on)e.miss=0;else{e.miss=(e.miss||0)+1;if(e.miss>=3)e.dead=1}}E=E.filter(e=>!(e.dead&&e.miss>=3))}catch(_){}}
+ if(m.al&&m.al.b){try{const bs=atob(m.al.b),n=m.al.n|0;for(const e of E){if(e.nid===undefined||e.nid>=n||e.dead)continue;const on=(bs.charCodeAt(e.nid>>3)>>(e.nid&7))&1;if(on)e.miss=0;else{e.miss=(e.miss||0)+1;if(e.miss>=3){if(!e.dead&&P&&!camp&&dist(e,P)<1100){try{deathE(e,1)}catch(_){}}e.dead=1}}}E=E.filter(e=>!(e.dead&&e.miss>=3))}catch(_){}}
 }
 /* guest world step: proxies glide to the host's positions; visibility is computed locally */
 function mpGW(dt){const k=Math.min(1,dt*12);for(const e of E){if(e.tx!==undefined){e.x+=(e.tx-e.x)*k;e.y+=(e.ty-e.y)*k}e.fl-=dt;e.at-=dt;if(DGG){const d=dist(e,P);e.los=d<760&&los(e,P);if(e.los&&d<580){e.vs=.3;e.spt=2.5}else{e.vs=(e.vs||0)-dt;e.spt=(e.spt||0)-dt}}}}
@@ -5392,6 +5393,7 @@ function doDodge(){if(!P||!started||over||GAL.on||P.ghost||(P.dgcd>0)||(P.rl&&P.
    {const r=el('div','or'),b=el('button','sw'+(document.fullscreenElement||document.webkitFullscreenElement?' on':''),px('bfs'));r.appendChild(el('span','','Full screen'));b.onclick=()=>{$('bfs').click();om.hidden=true};r.appendChild(b);p.appendChild(r)}
    {const b=el('button','ob',px('br')||'Rotate screen');b.onclick=()=>{$('br').click();om.hidden=true};p.appendChild(b)}
    {const b=el('button','ob','Move buttons');b.onclick=()=>{om.hidden=true;uiEdit(true)};p.appendChild(b)}}
+  try{OPTEXTRA(p,()=>{om.hidden=true})}catch(e){}
   {const b=el('button','ob','Controls guide');b.onclick=()=>{om.hidden=true;showCtl()};p.appendChild(b)}
   {const b=el('button','ob pri','Close');b.onclick=()=>{om.hidden=true};p.appendChild(b)}
   om.appendChild(p)}
@@ -5477,7 +5479,7 @@ function TPmv(){const ix=(keys.d||keys.ArrowRight?1:0)-(keys.a||keys.ArrowLeft?1
  const ipr=document.createElement('div');ipr.id='ipr';ipr.hidden=true;wrap.appendChild(ipr);
  const tmh=document.createElement('div');tmh.id='tmh';tmh.hidden=true;wrap.appendChild(tmh);
  // a window is open if it is not hidden and actually displayed (position:fixed panels have no offsetParent, so check styles)
- const shown=el=>!el.hidden&&getComputedStyle(el).display!='none'&&getComputedStyle(el).visibility!='hidden';
+ const shown=el=>{if(el.hidden)return false;const c=getComputedStyle(el);if(c.display=='none'||c.visibility=='hidden'||+c.opacity<.05)return false;const r=el.getBoundingClientRect();return r.width>2&&r.height>2&&r.bottom>0&&r.right>0&&r.top<innerHeight&&r.left<innerWidth};
  const uiOpen=()=>{for(const el of document.querySelectorAll('.pg,#gal,#optm,#ctlm'))if(shown(el))return true;return false};
  const locked=()=>document.pointerLockElement===cv;
  const unlock=()=>{if(locked()){try{document.exitPointerLock()}catch(e){}}};
@@ -5496,16 +5498,19 @@ function TPmv(){const ix=(keys.d||keys.ArrowRight?1:0)-(keys.a||keys.ArrowLeft?1
   if(camp)for(const n of CNP){const d=dist(P,n);if(d<130)off(window.SHOPIN?d+10:d-60,{k:'npc',n,t:window.SHOPIN?'Talk to '+n.nm:(window.BLD&&BLD.includes(n.id)?'Enter '+n.ti:'Talk to '+n.ti),s:window.SHOPIN?n.rl:(window.BLD&&BLD.includes(n.id)?n.nm+', '+n.rl:n.rl)})}
   if(window.SHOPIN){const d=Math.hypot(P.x-SRW/2,P.y-SRH);if(d<160)off(d<90?d-40:d,{k:'exit',t:'Leave',s:'Back to '+townName()})}
   if(window.SHOPIN&&window.STNOF){for(const d of shopDisp()){const L=STNOF(d);if(!L)continue;const dd=Math.hypot(P.x-d.x,P.y-d.z)-(d.k=='bench'?40:d.k=='qbd'||d.k=='mbd'?50:16);if(dd<70)off(dd*.9,{k:'stn',d,t:L[0],s:L[1]})}}
+  if(camp&&!window.SHOPIN&&window.FOUNT&&FOUNT.built){const d=Math.hypot(P.x-FOUNT.x,P.y-FOUNT.z)-FOUNT.R;if(d<60)off(d+10,{k:'ftn',t:'Drink',s:'Healing Fountain'})}
   if(portal){const d=dist(P,portal);if(d<IR)off(d,{k:'go',x:portal.x,y:portal.y,t:camp?'Leave camp':'Descend',s:camp?'Into the dungeon':'Floor '+(fl+1)})}
   for(const c of CH){if(c.open||c.vault)continue;if(DGG&&!EXP[Math.floor(c.y/CSZ)*DGW+Math.floor(c.x/CSZ)])continue;const d=dist(P,c);if(d<IR)off(d,{k:'go',x:c.x,y:c.y,t:'Open chest',s:(CHT[c.tier]||{}).n||''})}
   for(const c of CH){if(!c.vault)continue;const d=dist(P,c);if(d<IR)off(d,{k:'vault',t:'Open stash',s:'Account stash'})}
-  for(const o of GR){const d=dist(P,o);if(d<IR){let nm='item';try{nm=iname(o.i).replace(/<[^>]+>/g,' ').split('  ')[0].trim()}catch(e){}off(d,{k:'go',x:o.x,y:o.y,t:'Pick up',s:nm.slice(0,40)})}}
+  for(const o of GR){const d=dist(P,o);if(d<IR){let nm='item';try{nm=INAME(o.i)}catch(e){}let ok=true;try{ok=room(o.i)}catch(e){}if(ok)off(d,{k:'go',x:o.x,y:o.y,t:'Pick up',s:nm.slice(0,40)});else off(d+90,{k:'full',t:'Bag full',s:nm.slice(0,40)})}}
   return b}
  function interact(){const a=interactable();if(!a)return toast('Nothing to interact with nearby');
   if(a.k=='npc'){unlock();(window.NPCGO||showShop)(a.n.id);return}
   if(a.k=='exit'){exitShop();return}
   if(a.k=='stn'){unlock();window.SHBENCH=1;dispAct(a.d);return}
   if(a.k=='vault'){unlock();try{vaultGo()}catch(e){}return}
+  if(a.k=='ftn'){try{FTNDRINK()}catch(e){}return}
+  if(a.k=='full'){toast('Your bag is full. Make room to pick up '+a.s);return}
   P.tgt=null;P.mv={x:a.x,y:a.y}}
  TPX.interact=interact;TPX.ia=interactable;
 
@@ -12513,7 +12518,9 @@ function castSigil0(x,z,cg,a,T){const ty=cg.ty,[c1,c2]=(typeof EC2!='undefined'&
    for(let i=0;i<6;i++){const t=T*.3+(i+.5)/6*6.2832;runeFlat(x+Math.cos(t)*34*gr,z+Math.sin(t)*34*gr,.9,i%2?11:14,-t+1.57,C1,g)}runeFlat(x,z,1.8,14,0,W,e);break}
   case'emp':{polyFlat(x,z,26*gr,4,T*.5,.8,C2,e);polyFlat(x,z,26*gr,4,T*.5+.785,.8,C1,e);polyFlat(x,z,15*gr,4,-T*.6,.45,C1,g);
    for(let i=0;i<4;i++){const t=-T*.3+i/4*6.2832+.4;runeFlat(x+Math.cos(t)*34*gr,z+Math.sin(t)*34*gr,1,16+((i*3+er+hv)%8),-t+1.57,C1,g)}
-   const sr=(()=>{try{const s=S[(P.lastCast||'')];if(s&&s.bx){for(const k in BUFRUNE)if(s.bx[k])return BUFRUNE[k]}}catch(e){}return er})();runeFlat(x,z,1.8,sr,0,W,e);break}
+   /* every stat the buff raises gets its rune in the middle: one large, or two to four side by side round the centre */
+   const rs=(()=>{const o=[];try{const s=S[(P.lastCast||'')];const bx=s&&(s.bx||(s.k=='haste'?{spd:1}:s.k=='regen'?{reg:1}:s.k=='lust'?{lust:1}:null));if(bx)for(const k in bx){const r=BUFRUNE[k];if(r!=null&&!o.includes(r))o.push(r)}}catch(e){}return o.length?o.slice(0,4):[er]})();
+   if(rs.length==1)runeFlat(x,z,1.8,rs[0],0,W,e);else{const n=rs.length,rr=n==2?7.5:9.5,sc=n==2?1.35:1.15;for(let i=0;i<n;i++){const t=T*.15+i/n*6.2832+(n==2?0:-1.5708);runeFlat(x+Math.cos(t)*rr,z+Math.sin(t)*rr,sc,rs[i],0,W,e)}polyFlat(x,z,rr+6,24,0,.35,C2,g)}break}
   case'curse':{const px=-fz,pz=fx,L=30*gr;for(const s of[-1,1]){let prev=null;for(let i=0;i<=10;i++){const u=i/10*2-1,w=(1-u*u)*12*gr,qx=x+fx*u*L+px*w*s,qz=z+fz*u*L+pz*w*s;if(prev)lineFlat(prev[0],prev[1],qx,qz,.7,C2,e);prev=[qx,qz]}}
    polyFlat(x,z,8*gr,14,T,.5,C1,e);runeFlat(x,z,1.1,8,-fa,W,e);for(const s of[-1,1])runeFlat(x+px*s*24*gr,z+pz*s*24*gr,.9,12,-fa,C1,g);break}
   case'summon':{polyFlat(x,z,30*gr,5,T*.15-1.5708,.8,C2,e);polyFlat(x,z,36*gr,40,0,.4,C1,g);for(let i=0;i<5;i++){const t=T*.15-1.5708+i/5*6.2832;runeFlat(x+Math.cos(t)*30*gr,z+Math.sin(t)*30*gr,1.05,(i*5+er+hv)%16,-t+1.57,C1,e)}
@@ -12541,21 +12548,48 @@ function PROJFX(p){try{if(!sfxOK())return false;const ty=p.ty;if(!ty||SFXARROW.i
  p._orb=1;const R=Math.max(4,(p.sz||4)*1.4),y=20,sp=Math.hypot(p.vx||0,p.vy||0)||1,dx=(p.vx||0)/sp,dz=(p.vy||0)/sp,s=(p.x*.013+p.y*.007)%7;
  sfxBub(p.x,y,p.y,R,R,ty,.9,.12,s);for(let i=1;i<=2;i++){const k=1-i*.3;sfxBub(p.x-dx*R*1.25*i,y,p.y-dz*R*1.25*i,R*k,R*k,ty,.3*k,0,s+i)}
  if(ty=='Fire'||ty=='Primal')FIRE.add(p.x-dx*R,y-3,p.y-dz*R,R*1.1,R*2.2,FIRE.std,s);return true}catch(e){return false}}
-/* ---- novas, fear and instant bursts ---- */
+/* ---- novas, fear and instant bursts: the element's own ground pattern spreading out, with its own effect ---- */
 function NOVAFX(f,p,T){try{if(!sfxOK())return false;const ty=f.ty||'Arcane',e1=1-Math.pow(1-p,3),r=f.r*(.2+.8*e1),a=Math.max(0,1-p),y=window.GHT?GHT(f.x,f.y):0;
- sfxBub(f.x,y,f.y,r,r*.5,ty,a*.8,(1-p)*.25,(f.x*.01)%7,y-40);
- if(ty=='Fire'||ty=='Primal'){const n=10;for(let i=0;i<n;i++){const t=i/n*6.2832;FIRE.add(f.x+Math.cos(t)*r*.92,y,f.y+Math.sin(t)*r*.92,7*a+2,16*a+4,FIRE.std,i)}}
- if(ty=='Water'&&a>.1)sfxVortex(f.x,y+1.2,f.y,r*.95,ty,f.x*.01,1);
- return true}catch(e){return false}}
+ ELEMGROUND(f.x,y,f.y,r,ty,p,(f.x*.013+f.y*.007)%7,a,T,1);return true}catch(e){return false}}
 /* ---- lingering ground spells ---- */
-function ZONEFX(z,T){try{if(!sfxOK())return false;const ty=z.ty||'Arcane',a=Math.min(1,((z.d0||5)-z.t)*4,z.t*1.5);if(a<=0)return true;const y=window.GHT?GHT(z.x,z.y):0,R=z.r,s=(z.x*.013+z.y*.007)%7;
- sfxBub(z.x,y,z.y,R,R*.38,ty,a*.85,.15+.1*Math.sin(T*3+s),s,y-30);
- if(ty=='Fire'||ty=='Primal'){const n=Math.min(14,Math.round(R/9));for(let i=0;i<n;i++){const t=i/n*6.2832+T*.15,rr=R*(.82+.1*Math.sin(T*2+i));FIRE.add(z.x+Math.cos(t)*rr,y,z.y+Math.sin(t)*rr,6*a+2,(13+5*Math.sin(T*4+i))*a,FIRE.std,i+s)}
-  for(let i=0;i<4;i++){const t=i*1.57+T*.4;FIRE.add(z.x+Math.cos(t)*R*.4,y,z.y+Math.sin(t)*R*.4,5*a,10*a,FIRE.std,i+9)}}
- else if(ty=='Water'||ty=='Ice')sfxVortex(z.x,y+1.2,z.y,R*.98,ty,s,ty=='Ice'?-.4:1);
- else if(ty=='Shadow'||ty=='Death'||ty=='Nature')sfxVortex(z.x,y+1.2,z.y,R*.9,ty,s,-1);
- else if(ty=='Holy'||ty=='Arcane'||ty=='Lightning'){const[c1,c2]=(EC2[ty]||['#fff','#fff']);try{SPG.ring(z.x,z.y,R*.98,1.5,1.3,.9*a,CHM.K(c2),.9,40,T*.3,.97)}catch(e){}}
- return true}catch(e){return false}}
+function ZONEFX(z,T){try{if(!sfxOK())return false;const ty=z.ty||'Arcane',a=Math.min(1,((z.d0||5)-z.t)*4,z.t*1.5);if(a<=0)return true;const y=window.GHT?GHT(z.x,z.y):0,s=(z.x*.013+z.y*.007)%7;
+ ELEMGROUND(z.x,y,z.y,z.r,ty,.32-.06*Math.sin(T*2+s)+(1-a)*.6,s,a,T,0);return true}catch(e){return false}}
+/* ================= SPELLS ON THE GROUND LOOK LIKE THEIR ELEMENT =================
+   Ground spells and bursts used to be a flattened shimmering bubble in the element's colour. Now each is its
+   element's own ground pattern (flames and cinders, frost cracks and crystal spikes, ripples, forked arcs, cracked
+   heaving earth, gust streaks, a turning rune circle, creeping smoke, rays of light, leaves and vines), with
+   something of its own rising from it:
+   Fire: a ring of real flames and flames inside. Water: a whirlpool. Ice: cold vapour and frost shards rising.
+   Earth: dust and grit kicked up. Wind: streaks spiralling round. Lightning: arcs jumping across. Holy: shafts of
+   light. Arcane: a ring of motes. Nature: drifting spores. Shadow and Death: dark wisps curling up. */
+var ELPAL={dust:[[.92,.82,.62],[.62,.48,.3],[.28,.2,.12]],shadow:[[.75,.55,1],[.38,.12,.6],[.06,.02,.1]],death:[[.7,1,.75],[.2,.7,.35],[.03,.12,.06]],frost:[[.95,1,1],[.6,.85,1],[.15,.3,.55]],spore:[[.9,1,.7],[.45,.85,.3],[.1,.3,.08]]};
+function ELEMGROUND(x,y,z,R,ty,p,s,a,T,burst){const e=(typeof NOVAE!='undefined'&&NOVAE[ty]!=null)?NOVAE[ty]:7,ec=(EC2[ty]||['#ffffff','#ffffff']),A=FIRE.hx(ec[0]),B=FIRE.hx(ec[1]);
+ const wall={Wind:.9,Holy:1.1,Lightning:.7,Arcane:.45,Shadow:.6,Death:.6}[ty]||0;
+ FXQ.nova.push({o:[x,y,z],r:R,h:wall*Math.min(burst?60:34,R*(burst?.45:.3)),e,p:Math.min(.95,Math.max(0,p)),s,a:A,b:B});
+ const n=Math.max(5,Math.min(14,Math.round(R/9))),rib=(pts,ws,fd,c,al)=>{if(FXQ.rib)FXQ.rib.push({pts,ws,fd,c,al,wh:.55,done:1,tp:1})};
+ if(ty=='Fire'||ty=='Primal'){for(let i=0;i<n;i++){const t=i/n*6.2832+T*.15+s,rr=R*(.85+.08*Math.sin(T*2+i));FIRE.add(x+Math.cos(t)*rr,y,z+Math.sin(t)*rr,6*a+2,(burst?18:13+5*Math.sin(T*4+i))*a,FIRE.std,i+s)}
+  if(!burst)for(let i=0;i<4;i++){const t=i*1.57+T*.4+s;FIRE.add(x+Math.cos(t)*R*.4,y,z+Math.sin(t)*R*.4,5*a,10*a,FIRE.std,i+9)}}
+ else if(ty=='Water'){if(a>.1)sfxVortex(x,y+1.2,z,R*.95,ty,s,1)}
+ else if(ty=='Ice'){for(let i=0;i<n;i++){const t=i/n*6.2832+s,rr=R*(.25+.65*((i*.37+s)%1));FIRE.add(x+Math.cos(t)*rr,y,z+Math.sin(t)*rr,5*a+1.5,(10+4*Math.sin(T*1.5+i))*a,ELPAL.frost,i+s)}
+  /* frost shards standing round the edge */
+  for(let i=0;i<n+4;i++){const t=i/(n+4)*6.2832+s*.7,rr=R*(.88+.08*((i*.61)%1)),h=(6+7*((i*.37+s)%1))*a,lean=.18;const bx=x+Math.cos(t)*rr,bz=z+Math.sin(t)*rr;rib([[bx,y+.5,bz],[bx-Math.cos(t)*h*lean,y+h,bz-Math.sin(t)*h*lean]],[2.2*a+.3,.15],[1,1],[.75,.92,1],.95*a)}}
+ else if(ty=='Earth'){for(let i=0;i<n;i++){const t=i/n*6.2832+s,rr=R*(.5+.45*((i*.53+s)%1)),pu=Math.max(0,Math.sin(T*2.2+i*1.7));FIRE.add(x+Math.cos(t)*rr,y,z+Math.sin(t)*rr,7*a+1.5,(6+12*pu)*a,ELPAL.dust,i+s)}
+  /* cracks running out from the centre, glowing faintly */
+  for(let k=0;k<6;k++){const t0=k/6*6.2832+s,pts=[],ws=[],fd=[];for(let i=0;i<=6;i++){const u=i/6,t=t0+Math.sin(i*2.3+k)*.18,rr=R*(.12+.85*u);pts.push([x+Math.cos(t)*rr,y+.6,z+Math.sin(t)*rr]);ws.push((1.6-1.2*u)*a+.2);fd.push(1-u*.5)}rib(pts,ws.map(w=>w*1.6),fd,[1,.62,.25],.9*a)}
+  /* rock spikes jutting up round the edge */
+  try{const K=CHM.K,C1=K('#3e3226'),C2=K('#54442f');for(let i=0;i<13;i++){const t=i/13*6.2832+s*.9,rr=R*(.8+.14*((i*.47+s)%1)),h=(7+7*((i*.31+s)%1))*Math.min(1,a*1.6);CHM.setF(x+Math.cos(t)*rr,y,z+Math.sin(t)*rr,1.7,-t,0,0,null,0);CHM.P(0,h*.45,0,1.3+((i*.7)%.8),h*.55,1.1,i%2?C1:C2,{az:.22*(i%3-1),ax:-.35});CHM.P(1.4,h*.22,.9,.9,h*.3,.8,C1,{az:-.35,ax:.25})}}catch(_){}}
+ else if(ty=='Nature'){for(let i=0;i<n;i++){const t=i/n*6.2832+T*.2+s,rr=R*(.3+.6*((i*.41)%1));FIRE.add(x+Math.cos(t)*rr,y+2,z+Math.sin(t)*rr,3.4*a+.5,(9+4*Math.sin(T*2+i))*a,ELPAL.spore,i+s)}
+  /* a ring of curling vines and leaves on the ground */
+  for(let k=0;k<2;k++){const pts=[],ws=[],fd=[];for(let i=0;i<=40;i++){const u=i/40,t=u*6.2832+k*.4+T*.05,rr=R*(.9+.06*Math.sin(u*28+k*3+T))+k*3;pts.push([x+Math.cos(t)*rr,y+.8+k*.3,z+Math.sin(t)*rr]);ws.push((1.5+.8*Math.sin(u*40+k))*a+.2);fd.push(1)}rib(pts,ws.map(w=>w*1.5),fd,k?[.55,.9,.3]:[.25,.6,.2],a)}
+  /* sprouting stems with leaves */
+  try{const K=CHM.K,G1=K('#3f8a32'),G2=K('#7acc4a');for(let i=0;i<10;i++){const t=i/10*6.2832+s,rr=R*(.35+.5*((i*.53+s)%1)),h=(5+6*((i*.29)%1))*Math.min(1,a*1.5),sw=Math.sin(T*1.8+i)*.15;CHM.setF(x+Math.cos(t)*rr,y,z+Math.sin(t)*rr,2.4,t,0,0,null,0);CHM.P(0,h*.5,0,.5,h*.5,.5,G1,{az:sw});CHM.P(1.6,h*.75,0,1.7,.35,.9,G2,{az:-.5+sw,em:.15});CHM.P(-1.6,h*.55,0,1.5,.35,.8,G2,{az:.5+sw,em:.15})}}catch(_){}}
+ else if(ty=='Shadow'||ty=='Death'){const P_=ty=='Shadow'?ELPAL.shadow:ELPAL.death;for(let i=0;i<n;i++){const t=i/n*6.2832-T*.3+s,rr=R*(.35+.55*((i*.29)%1));FIRE.add(x+Math.cos(t)*rr,y,z+Math.sin(t)*rr,4*a+1,(10+4*Math.sin(T*1.7+i))*a,P_,i+s)}}
+ else if(ty=='Wind'){for(let k=0;k<3;k++){const pts=[],ws=[],fd=[];for(let i=0;i<=24;i++){const u=i/24,t=T*2.6+k*2.094+u*3.2,rr=R*(.3+.65*u);pts.push([x+Math.cos(t)*rr,y+3+u*6,z+Math.sin(t)*rr]);ws.push(1.3*Math.sin(Math.PI*u)*a+.1);fd.push(Math.sin(Math.PI*u))}rib(pts,ws,fd,A,.85*a)}}
+ else if(ty=='Lightning'){const fr=Math.floor(T*12);for(let k=0;k<3;k++){const a0=(fr*.7+k*2.1+s)%6.2832,a1=a0+2.2+((fr+k)%3)*.5,pts=[],ws=[],fd=[];for(let i=0;i<=8;i++){const u=i/8,t=a0+(a1-a0)*u,rr=R*(.85-.5*Math.sin(Math.PI*u))+((fr*7+i*13+k)%9-4)*1.6;pts.push([x+Math.cos(t)*rr,y+3+((fr+i)%3),z+Math.sin(t)*rr]);ws.push(1.1*a+.2);fd.push(1)}rib(pts,ws.map(w=>w*1.4),fd,[1,1,1],a);rib(pts,ws.map(w=>w*3),fd,A,.7*a)}
+  /* the charged edge */
+  {const pts=[],ws=[],fd=[];for(let i=0;i<=36;i++){const t=i/36*6.2832,rr=R*.95+((Math.floor(T*14)*5+i*7)%5-2)*1.2;pts.push([x+Math.cos(t)*rr,y+2.5,z+Math.sin(t)*rr]);ws.push(1.8*a+.3);fd.push(1)}rib(pts,ws,fd,[1,1,1],.8*a);rib(pts,ws.map(w=>w*2.6),fd,A,.7*a)}}
+ else if(ty=='Holy'){for(let i=0;i<Math.min(8,n);i++){const t=i/8*6.2832+T*.2+s,rr=R*(.3+.55*((i*.43)%1)),h=26+18*Math.sin(T*1.3+i);rib([[x+Math.cos(t)*rr,y+1,z+Math.sin(t)*rr],[x+Math.cos(t)*rr,y+h*a,z+Math.sin(t)*rr]],[2.4*a,.2],[1,0],[1,.95,.7],.8*a)}}
+ else if(ty=='Arcane'||ty=='Blade'){for(let i=0;i<8;i++){const t=T*(ty=='Blade'?2.4:1.1)+i/8*6.2832,rr=R*.92;if(typeof sfxBub=='function')sfxBub(x+Math.cos(t)*rr,y+6+2*Math.sin(T*3+i),z+Math.sin(t)*rr,1.6,1.6,ty,.9*a,.3,i)}}}
 /* the flat painted copies of novas and zones on the ground layer are not drawn when the 3D versions are */
 {const _df=drawFX;drawFX=function(f){try{if(f&&(f.k=='nova'||f.k=='zone'||f.k=='fear')&&window.FXON&&typeof G3!='undefined'&&G3.on)return}catch(e){}return _df.apply(this,arguments)}}
 
@@ -12977,5 +13011,165 @@ var PERF3=(()=>{const R={on:true,ring:[],cur:null,rec:null,quiet:0,saved:0,lastS
   else{try{const k='ad_perf';const a=JSON.parse(localStorage.getItem(k)||'[]');a.push(rep);localStorage.setItem(k,JSON.stringify(a.slice(-3)))}catch(e){}}
   R.last=rep}catch(e){console.warn('perf3',e)}}
  requestAnimationFrame(tick);return R})();
+/* ================= 2.3.5 FIXES =================
+   - F and the other game keys stopped working after typing in a text box (the Fellowship tab's party code or name):
+     the box kept the keyboard after its window closed, and the game ignores keys typed into text boxes. A key pressed
+     while a hidden box has the keyboard now takes it back for the game.
+   - The Gift window could not be closed (its own style kept it on screen when it was told to hide).
+   - Item names in prompts and toasts: tomes showed as just "Tome:".
+   - Options gain "Character select" and "Main menu". */
+
+/* ---- keys: a hidden text box never keeps the keyboard ---- */
+(function(){
+ const vis=el=>{if(!el||!el.isConnected)return false;let n=el;while(n&&n!==document.body){if(n.hidden)return false;const c=getComputedStyle(n);if(c.display=='none'||c.visibility=='hidden')return false;n=n.parentElement}const r=el.getBoundingClientRect();return r.width>0&&r.height>0};
+ const typing=el=>el&&(/INPUT|TEXTAREA|SELECT/.test(el.tagName)||el.isContentEditable);
+ addEventListener('keydown',e=>{const a=document.activeElement;if(!typing(a)||vis(a))return;
+  /* the box is gone from view: give the keyboard back to the game and replay this key to it */
+  try{a.blur()}catch(_){}e.stopImmediatePropagation();e.preventDefault();
+  try{dispatchEvent(new KeyboardEvent('keydown',{key:e.key,code:e.code,keyCode:e.keyCode,shiftKey:e.shiftKey,ctrlKey:e.ctrlKey,altKey:e.altKey,metaKey:e.metaKey,repeat:e.repeat,bubbles:true}))}catch(_){}},true);
+ addEventListener('keyup',e=>{const a=document.activeElement;if(typing(a)&&!vis(a)){try{a.blur()}catch(_){}}},true);
+ /* Enter in a party code or name box finishes typing: hand the keyboard back */
+ addEventListener('keydown',e=>{if(e.key=='Enter'&&typing(document.activeElement)&&document.activeElement.tagName=='INPUT'){const a=document.activeElement;setTimeout(()=>{try{if(document.activeElement===a)a.blur()}catch(_){}},0)}},false);
+ /* closing any window (Esc, close buttons) also hands the keyboard back */
+ setInterval(()=>{try{const a=document.activeElement;if(typing(a)&&!vis(a))a.blur()}catch(_){}},400)})();
+
+/* ---- the Gift window hides when told to ---- */
+{const css=document.createElement('style');css.textContent='#giftm[hidden]{display:none!important}';document.head.appendChild(css)}
+
+/* ---- item names as plain text ---- */
+function INAME(i){if(!i)return'item';if(i.k=='book'){const s=S[i.s];return'Tome: '+(s?s.n:'Unknown')}
+ return String(iname(i)).replace(/<small>[\s\S]*$/,'').replace(/<br>[\s\S]*$/,'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim()||'item'}
+
+/* ---- Options: back to character select or to the title screen ---- */
+var LEAVEQ=0;
+function leaveGame(to){
+ try{if(window.SHOPIN&&typeof exitShop=='function')exitShop()}catch(e){}
+ let saved=false;try{if(camp&&ACC.cur>=0)saved=saveGame(true)}catch(e){}
+ try{if(document.pointerLockElement)document.exitPointerLock()}catch(e){}
+ try{P.mv=null;P.tgt=null;for(const k in keys)keys[k]=0}catch(e){}
+ try{const o=$('optm');if(o)o.hidden=true;for(const id of['ipr','xh','mpg','giftm']){const q=document.getElementById(id);if(q)q.hidden=true}}catch(e){}
+ try{started=false;over=false;$('ov').hidden=true;$('dth').hidden=true;$('st').hidden=false;title()}catch(e){}
+ if(to=='main'){try{splashShow()}catch(e){}}
+ toast(saved?'Game saved':camp?'Left the game':'Left the dungeon. Progress since your last save in camp was not kept.')}
+function OPTEXTRA(p,close){if(!P||!started)return;
+ const E_=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+ const warn=!camp;p.appendChild(E_('h3','','LEAVE'));
+ if(warn)p.appendChild(E_('small','lvw','You are in the dungeon: leaving now loses what you found since your last save in camp. Click again to confirm.'));
+ const mk=(label,to)=>{const b=E_('button','ob',label);b.onclick=()=>{if(warn&&LEAVEQ!==to){LEAVEQ=to;b.textContent=label+': click again to leave';setTimeout(()=>{if(LEAVEQ===to){LEAVEQ=0;b.textContent=label}},4000);return}LEAVEQ=0;close();leaveGame(to)};p.appendChild(b)};
+ mk('Character select','vault');mk('Main menu','main')}
+{const css=document.createElement('style');css.textContent='.op small.lvw{display:block;opacity:.8;margin:-2px 0 6px;font-size:12px;line-height:1.35}';document.head.appendChild(css)}
+
+/* ---- no flat 2D cast flash under the 3D view ----
+   Casting a spell (Deathtouch and every other non-weapon skill) flashed a big glowing disc beside the hero and a dashed
+   ring at their feet, and weapon swings drew a second flat arc. These came from the old top-down view. In 3D the
+   casting circles and the skills' own slices show the cast, so the old flash is no longer drawn. */
+{const _a=AFXR;AFXR=function(){try{if(typeof G3!='undefined'&&G3.on)return}catch(e){}return _a.apply(this,arguments)}}
+
+/* ---- party experience: every kill counts for everyone in the run ----
+   Monsters live on the party leader's game. A guest got experience for a kill only if word of that monster's death
+   reached them in the leader's position updates, which could be missed, so a guest who landed the killing blows
+   could end a fight with nothing. Now the leader also announces each kill with its experience, and every member
+   takes their share once (scaled to their own level, as before). */
+var PXP={got:{},fid:-1};
+function pxpKey(n){return(MP.run?MP.run.fid:0)+':'+n}
+{const _d=deathE;deathE=function(e,g){
+ try{if(e&&!e.dead&&e.nid!==undefined&&typeof MP!='undefined'&&MP.run){
+  if(mpHost()&&!g){const rk=e.rank=='trp'?.8:e.ldr?1.15:1;mpEmit('evt',{k:'pxp',n:e.nid,f:MP.run.fid,b:Math.max(1,Math.round((e.xp||1)*(1+fl*.25)*rk))})}
+  else if(mpG()){const k=pxpKey(e.nid);if(PXP.got[k]){/* already credited by the announcement: no second share */const x0=P.xp,l0=P.lv;const r=_d.apply(this,arguments);if(P.lv===l0)P.xp=x0;return r}PXP.got[k]=1}}}catch(_){}
+ return _d.apply(this,arguments)}}
+function pxpIn(d){try{if(!MP.run||!mpG()||d.f!==MP.run.fid||d.n===undefined)return;const k=pxpKey(d.n);if(PXP.got[k])return;
+ const e=E.find(q=>q.nid===d.n&&!q.dead);if(e){deathE(e,1);return}
+ PXP.got[k]=1;const gap=Math.max(.5,Math.min(2.2,1+(fl*3+2-P.lv)*.12)),xp=Math.max(1,Math.round((+d.b||1)*gap));
+ P.xp+=xp;while(P.xp>=need()){P.xp-=need();P.lv++;P.hp=Math.min(mxh(),P.hp+mxh()*.4);P.mp=mxm();P.pts+=2;P.sp++;FT.push({x:P.x,y:P.y-34,t:1.6,s:'LEVEL UP!  Lv '+P.lv,c:'#ffe27a'});toast('You’ve leveled up! Level '+P.lv)}}catch(_){}}
+{const _h=mpHookParty;mpHookParty=function(rm){const r=_h.apply(this,arguments);try{rm.on('evt',m=>{if(m.isMe)return;const d=m.data||{};if(d.k=='pxp'&&MP.run&&m.peer===MP.run.hostPeer)pxpIn(d)},()=>{})}catch(_){}return r}}
+setInterval(()=>{try{const f=MP.run?MP.run.fid:-1;if(f!==PXP.fid){PXP.fid=f;PXP.got={}}}catch(_){}},1000);
+/* ================= THE HEALING FOUNTAIN =================
+   In the plaza south of the campfire, between the Personal Chest and the Ashen Crystal:
+   - an octagonal stone basin on a round paved apron, with a carved coping, eight corner posts and four lamp posts
+     carrying glowing ember-blue crystals;
+   - a two-tier centre piece: a broad lower bowl and a smaller upper bowl on a fluted stem, crowned by a
+     glowing heart-crystal with a jet of water rising from it;
+   - water spills over both bowl rims in falling streams, splashes rise and ripples spread across the basin;
+   - a ring of Life runes glows on the paving and turns slowly.
+   Standing near it restores health and mana over time (faster while resting), and pressing F drinks from it for a
+   quick burst. It works the same for every member of a party. */
+var FOUNT={x:1050,z:1290,R:66,near:150};
+
+/* ---- the stonework (built once with the town) ---- */
+function FOUNTAIN(m,J,H_,rects,tor,T){try{
+ const x=FOUNT.x,z=FOUNT.z,st='#6a645c',st2='#4a453f',pale='#8a8278',wat='#123a4e',wat2='#1f6f8f',brass='#c8a048';
+ const oct=(r,k)=>{const a=k/8*6.2832+Math.PI/8;return[x+Math.cos(a)*r,z+Math.sin(a)*r,a]};
+ /* paved apron: a ring of slabs round a smooth disc */
+ m.cyl(x,0,z,104,.5,32,J('#3e3832',.03));m.cyl(x,.5,z,92,.4,32,J('#4a443c',.03));
+ for(let k=0;k<28;k++){const a=k/28*6.2832,rr=98;m.box(x+Math.cos(a)*rr,.4,z+Math.sin(a)*rr,20,1.2,9,J(pale,.08),0,-a+1.5708)}
+ /* the basin: octagonal wall, a carved band, and the coping on top */
+ m.cyl(x,0,z,FOUNT.R,5,8,J(st2,.04),0,FOUNT.R+3);m.cyl(x,5,z,FOUNT.R,12,8,J(st,.05));
+ for(let k=0;k<8;k++){const[a0,b0]=oct(FOUNT.R+.6,k),[a1,b1]=oct(FOUNT.R+.6,k+1),mx=(a0+a1)/2,mz=(b0+b1)/2,ang=Math.atan2(b1-b0,a1-a0);
+  /* a recessed panel with a small brass boss on each face */
+  m.box(mx,8,mz,34,6,1.4,J(st2,.05),0,-ang);m.blob(mx,11,mz,1.8,1.8,1.8,H_(brass),0,6,4,.25);
+  /* the coping slab, overhanging */
+  const[c0x,c0z]=oct(FOUNT.R+2,k),[c1x,c1z]=oct(FOUNT.R+2,k+1);m.box((c0x+c1x)/2,17,(c0z+c1z)/2,Math.hypot(c1x-c0x,c1z-c0z)+3,4,10,J(pale,.05),0,-Math.atan2(c1z-c0z,c1x-c0x))}
+ /* corner posts with caps */
+ for(let k=0;k<8;k++){const[px,pz]=oct(FOUNT.R+3,k);m.box(px,0,pz,10,24,10,J(st,.05));m.box(px,24,pz,13,3,13,J(pale,.05));m.cone(px,27,pz,5,6,4,J(st2,.05),0,Math.PI/4)}
+ /* the water in the basin, a little below the coping */
+ m.cyl(x,0,z,FOUNT.R-3,16.6,8,H_(wat),.35);m.cyl(x,16.6,z,FOUNT.R-6,.3,24,H_(wat2),.45);
+ /* centre piece: plinth, lower bowl, fluted stem, upper bowl, heart-crystal */
+ m.cyl(x,16,z,16,6,12,J(st2,.04),0,13);m.cyl(x,22,z,12,10,12,J(st,.05),0,9);
+ m.cyl(x,32,z,9,7,20,J(st,.05),0,31);m.cyl(x,39,z,31,2,20,J(pale,.05));m.cyl(x,39.4,z,28,1.8,20,H_(wat2),.3);
+ for(let k=0;k<8;k++){const a=k/8*6.2832;m.box(x+Math.cos(a)*6,41,z+Math.sin(a)*6,1.6,20,1.6,J(pale,.04),0,-a)}
+ m.cyl(x,41,z,6.5,20,10,J(st,.05),0,5);m.cyl(x,61,z,5,5,14,J(st,.05),0,17);m.cyl(x,66,z,17,1.6,14,J(pale,.05));m.cyl(x,66.3,z,15,1.5,14,H_(wat2),.35);
+ m.cyl(x,67,z,4,4,8,H_(brass),.25,2.5);m.blob(x,76,z,4.2,8,4.2,H_('#8ff0e8'),0,6,4,1);
+ /* four lamp posts on the apron, each with a glowing crystal in a brass cage */
+ for(let k=0;k<4;k++){const a=k/4*6.2832+Math.PI/4,px=x+Math.cos(a)*84,pz=z+Math.sin(a)*84;
+  m.box(px,0,pz,9,4,9,J(st2,.04));m.cyl(px,4,pz,2.4,46,8,H_('#2e2a26'));m.box(px,50,pz,8,1.5,8,H_(brass),.15);
+  m.blob(px,56,pz,3,5,3,H_('#9fe0ff'),0,6,4,1);for(const s of[[-1,-1],[1,-1],[-1,1],[1,1]])m.box(px+s[0]*3.6,51.5,pz+s[1]*3.6,.8,9,.8,H_(brass),.15);
+  m.cone(px,61,pz,4.6,4,4,H_('#2e2a26'),0,Math.PI/4);if(k%2==0)tor.push({x:px,y:pz,nx:0,ny:0,_y:56})}
+ /* keep walkers, the camera and town clutter off it */
+ const rc=[x-FOUNT.R-8,z-FOUNT.R-8,x+FOUNT.R+8,z+FOUNT.R+8];rc.nc=1;rc.h=1;rects.push(rc);FOUNT.built=1;
+ }catch(e){console.warn('[fountain]',e)}}
+
+/* ---- the moving water, the rune ring and the healing glow (every frame) ---- */
+var FTNS={t:0,drink:0,last:0,ripples:[]};
+function FTNDRAW(T){try{if(!FOUNT.built||typeof camp=='undefined'||!camp||(typeof SHOPIN!='undefined'&&SHOPIN))return;
+ const x=FOUNT.x,z=FOUNT.z,t=T,K=CHM.K,near=P&&Math.hypot(P.x-x,P.y-z)<FOUNT.near,glow=near?1:.6;
+ const rib=(pts,ws,c,al)=>{if(FXQ.rib)FXQ.rib.push({pts,ws,fd:pts.map(()=>1),c,al,wh:.5,done:1,tp:1})};
+ /* streams spilling from the upper bowl into the lower, and from the lower into the basin */
+ const fall=(r0,y0,r1,y1,n,ph,w)=>{for(let k=0;k<n;k++){const a=k/n*6.2832+ph,ca=Math.cos(a),sa=Math.sin(a),pts=[],ws=[];
+  for(let i=0;i<=7;i++){const u=i/7,rr=r0+(r1-r0)*(u*.8+.2*u*u),yy=y0+(y1-y0)*u*u+Math.sin(t*9+k+i)*.15;pts.push([x+ca*rr,yy,z+sa*rr]);ws.push(w*(1-.35*u))}
+  rib(pts,ws,[.62,.88,1],.75)}};
+ fall(15.5,67.6,22,41,10,t*.05,1.5);fall(29,41.2,40,17.4,16,.2,1.8);
+ /* the jet rising from the heart-crystal */
+ const WJ=[[.9,1,1],[.55,.85,1],[.2,.5,.8]];FIRE.add(x,84,z,2.6,12+2*Math.sin(t*5),WJ,3.7);FIRE.add(x,84,z,1.4,17+2*Math.sin(t*7),WJ,8.1);
+ /* splashes where the streams land, and drops falling back from the jet */
+ if(typeof sfxBub=='function'){for(let k=0;k<10;k++){const a=k/10*6.2832+.3,ph=(t*1.6+k*.37)%1,rr=40+ph*4;sfxBub(x+Math.cos(a)*rr,17.6+Math.sin(ph*Math.PI)*5,z+Math.sin(a)*rr,.9*(1-ph)+.3,.9*(1-ph)+.3,'Water',.7*(1-ph),.2,k)}
+  for(let k=0;k<6;k++){const ph=(t*.8+k/6)%1,a=k*1.047+t*.2,rr=2+ph*12;sfxBub(x+Math.cos(a)*rr,96-ph*28-ph*ph*10,z+Math.sin(a)*rr,.7,.7,'Water',.6*(1-ph*.6),.2,k+20)}}
+ /* ripples spreading across the basin */
+ if(window.polyFlat){for(let k=0;k<3;k++){const ph=(t*.35+k/3)%1,rr=32+ph*(FOUNT.R-36);polyFlat(x,z,rr,24,ph,.35,K('#bfefff'),.5*(1-ph)*glow,17.2)}
+  /* Life runes round the apron */
+  if(window.runeFlat){const n=12,rot=t*.08;for(let k=0;k<n;k++){const a=rot+k/n*6.2832,rr=86;runeFlat(x+Math.cos(a)*rr,z+Math.sin(a)*rr,.95,k%3==0?14:k%3==1?13:11,-a+1.5708,K(k%3==0?'#8affc0':'#9fd8ff'),(.35+.25*Math.sin(t*1.5+k))*glow)}
+   polyFlat(x,z,78,48,0,.5,K('#7fd8ff'),.25*glow,.8);polyFlat(x,z,92,56,0,.4,K('#7fd8ff'),.18*glow,.8)}}
+ /* the hero glows green and gold while they are being restored */
+ if(near&&P&&(P.hp<mxh()||P.mp<mxm())){const D=FTNS.drink>performance.now();for(let k=0;k<(D?8:4);k++){const ph=(t*.7+k/(D?8:4))%1,a=k*2.4+t*.6,rr=10+4*Math.sin(t+k);
+   if(typeof sfxBub=='function')sfxBub(P.x+Math.cos(a)*rr,6+ph*44,P.y+Math.sin(a)*rr,.8*(1-ph)+.25,.8*(1-ph)+.25,k%2?'Nature':'Holy',.85*(1-ph),.3,k+40)}
+  if(window.polyFlat)polyFlat(P.x,P.y,18+2*Math.sin(t*3),20,t,.5,K(D?'#ffe9a0':'#8affc0'),.55,.9)}
+ }catch(e){}}
+
+/* ---- healing: standing near restores health and mana over time; F drinks for a quick burst ---- */
+setInterval(()=>{try{if(!FOUNT.built||!P||!started||over||!camp||(typeof SHOPIN!='undefined'&&SHOPIN))return;
+ if(Math.hypot(P.x-FOUNT.x,P.y-FOUNT.y)>=FOUNT.near)return;const now=performance.now(),dt=.25,D=FTNS.drink>now;
+ const rest=!(P.mv||(typeof keys!='undefined'&&(keys.w||keys.a||keys.s||keys.d)));
+ const hr=(D?.25:rest?.08:.05)*dt,mr=(D?.25:rest?.1:.06)*dt,h0=P.hp,m0=P.mp;
+ P.hp=Math.min(mxh(),P.hp+mxh()*hr);P.mp=Math.min(mxm(),P.mp+mxm()*mr);
+ if((P.hp>h0+.5||P.mp>m0+.5)&&now-FTNS.last>1800){FTNS.last=now;const g=Math.round(P.hp-h0),q=Math.round(P.mp-m0);try{if(g>0)FT.push({x:P.x,y:P.y-38,t:.9,s:'+'+g,c:'#8affb0'});if(q>0)FT.push({x:P.x+10,y:P.y-30,t:.9,s:'+'+q,c:'#8ac8ff'})}catch(e){}}
+ if(!FTNS.told){FTNS.told=1;toast('The Healing Fountain restores you while you stay near it. Press F to drink.')}
+}catch(e){}},250);
+function FTNDRINK(){FTNS.drink=performance.now()+3000;try{if(window.AUD&&AUD.sfx)AUD.sfx('heal')}catch(e){}
+ try{FT.push({x:P.x,y:P.y-44,t:1.2,s:'Refreshed',c:'#bff5ff'})}catch(e){}toast('You drink from the Healing Fountain.')}
+
+/* walkers bump into the basin: one round obstacle, added once per visit to town */
+setInterval(()=>{try{if(FOUNT.built&&typeof camp!='undefined'&&camp&&typeof CPO!='undefined'&&CPO&&!CPO._ftn&&!(typeof SHOPIN!='undefined'&&SHOPIN)){CPO._ftn=1;CPO.push({x:FOUNT.x,y:FOUNT.z,r:FOUNT.R+4})}}catch(e){}},300);
+
+/* drawn with the rest of the spell layer */
+{const _d=SPG.draw;SPG.draw=function(){const r=_d.apply(this,arguments);try{FTNDRAW(performance.now()/1000)}catch(e){}return r}}
 
 </script></body></html>
