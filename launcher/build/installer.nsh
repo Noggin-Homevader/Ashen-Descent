@@ -3,6 +3,8 @@
 ; The default electron-builder uninstaller removes the whole install folder, which would delete the game and the
 ; player's saves when an update replaces the old launcher. These macros make sure that never happens.
 
+!include LogicLib.nsh
+!include FileFunc.nsh
 !macro ashenDataDirs DO
   !insertmacro ${DO} "game"
   !insertmacro ${DO} "userdata"
