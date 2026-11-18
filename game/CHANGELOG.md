@@ -2,6 +2,13 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.3.7
+
+- **Fixed: the freeze at the start of fights.** Each time a monster died, the loot roll checked every skill in the
+  game to see whether it could drop as a tome, and rebuilt your whole skill tree for each one. That took half a
+  second or more per kill, so the first kills of a fight froze the game. The skill tree is now built once and reused
+  until your class, level or skills change. The check now takes under a millisecond.
+
 ## 2.3.6
 
 - **Gear fits together.** Capes now fall over everything worn beneath them:
