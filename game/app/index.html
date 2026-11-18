@@ -2746,7 +2746,7 @@ for(let i=0;i<14;i++)m.blob(FP.x+Math.cos(i*.449)*27,3,FP.y+Math.sin(i*.449)*27,
 m.box(FP.x-6,2,FP.y+3,26,5,5,H_('#4a2e18'),0,.5);m.box(FP.x+8,2,FP.y-2,26,5,5,H_('#3a2410'),0,-.6);
 for(let i=0;i<6;i++){const a=i/6*6.2832+.26,x=FP.x+Math.cos(a)*92,z=FP.y+Math.sin(a)*92;m.box(x,0,z,44,8,10,J(EX=='stars'?stone:'#5a3a20',.08),0,-a+Math.PI/2);m.box(x,8,z,43,2,9,J(EX=='stars'?T.pl:'#7a5230',.06),0,-a+Math.PI/2);snowcap(x,10,z,14)}
 const lamp=(x,z)=>{m.cyl(x,0,z,2.2,62,6,H_('#2a2018'));m.box(x,60,z,10,3,10,H_('#2a2018'));for(const[a_,b_]of[[-3.6,-3.6],[3.6,-3.6],[3.6,3.6],[-3.6,3.6]])m.box(x+a_,63,z+b_,.9,13,.9,H_('#2a2018'));m.cyl(x,63,z,2.2,1.4,8,H_('#ffb04a'),.9);m.cone(x,76,z,8,7,4,H_('#2a2018'),0,Math.PI/4);snowcap(x,80,z,6);tor.push({x,y:z,nx:0,ny:0,_y:62,f:'lamp',fy:63.5,fw:2.4,fh:8.5})};
-for(let z=GZ2+90;z<H-120;z+=170)if(Math.abs(z-FP.y)>200)for(const sd of[-1,1])lamp(W/2+sd*92,z);
+for(let z=GZ2+90;z<H-120;z+=170)if(Math.abs(z-FP.y)>200&&!(window.FOUNT&&Math.abs(z-FOUNT.z)<120&&Math.abs(W/2-FOUNT.x)<60))for(const sd of[-1,1])lamp(W/2+sd*92,z);
 for(const[dx,dz]of[[-170,-170],[170,-170],[-170,170],[170,170]]){const x=FP.x+dx,z=FP.y+dz;m.cyl(x,0,z,5,20,8,H_('#3a3a40'));m.cyl(x,20,z,9,6,10,H_('#2a2a30'),0,12);m.blob(x,25.5,z,7,2.6,7,H_('#ff6a1a'),0,8,3,1);m.blob(x,26.5,z,4,1.6,4,H_('#ffd27a'),0,6,3,1);tor.push({x,y:z,nx:0,ny:0,_y:30,f:1,fy:25,fw:8,fh:24})}
 /* centrepiece: well, frozen fountain, lava font, mushroom ring, shipwreck mast, star obelisk */
 {const wx=FP.x+260,wz=FP.y-60;rects.push([wx-34,wz-34,wx+34,wz+34]);
@@ -4442,7 +4442,7 @@ const fx=[];if(T.vr&&T.vr.el)fx.push(T.vr.el);if(T.sl>0)fx.push('Slowed');if(T.p
 function hud3(){TBAR(tgtE());g.textAlign='center';
 {const T=tgtE();if(T&&T.hp>0&&(!DGG||T.vs>0)){const s=scr3(T.x,T.y,0),manual=P.tgt===T;if(s){const t=Date.now()/1000,rr=(T.r+10)*s.k*(1+Math.sin(t*5)*.05);g.save();g.translate(s.x,s.y);g.scale(1,.42);g.globalAlpha=manual?1:.7;g.shadowColor=manual?'#ff6a2a':'#ffd23a';g.shadowBlur=12;g.strokeStyle=manual?'#ffd23a':'#fff0b8';g.lineWidth=2.5;g.beginPath();g.arc(0,0,rr,0,7);g.stroke();g.rotate(t*1.8);g.strokeStyle=manual?'#ff4a2a':'#ffb347';g.lineWidth=4;for(let i=0;i<4;i++){g.beginPath();g.arc(0,0,rr*1.18,i*1.5708+.15,i*1.5708+.85);g.stroke()}g.restore();
 const h=scr3(T.x,T.y,T.r*3*1.05+6+(T._fa||0));if(h){const by=h.y-((T.mut||T.boss||T.cmd||T.grd)?26:14)+Math.sin(t*6)*2;g.save();g.fillStyle=manual?'#ff5a2a':'#ffd23a';g.strokeStyle='#000b';g.lineWidth=2;g.beginPath();g.moveTo(h.x-7,by-9);g.lineTo(h.x+7,by-9);g.lineTo(h.x,by);g.closePath();g.stroke();g.fill();g.restore()}}}}
-for(const e of E){if(DGG&&!(e.vs>0))continue;const z=e.r*3,s=scr3(e.x,e.y,z*1.05+6+(e._fa||0));if(!s)continue;const w=e.r*2*s.k;g.fillStyle='#000a';g.fillRect(s.x-w/2,s.y,w,4);g.fillStyle='#d43';g.fillRect(s.x-w/2,s.y,w*Math.max(0,e.hp/e.mh),4);{const SI=[];if(e.fxs){if(e.fxs.burn)SI.push(['\uD83D\uDD25','#ff8a3a']);if(e.fxs.chill||e.sl>0)SI.push(['\u2744','#9fe8ff']);if(e.fxs.bleed)SI.push(['\uD83E\uDE78','#ff5a5a'])}else if(e.sl>0)SI.push(['\u2744','#9fe8ff']);if(e.ps>0)SI.push(['\u2620','#8be07c']);if(e.st>0)SI.push(['\u26A1','#ffee55']);SI.forEach((q,i)=>{const x_=s.x+(i-(SI.length-1)/2)*17,y_=s.y+13;g.fillStyle='rgba(10,8,6,.78)';g.beginPath();g.arc(x_,y_,8,0,7);g.fill();g.strokeStyle=q[1];g.lineWidth=1.6;g.stroke();g.fillStyle=q[1];g.font='11px system-ui';g.textAlign='center';g.fillText(q[0],x_,y_+4)})}if(e.mut||e.boss||e.cmd||e.grd){g.fillStyle=e.uq?e.uq.col:e.boss?'#ffd23a':e.cmd?'#ffcf5a':e.grd?'#c8d0d8':'#ff8a7a';g.font=(e.cmd?'bold 11px':'10px')+' system-ui';g.fillText((e.uq?'\u2620 ':e.cmd?'\u2605 ':'')+e.nm,s.x,s.y-4)}}
+for(const e of E){if(DGG&&!(e.vs>0))continue;const z=e.r*3,s=scr3(e.x,e.y,z*1.05+6+(e._fa||0));if(!s)continue;const w=e.r*2*s.k;g.fillStyle='#000a';g.fillRect(s.x-w/2,s.y,w,4);g.fillStyle='#d43';g.fillRect(s.x-w/2,s.y,w*Math.max(0,e.hp/e.mh),4);try{ENSTAT(e,s,g)}catch(_){}if(e.mut||e.boss||e.cmd||e.grd){g.fillStyle=e.uq?e.uq.col:e.boss?'#ffd23a':e.cmd?'#ffcf5a':e.grd?'#c8d0d8':'#ff8a7a';g.font=(e.cmd?'bold 11px':'10px')+' system-ui';g.fillText((e.uq?'\u2620 ':e.cmd?'\u2605 ':'')+e.nm,s.x,s.y-4)}}
 for(const m of MIN.concat(mpGM())){if(m.t=='banner')continue;const s=scr3(m.x,m.y,m.r*3*1.05+6);if(!s)continue;const w=m.r*2*s.k;g.fillStyle='#000a';g.fillRect(s.x-w/2,s.y,w,3);g.fillStyle=MT[m.t].col;g.fillRect(s.x-w/2,s.y,w*Math.max(0,m.hp/m.mh),3)}
 g.font='11px system-ui';g.fillStyle='#fff8';if(portal){const s=scr3(portal.x,portal.y,78+(window.GHT?GHT(portal.x,portal.y):0));if(s)g.fillText('DOWN',s.x,s.y)}if(camp){g.save();g.textAlign='center';const LB=[];for(const n of CNP){if(n.x<-1000)continue;const s=scr3(n.x,n.y,76);if(!s)continue;g.font='700 13px Almendra,Georgia,serif';const tw=g.measureText(n.ti).width;g.font='10px system-ui';const sw=g.measureText(n.rl+' · click').width;LB.push({n,x:s.x,y:s.y-14,w:Math.max(tw,sw,70)+22})}LB.sort((a,b)=>b.y-a.y);const PLB=[];for(const L of LB){for(let k=0;k<8;k++){const q=PLB.find(q=>Math.abs(L.x-q.x)<(L.w+q.w)/2+4&&Math.abs(L.y-q.y)<32);if(!q)break;L.y=q.y-32}PLB.push(L)}for(const L of PLB){const n=L.n,s={x:L.x,y:L.y+14};g.font='700 13px Almendra,Georgia,serif';const w=L.w,x0=s.x-w/2,y0=s.y-14;g.fillStyle='rgba(18,10,6,.8)';g.strokeStyle=n.ac;g.lineWidth=1.5;g.beginPath();g.moveTo(x0+6,y0);g.lineTo(x0+w-6,y0);g.lineTo(x0+w,y0+6);g.lineTo(x0+w,y0+28);g.lineTo(x0,y0+28);g.lineTo(x0,y0+6);g.closePath();g.fill();g.stroke();g.fillStyle='#f4e6c4';g.fillText(n.ti,s.x,y0+13);g.font='10px system-ui';g.fillStyle=n.ac;g.fillText(n.rl+' \u00b7 click',s.x,y0+24)}g.restore()}MPlabels(g);
 for(const f of FT){const s=scr3(f.x,f.y,28);if(!s)continue;g.font='bold '+(f.z||12)+'px system-ui';g.lineWidth=f.o?4:3;g.strokeStyle=f.o||'rgba(0,0,0,.75)';g.lineJoin='round';g.strokeText(f.s,s.x,s.y);g.fillStyle=f.c;g.fillText(f.s,s.x,s.y)}}
@@ -11451,7 +11451,11 @@ const RUG=['M-3 4L0-4L3 4M0-4V1M-2 1L2 1','M0-4V4M-3-2L3 2M-3 2L3-2M-2-4L2-4','M
  'M0-4V4M-3 4L0 1L3 4M-2-2L2-2','M-3-4L-3 2L0 4L3 2L3-4L-3-4M0-4V4','M0 4V-4M-3-2L3-2M-2 1L2 1M-1 3L1 3','M-3 4V-1L0-4L3-1V4M0 4V0M-1 0L1 0',
  'M-3-4L3-4M-2-4V4M2-4V4M-3 4L3 4','M0 4V-4M-3-1L0-4L3-1M-2 4L0 2L2 4','M-3-3L0-4L3-3L3 1L0 4L-3 1L-3-3M0-2V2','M0-4L3 0L0 4L-3 0L0-4M0-1V1',
  'M-3-2L0-4L3-2L0 0L-3-2M0 0V4M-2 2L2 2','M-3 4L3-4M0-4L3-4L3-1M-1 1L1 3','M-3-3L0 0L-3 3M0-3L3 0L0 3','M0-4V0M-3 0L3 0L0 4L-3 0',
- 'M0 4V-4M-3-3L0 0L3-3M-3 1L0 4L3 1','M-3-4L3-4L-3 4L3 4L-3-4'];
+ 'M0 4V-4M-3-3L0 0L3-3M-3 1L0 4L3 1','M-3-4L3-4L-3 4L3 4L-3-4',
+ /* marks of the struggle (2.3.9): Siphon, Rally, Hinder, Venom, Hex, Bind, Rend, Seek, Corrode, Goad, Frenzy */
+ 'M-3-3L3-3L0 1L-3-3M0 1V4M-2 4L2 4','M-2 4V-4L3-3L-2-1M-3 4L-1 4','M-3-1L3-1M-3 1L3 1M-1-4V4M1-4V4','M-3-3L3-3M-2-3L-1 2L0 4L1 2L2-3',
+ 'M-3 0L0-3L3 0L0 3L-3 0M-4-4L4 4','M-3-4L-1-4L-1-1L-3-1L-3-4M1 1L3 1L3 4L1 4L1 1M-1-1L1 1','M-3 0L-1-4M-1 2L1-2M1 4L3 0',
+ 'M0-4V-2M0 2V4M-4 0L-2 0M2 0L4 0M-2-2L2-2L2 2L-2 2L-2-2','M-3-4L3-4M-2-4V0M0-4V3M2-4V1','M-3-2L3-4V4L-3 2L-3-2','M-3 4L-3-1L-1 1L0-4L1 1L3-1L3 4'];
 const ruUrl=s=>`url("data:image/svg+xml,${encodeURIComponent(s)}")`;
 function ruCorner(tf){return`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><g transform='${tf}'><g fill='none' stroke='#d9a441' stroke-linecap='round'><path d='M6 44V6H44' stroke-width='1.6'/><path d='M11 30V11H30' stroke-width='1' stroke-opacity='.55'/><path d='M18 6v4M24 6v6M30 6v4M6 18h4M6 24h6M6 30h4' stroke-width='1.2' stroke-opacity='.8'/></g><path d='M6 0L12 6L6 12L0 6Z' fill='#1a120b' stroke='#f0c860' stroke-width='1.3'/><circle cx='6' cy='6' r='1.8' fill='#ff8a3a'/></g></svg>`}
 function ruBand(c,o){let p='';[0,3,6,9,1,4].forEach((k,i)=>{p+=`<path transform='translate(${10+i*20} 7)' d='${RUG[k]}'/>`;p+=`<circle cx='${20+i*20}' cy='7' r='.9' fill='${c}' stroke='none'/>`});return`<svg xmlns='http://www.w3.org/2000/svg' width='120' height='14' viewBox='0 0 120 14'><g fill='none' stroke='${c}' stroke-opacity='${o}' stroke-width='1.1' stroke-linecap='round' stroke-linejoin='round'>${p}</g></svg>`}
@@ -12435,7 +12439,7 @@ var RUNEATLAS=(()=>{let cv=null;return()=>{if(cv)return cv;cv=document.createEle
 function runeIndex(){let d=$('runeidx');if(!d){d=document.createElement('div');d.id='runeidx';document.body.appendChild(d)}
  const EC=typeof EC2!='undefined'?EC2:{};
  d.innerHTML=`<div class="rxw"><div class="rxh"><b>The Ashen Runes</b><small>Sixteen marks carved by the first wardens of the Descent. Each element has its own; four speak of deeper things.</small><button onclick="$('runeidx').hidden=true">✕</button></div>
-  <h4 class="rxs2">Runes of the elements and the deep</h4><div class="rxg">${ARUNE.slice(0,16).map((r,i)=>{const c=r.el&&EC[r.el]?EC[r.el][0]:i==13?'#9fd8ff':i==14?'#8bf09b':'#ffb35a';return`<div class="rxc" style="--c:${c}"><div class="rxs">${runeSvg(i,54)}</div><div><b>${r.n}</b><em>${r.m}</em><small>${r.d}</small></div></div>`}).join('')}</div><h4 class="rxs2">Marks of the body <small>these float over a hero while a buff raises that stat</small></h4><div class="rxg">${ARUNE.slice(16).map((r,j)=>{const i=j+16;return`<div class="rxc" style="--c:${r.c}"><div class="rxs">${runeSvg(i,54)}</div><div><b>${r.n}</b><em>${r.m}</em><small>${r.st}. ${r.d}</small></div></div>`}).join('')}</div></div>`;
+  <h4 class="rxs2">Runes of the elements and the deep</h4><div class="rxg">${ARUNE.slice(0,16).map((r,i)=>{const c=r.el&&EC[r.el]?EC[r.el][0]:i==13?'#9fd8ff':i==14?'#8bf09b':'#ffb35a';return`<div class="rxc" style="--c:${c}"><div class="rxs">${runeSvg(i,54)}</div><div><b>${r.n}</b><em>${r.m}</em><small>${r.d}</small></div></div>`}).join('')}</div><h4 class="rxs2">Marks of the body <small>these float over a hero while a buff raises that stat</small></h4><div class="rxg">${ARUNE.slice(16,26).map((r,j)=>{const i=j+16;return`<div class="rxc" style="--c:${r.c}"><div class="rxs">${runeSvg(i,54)}</div><div><b>${r.n}</b><em>${r.m}</em><small>${r.st}. ${r.d}</small></div></div>`}).join('')}</div></div>`;
  d.hidden=false;d.onclick=e=>{if(e.target===d)d.hidden=true}}
 {const _w=folWay;folWay=function(){let h=_w.apply(this,arguments);const b=`<button onclick="$('ov').hidden=true;runeIndex()"><span>${runeSvg(15,16)}</span>Rune Index</button>`;
  return h?h.replace('</h4>','</h4>'+b):`<div class="fway"><h4>Waymarks</h4>${b}</div>`}}
@@ -13095,74 +13099,68 @@ setInterval(()=>{try{const f=MP.run?MP.run.fid:-1;if(f!==PXP.fid){PXP.fid=f;PXP.
    floor sat at an unseen spot in town and kept the "Pick up" prompt on F. Town has no loot of its own. */
 setInterval(()=>{try{if(typeof camp!='undefined'&&camp&&typeof GR!='undefined'&&GR&&GR.length)GR=[]}catch(e){}},500);
 /* ================= THE HEALING FOUNTAIN =================
-   In the plaza south of the campfire, between the Personal Chest and the Ashen Crystal:
-   - an octagonal stone basin on a round paved apron, with a carved coping, eight corner posts and four lamp posts
-     carrying glowing ember-blue crystals;
-   - a two-tier centre piece: a broad lower bowl and a smaller upper bowl on a fluted stem, crowned by a
-     glowing heart-crystal with a jet of water rising from it;
-   - water spills over both bowl rims in falling streams, splashes rise and ripples spread across the basin;
-   - a ring of Life runes glows on the paving and turns slowly.
-   Standing near it restores health and mana over time (faster while resting), and pressing F drinks from it for a
-   quick burst. It works the same for every member of a party. */
-var FOUNT={x:1050,z:1290,R:66,near:150};
+   Built like the Ashen Crystal and the town gate: a dark stepped octagonal dais with gilded lips and a turning
+   rune circle, four rune pillars topped with water crystals, and a stone cradle. Above the cradle floats a
+   sphere of living water. Streams spiral up from the basin into it and drops fall back, rings of water circle
+   it, and runes orbit it for what it does: Sel (Life) for health, Iska (Insight) and Dren (Clarity) for mana,
+   and Ith (Tide) for the water itself. While you are being restored, the runes for what is being restored
+   blaze and a stream of water reaches out to you.
+   Standing near restores health and mana over time (faster while you stand still); F drinks for a quick burst. */
+var FOUNT={x:1050,z:1290,R:60,near:150,orbY:64};
 
 /* ---- the stonework (built once with the town) ---- */
 function FOUNTAIN(m,J,H_,rects,tor,T){try{
- const x=FOUNT.x,z=FOUNT.z,st='#6a645c',st2='#4a453f',pale='#8a8278',wat='#123a4e',wat2='#1f6f8f',brass='#c8a048';
- const oct=(r,k)=>{const a=k/8*6.2832+Math.PI/8;return[x+Math.cos(a)*r,z+Math.sin(a)*r,a]};
- /* paved apron: a ring of slabs round a smooth disc */
- m.cyl(x,0,z,104,.5,32,J('#3e3832',.03));m.cyl(x,.5,z,92,.4,32,J('#4a443c',.03));
- for(let k=0;k<28;k++){const a=k/28*6.2832,rr=98;m.box(x+Math.cos(a)*rr,.4,z+Math.sin(a)*rr,20,1.2,9,J(pale,.08),0,-a+1.5708)}
- /* the basin: octagonal wall, a carved band, and the coping on top */
- m.cyl(x,0,z,FOUNT.R,5,8,J(st2,.04),0,FOUNT.R+3);m.cyl(x,5,z,FOUNT.R,12,8,J(st,.05));
- for(let k=0;k<8;k++){const[a0,b0]=oct(FOUNT.R+.6,k),[a1,b1]=oct(FOUNT.R+.6,k+1),mx=(a0+a1)/2,mz=(b0+b1)/2,ang=Math.atan2(b1-b0,a1-a0);
-  /* a recessed panel with a small brass boss on each face */
-  m.box(mx,8,mz,34,6,1.4,J(st2,.05),0,-ang);m.blob(mx,11,mz,1.8,1.8,1.8,H_(brass),0,6,4,.25);
-  /* the coping slab, overhanging */
-  const[c0x,c0z]=oct(FOUNT.R+2,k),[c1x,c1z]=oct(FOUNT.R+2,k+1);m.box((c0x+c1x)/2,17,(c0z+c1z)/2,Math.hypot(c1x-c0x,c1z-c0z)+3,4,10,J(pale,.05),0,-Math.atan2(c1z-c0z,c1x-c0x))}
- /* corner posts with caps */
- for(let k=0;k<8;k++){const[px,pz]=oct(FOUNT.R+3,k);m.box(px,0,pz,10,24,10,J(st,.05));m.box(px,24,pz,13,3,13,J(pale,.05));m.cone(px,27,pz,5,6,4,J(st2,.05),0,Math.PI/4)}
- /* the water in the basin, a little below the coping */
- m.cyl(x,0,z,FOUNT.R-3,16.6,8,H_(wat),.35);m.cyl(x,16.6,z,FOUNT.R-6,.3,24,H_(wat2),.45);
- /* centre piece: plinth, lower bowl, fluted stem, upper bowl, heart-crystal */
- m.cyl(x,16,z,16,6,12,J(st2,.04),0,13);m.cyl(x,22,z,12,10,12,J(st,.05),0,9);
- m.cyl(x,32,z,9,7,20,J(st,.05),0,31);m.cyl(x,39,z,31,2,20,J(pale,.05));m.cyl(x,39.4,z,28,1.8,20,H_(wat2),.3);
- for(let k=0;k<8;k++){const a=k/8*6.2832;m.box(x+Math.cos(a)*6,41,z+Math.sin(a)*6,1.6,20,1.6,J(pale,.04),0,-a)}
- m.cyl(x,41,z,6.5,20,10,J(st,.05),0,5);m.cyl(x,61,z,5,5,14,J(st,.05),0,17);m.cyl(x,66,z,17,1.6,14,J(pale,.05));m.cyl(x,66.3,z,15,1.5,14,H_(wat2),.35);
- m.cyl(x,67,z,4,4,8,H_(brass),.25,2.5);m.blob(x,76,z,4.2,8,4.2,H_('#8ff0e8'),0,6,4,1);
- /* four lamp posts on the apron, each with a glowing crystal in a brass cage */
- for(let k=0;k<4;k++){const a=k/4*6.2832+Math.PI/4,px=x+Math.cos(a)*84,pz=z+Math.sin(a)*84;
-  m.box(px,0,pz,9,4,9,J(st2,.04));m.cyl(px,4,pz,2.4,46,8,H_('#2e2a26'));m.box(px,50,pz,8,1.5,8,H_(brass),.15);
-  m.blob(px,56,pz,3,5,3,H_('#9fe0ff'),0,6,4,1);for(const s of[[-1,-1],[1,-1],[-1,1],[1,1]])m.box(px+s[0]*3.6,51.5,pz+s[1]*3.6,.8,9,.8,H_(brass),.15);
-  m.cone(px,61,pz,4.6,4,4,H_('#2e2a26'),0,Math.PI/4);if(k%2==0)tor.push({x:px,y:pz,nx:0,ny:0,_y:56})}
+ const x=FOUNT.x,z=FOUNT.z,st1='#2c2926',st2='#1c1a18',st3='#38342f',gold='#b07a3a',wat='#0f3346',wat2='#1d6f8c',shard='#8fe0ff';
+ /* the dais: three octagonal steps with gilded lips */
+ m.cyl(x,0,z,100,3,8,J(st2,.03));m.cyl(x,2.1,z,100.8,.7,8,H_(gold),.15);
+ m.cyl(x,3,z,86,3,8,J(st1,.03));m.cyl(x,5.1,z,86.8,.7,8,H_(gold),.15);
+ m.cyl(x,6,z,72,3,8,J(st3,.03));m.cyl(x,8.1,z,72.8,.7,8,H_(gold),.15);
+ /* the basin: an octagonal wall with a gilded coping, water just below its rim */
+ m.cyl(x,9,z,FOUNT.R,10,8,J(st1,.04));m.cyl(x,17.6,z,FOUNT.R+1,1.2,8,H_(gold),.2);
+ m.cyl(x,9,z,FOUNT.R-5,10.4,8,H_(wat),.35);m.cyl(x,19.4,z,FOUNT.R-8,.2,24,H_(wat2),.5);
+ /* carved panels with rune bosses on each face of the basin */
+ for(let k=0;k<8;k++){const a=k/8*6.2832+Math.PI/8,mx=x+Math.cos(a)*(FOUNT.R+.4),mz=z+Math.sin(a)*(FOUNT.R+.4);m.box(mx,11,mz,30,6,1.2,J(st2,.04),0,-a+1.5708);m.blob(mx,14,mz,1.8,1.8,1.8,H_(shard),0,6,4,.8)}
+ /* four rune pillars on the top step, banded in gold and crowned with water crystals */
+ for(let k=0;k<4;k++){const a=k/4*6.2832+Math.PI/4,px=x+Math.cos(a)*66,pz=z+Math.sin(a)*66;
+  m.box(px,9,pz,8,4,8,J(st2,.03));m.box(px,13,pz,6,26,6,J(st1,.04));m.box(px,20,pz,6.8,1.2,6.8,H_(gold),.15);m.box(px,32,pz,6.8,1.2,6.8,H_(gold),.15);
+  m.box(px,39,pz,8,2,8,J(st3,.03));m.blob(px,46,pz,2.6,6,2.6,H_(shard),0,6,4,1)}
+ /* the cradle: a plinth and four stone prongs curving up and out to hold the water */
+ m.cyl(x,19,z,12,5,8,J(st3,.04),0,9);m.cyl(x,24,z,7,14,8,J(st1,.04),0,5);m.cyl(x,37.5,z,9,1.4,8,H_(gold),.2);
+ for(let k=0;k<4;k++){const a=k/4*6.2832;let r=6,y=38;for(let i=0;i<4;i++){const nr=r+2.6+i*.8,ny=y+4.2;m.box(x+Math.cos(a)*(r+nr)/2,y,z+Math.sin(a)*(r+nr)/2,3.2-i*.4,4.6,3.2-i*.4,J(i%2?st3:st1,.04),0,-a);r=nr;y=ny}
+  m.blob(x+Math.cos(a)*r,y+1,z+Math.sin(a)*r,1.6,2.4,1.6,H_(shard),0,6,4,1)}
  /* keep walkers, the camera and town clutter off it */
- const rc=[x-FOUNT.R-8,z-FOUNT.R-8,x+FOUNT.R+8,z+FOUNT.R+8];rc.nc=1;rc.h=1;rects.push(rc);FOUNT.built=1;
+ const rc=[x-104,z-104,x+104,z+104];rc.nc=1;rc.h=1;rects.push(rc);FOUNT.built=1;
  }catch(e){console.warn('[fountain]',e)}}
 
-/* ---- the moving water, the rune ring and the healing glow (every frame) ---- */
-var FTNS={t:0,drink:0,last:0,ripples:[]};
+/* ---- the floating water, its streams and the runes (every frame) ---- */
+var FTNS={t:0,drink:0,last:0,hpOn:0,mpOn:0};
 function FTNDRAW(T){try{if(!FOUNT.built||typeof camp=='undefined'||!camp||(typeof SHOPIN!='undefined'&&SHOPIN))return;
- const x=FOUNT.x,z=FOUNT.z,t=T,K=CHM.K,near=P&&Math.hypot(P.x-x,P.y-z)<FOUNT.near,glow=near?1:.6;
- const rib=(pts,ws,c,al)=>{if(FXQ.rib)FXQ.rib.push({pts,ws,fd:pts.map(()=>1),c,al,wh:.5,done:1,tp:1})};
- /* streams spilling from the upper bowl into the lower, and from the lower into the basin */
- const fall=(r0,y0,r1,y1,n,ph,w)=>{for(let k=0;k<n;k++){const a=k/n*6.2832+ph,ca=Math.cos(a),sa=Math.sin(a),pts=[],ws=[];
-  for(let i=0;i<=7;i++){const u=i/7,rr=r0+(r1-r0)*(u*.8+.2*u*u),yy=y0+(y1-y0)*u*u+Math.sin(t*9+k+i)*.15;pts.push([x+ca*rr,yy,z+sa*rr]);ws.push(w*(1-.35*u))}
-  rib(pts,ws,[.62,.88,1],.75)}};
- fall(15.5,67.6,22,41,10,t*.05,1.5);fall(29,41.2,40,17.4,16,.2,1.8);
- /* the jet rising from the heart-crystal */
- const WJ=[[.9,1,1],[.55,.85,1],[.2,.5,.8]];FIRE.add(x,84,z,2.6,12+2*Math.sin(t*5),WJ,3.7);FIRE.add(x,84,z,1.4,17+2*Math.sin(t*7),WJ,8.1);
- /* splashes where the streams land, and drops falling back from the jet */
- if(typeof sfxBub=='function'){for(let k=0;k<10;k++){const a=k/10*6.2832+.3,ph=(t*1.6+k*.37)%1,rr=40+ph*4;sfxBub(x+Math.cos(a)*rr,17.6+Math.sin(ph*Math.PI)*5,z+Math.sin(a)*rr,.9*(1-ph)+.3,.9*(1-ph)+.3,'Water',.7*(1-ph),.2,k)}
-  for(let k=0;k<6;k++){const ph=(t*.8+k/6)%1,a=k*1.047+t*.2,rr=2+ph*12;sfxBub(x+Math.cos(a)*rr,96-ph*28-ph*ph*10,z+Math.sin(a)*rr,.7,.7,'Water',.6*(1-ph*.6),.2,k+20)}}
- /* ripples spreading across the basin */
- if(window.polyFlat){for(let k=0;k<3;k++){const ph=(t*.35+k/3)%1,rr=32+ph*(FOUNT.R-36);polyFlat(x,z,rr,24,ph,.35,K('#bfefff'),.5*(1-ph)*glow,17.2)}
-  /* Life runes round the apron */
-  if(window.runeFlat){const n=12,rot=t*.08;for(let k=0;k<n;k++){const a=rot+k/n*6.2832,rr=86;runeFlat(x+Math.cos(a)*rr,z+Math.sin(a)*rr,.95,k%3==0?14:k%3==1?13:11,-a+1.5708,K(k%3==0?'#8affc0':'#9fd8ff'),(.35+.25*Math.sin(t*1.5+k))*glow)}
-   polyFlat(x,z,78,48,0,.5,K('#7fd8ff'),.25*glow,.8);polyFlat(x,z,92,56,0,.4,K('#7fd8ff'),.18*glow,.8)}}
- /* the hero glows green and gold while they are being restored */
- if(near&&P&&(P.hp<mxh()||P.mp<mxm())){const D=FTNS.drink>performance.now();for(let k=0;k<(D?8:4);k++){const ph=(t*.7+k/(D?8:4))%1,a=k*2.4+t*.6,rr=10+4*Math.sin(t+k);
-   if(typeof sfxBub=='function')sfxBub(P.x+Math.cos(a)*rr,6+ph*44,P.y+Math.sin(a)*rr,.8*(1-ph)+.25,.8*(1-ph)+.25,k%2?'Nature':'Holy',.85*(1-ph),.3,k+40)}
-  if(window.polyFlat)polyFlat(P.x,P.y,18+2*Math.sin(t*3),20,t,.5,K(D?'#ffe9a0':'#8affc0'),.55,.9)}
+ const x=FOUNT.x,z=FOUNT.z,t=T,K=CHM.K,cy=FOUNT.orbY+Math.sin(t*1.1)*1.6,near=P&&Math.hypot(P.x-x,P.y-z)<FOUNT.near,TAU=6.2832;
+ const now=performance.now(),hpOn=FTNS.hpOn>now,mpOn=FTNS.mpOn>now,D=FTNS.drink>now;
+ const rib=(pts,ws,c,al,wh)=>{if(FXQ.rib)FXQ.rib.push({pts,ws,fd:pts.map(()=>1),c,al,wh:wh==null?.45:wh,done:1,tp:1})};
+ /* the sphere of water and its brighter heart */
+ if(typeof sfxBub=='function'){sfxBub(x,cy,z,13+Math.sin(t*2.3)*.6,13.6+Math.sin(t*1.7)*.6,'Water',.9,.35,1);sfxBub(x,cy,z,6,6,'Water',.6,.6,2)}
+ /* rings of water circling the sphere, each a travelling arc */
+ for(let k=0;k<3;k++){const tilt=[.5,-.7,1.2][k],yaw=[0,2.1,4.2][k],R=17+k*2.5,sp=[1.3,-1,1.6][k],a0=t*sp+k*2;const pts=[],ws=[];
+  for(let i=0;i<=16;i++){const u=i/16,a=a0+u*2.4,px=Math.cos(a)*R,py=Math.sin(a)*R*Math.sin(tilt),pz=Math.sin(a)*R*Math.cos(tilt);
+   pts.push([x+px*Math.cos(yaw)-pz*Math.sin(yaw),cy+py,z+px*Math.sin(yaw)+pz*Math.cos(yaw)]);ws.push(1.4*Math.sin(u*Math.PI)+.2)}rib(pts,ws,[.55,.9,1],.85)}
+ /* streams spiralling up from the basin into the sphere, and drops falling back */
+ for(let k=0;k<4;k++){const ph=(t*.35+k/4)%1,a0=k/4*TAU+t*.3,pts=[],ws=[];
+  for(let i=0;i<=10;i++){const u=Math.min(1,ph+i*.035),r=44*(1-u)+8*u,a=a0+u*3.2,yy=19.6+(cy-8-19.6)*Math.pow(u,1.4);pts.push([x+Math.cos(a)*r,yy,z+Math.sin(a)*r]);ws.push(1.6*(1-u*.5))}rib(pts,ws,[.5,.85,1],.8)}
+ if(typeof sfxBub=='function')for(let k=0;k<6;k++){const ph=(t*.7+k/6)%1,a=k*1.05+t*.4,r=12+ph*24;sfxBub(x+Math.cos(a)*r,cy-10-ph*(cy-30)-ph*ph*6,z+Math.sin(a)*r,.9,.9,'Water',.7*(1-ph*.5),.2,k+10)}
+ /* runes orbiting the sphere: Life, Tide, Insight, Clarity */
+ if(window.runeUp){const R_=[[14,'#8affb0',hpOn],[2,'#5ad0ff',D],[19,'#5a8cff',mpOn],[23,'#7ab0ff',mpOn],[14,'#8affb0',hpOn],[2,'#5ad0ff',D]];
+  R_.forEach((q,i)=>{const a=t*.45+i/R_.length*TAU,rr=28,bx=x+Math.cos(a)*rr,bz=z+Math.sin(a)*rr,bob=Math.sin(t*2+i)*2,on=q[2]||D;
+   runeUp(bx,cy+4+bob,bz,on?1.05:.85,q[0],a+Math.PI/2,K(q[1]),on?2.2:.9+.3*Math.sin(t*1.6+i))})}
+ /* the dais floor: a turning circle of runes between the basin and the pillars */
+ if(window.runeFlat&&window.polyFlat){const n=16,rot=-t*.06;for(let k=0;k<n;k++){const a=rot+k/n*TAU,rr=FOUNT.R+5.5,rk=[14,2,19,23][k%4],on=(rk==14&&hpOn)||((rk==19||rk==23)&&mpOn)||D;
+   runeFlat(x+Math.cos(a)*rr,z+Math.sin(a)*rr,.62,rk,-a+1.5708,K(rk==14?'#8affb0':rk==2?'#5ad0ff':'#7aa8ff'),on?1.3:(.45+.2*Math.sin(t*1.4+k)),9.3)}
+  polyFlat(x,z,FOUNT.R+1.8,48,0,.35,K('#d9a441'),.5,9.25);polyFlat(x,z,FOUNT.R+9.5,48,0,.35,K('#d9a441'),.5,9.25);
+  for(let k=0;k<3;k++){const ph=(t*.4+k/3)%1,rr=14+ph*(FOUNT.R-22);polyFlat(x,z,rr,24,ph,.3,K('#bfefff'),.45*(1-ph),19.7)}}
+ /* while you are restored, a stream of water reaches out to you */
+ if(near&&(hpOn||mpOn||D)&&P){const c=hpOn?[.55,1,.7]:[.55,.75,1],pts=[],ws=[],hx=P.x,hz=P.y,hy=34;
+  for(let i=0;i<=14;i++){const u=i/14,yy=cy+(hy-cy)*u+Math.sin(u*Math.PI)*14;pts.push([x+(hx-x)*u,yy,z+(hz-z)*u]);ws.push(1.1+.5*Math.sin((u*6-t*5)*Math.PI))}rib(pts,ws,c,.7,.6);
+  if(typeof sfxBub=='function')for(let k=0;k<4;k++){const ph=(t*.7+k/4)%1,a=k*2.4+t*.6,rr=10;sfxBub(P.x+Math.cos(a)*rr,6+ph*44,P.y+Math.sin(a)*rr,.8*(1-ph)+.25,.8*(1-ph)+.25,hpOn?'Nature':'Water',.85*(1-ph),.3,k+40)}}
  }catch(e){}}
 
 /* ---- healing: standing near restores health and mana over time; F drinks for a quick burst ---- */
@@ -13170,7 +13168,7 @@ setInterval(()=>{try{if(!FOUNT.built||!P||!started||over||!camp||(typeof SHOPIN!
  if(Math.hypot(P.x-FOUNT.x,P.y-FOUNT.y)>=FOUNT.near)return;const now=performance.now(),dt=.25,D=FTNS.drink>now;
  const rest=!(P.mv||(typeof keys!='undefined'&&(keys.w||keys.a||keys.s||keys.d)));
  const hr=(D?.25:rest?.08:.05)*dt,mr=(D?.25:rest?.1:.06)*dt,h0=P.hp,m0=P.mp;
- P.hp=Math.min(mxh(),P.hp+mxh()*hr);P.mp=Math.min(mxm(),P.mp+mxm()*mr);
+ P.hp=Math.min(mxh(),P.hp+mxh()*hr);P.mp=Math.min(mxm(),P.mp+mxm()*mr);if(P.hp>h0+.01)FTNS.hpOn=now+600;if(P.mp>m0+.01)FTNS.mpOn=now+600;
  if((P.hp>h0+.5||P.mp>m0+.5)&&now-FTNS.last>1800){FTNS.last=now;const g=Math.round(P.hp-h0),q=Math.round(P.mp-m0);try{if(g>0)FT.push({x:P.x,y:P.y-38,t:.9,s:'+'+g,c:'#8affb0'});if(q>0)FT.push({x:P.x+10,y:P.y-30,t:.9,s:'+'+q,c:'#8ac8ff'})}catch(e){}}
  if(!FTNS.told){FTNS.told=1;toast('The Healing Fountain restores you while you stay near it. Press F to drink.')}
 }catch(e){}},250);
@@ -13178,9 +13176,53 @@ function FTNDRINK(){FTNS.drink=performance.now()+3000;try{if(window.AUD&&AUD.sfx
  try{FT.push({x:P.x,y:P.y-44,t:1.2,s:'Refreshed',c:'#bff5ff'})}catch(e){}toast('You drink from the Healing Fountain.')}
 
 /* walkers bump into the basin: one round obstacle, added once per visit to town */
-setInterval(()=>{try{if(FOUNT.built&&typeof camp!='undefined'&&camp&&typeof CPO!='undefined'&&CPO&&!CPO._ftn&&!(typeof SHOPIN!='undefined'&&SHOPIN)){CPO._ftn=1;CPO.push({x:FOUNT.x,y:FOUNT.z,r:FOUNT.R+4})}}catch(e){}},300);
+setInterval(()=>{try{if(FOUNT.built&&typeof camp!='undefined'&&camp&&typeof CPO!='undefined'&&CPO&&!CPO._ftn&&!(typeof SHOPIN!='undefined'&&SHOPIN)){CPO._ftn=1;CPO.push({x:FOUNT.x,y:FOUNT.z,r:98})}}catch(e){}},300);
 
 /* drawn with the rest of the spell layer */
 {const _d=SPG.draw;SPG.draw=function(){const r=_d.apply(this,arguments);try{FTNDRAW(performance.now()/1000)}catch(e){}return r}}
+/* ================= MARKS OF THE STRUGGLE =================
+   Eleven more Ashen runes for what acts on heroes and monsters in a fight. Bloodlust, the War Banner, slows,
+   poison, acid and curses used to borrow other runes (Slowed even wore the rune of Haste), and monsters showed
+   emoji for their afflictions. Now every effect has its own mark: in the Effects panel, floating over a hero
+   who has the buff, and in a small badge over a monster's health bar. The Rune Index lists them all. */
+ARUNE.push(
+ {n:'Vael',m:'Siphon',st:'Life drawn from damage',c:'#ff4a5a',x:1,w:'Over a hero under Bloodlust, healing from the damage they deal.',d:'The tipped chalice. Every wound you deal pours some of its life back into you.'},
+ {n:'Banr',m:'Rally',st:'Fighting under a banner',c:'#ffb347',x:1,w:'While you stand by a War Banner.',d:'The planted standard. Strikes land harder and wounds close near the colours.'},
+ {n:'Slade',m:'Hinder',st:'Slowed',c:'#7ab8d8',x:1,w:'On a slowed hero or monster.',d:'The barred gate. Legs grow heavy and every step drags.'},
+ {n:'Sith',m:'Venom',st:'Poisoned',c:'#8be07c',x:1,w:'On a poisoned hero or monster.',d:'The two fangs. Poison in the blood, biting a little every moment.'},
+ {n:'Wyrd',m:'Hex',st:'Cursed or weakened',c:'#b06aff',x:1,w:'On a cursed hero, or a monster whose blows are weakened.',d:'The broken eye. A curse that dulls every blow.'},
+ {n:'Holt',m:'Bind',st:'Stunned or held',c:'#ffee55',x:1,w:'On a stunned, snared or trapped monster.',d:'The linked chains. Held fast and unable to act.'},
+ {n:'Gash',m:'Rend',st:'Bleeding',c:'#ff5a5a',x:1,w:'On a bleeding monster.',d:'Three open cuts. Wounds that keep bleeding after the blade has passed.'},
+ {n:'Seek',m:'Mark',st:'Marked for the kill',c:'#ff8a3a',x:1,w:'On a marked monster: it takes more damage from everyone.',d:'The sighted target. Every weapon finds a marked foe more easily.'},
+ {n:'Ath',m:'Corrode',st:'Acid',c:'#b8e04a',x:1,w:'On a hero burned by acid.',d:'The dripping ledge. Acid that eats through armour and skin alike.'},
+ {n:'Goad',m:'Taunt',st:'Taunted',c:'#ff6a3a',x:1,w:'On a monster taunted by a tank: it must attack them.',d:'The war horn. A challenge no foe can ignore.'},
+ {n:'Rath',m:'Frenzy',st:'Enraged',c:'#ff3a2a',x:1,w:'On a monster in a frenzy: faster and deadlier.',d:'The torn crown. A beast past fear, striking faster and harder.'});
+
+/* the Effects panel and floating buff runes use the new marks */
+try{Object.assign(FXRUNE,{lust:26,bnr:27,slw:28,cur:30});
+ Object.defineProperty(FXRUNE,'dot',{configurable:true,enumerable:true,get(){const h=(typeof P!='undefined'&&P&&P.dsrc&&P.dsrc.how)||'';return h=='burn'?0:h=='acid'?34:29}})}catch(e){}
+try{BUFRUNE.lust=26}catch(e){}
+
+/* ---- rune badges over monsters (replaces the emoji icons) ---- */
+var RUNEP2D=[];
+function runeP2d(k){return RUNEP2D[k]||(RUNEP2D[k]=new Path2D(RUG[k%RUG.length]))}
+function enemyMarks(e){const L=[],f=e.fxs||{};
+ if(f.burn)L.push([0,'#ff8a3a']);if(f.shock)L.push([3,'#ffee55']);
+ if(f.chill)L.push([1,'#9fe8ff']);else if(e.sl>0)L.push([28,'#7ab8d8']);
+ if(f.bleed)L.push([32,'#ff5a5a']);if(e.ps>0||f.pois)L.push([29,'#8be07c']);
+ if(e.st>0||e.trapped)L.push([31,'#ffee55']);if(e.mk>0)L.push([33,'#ff8a3a']);
+ if(e.tn>0)L.push([35,'#ff6a3a']);else if(e.wk>0)L.push([30,'#b06aff']);
+ if(e.fz>0||e.frz)L.push([36,'#ff3a2a']);return L.slice(0,5)}
+function ENSTAT(e,s,g){const L=enemyMarks(e);if(!L.length)return;const n=L.length;g.save();g.lineCap='round';g.lineJoin='round';
+ L.forEach((q,i)=>{const x_=s.x+(i-(n-1)/2)*18,y_=s.y+14;g.fillStyle='rgba(10,8,6,.82)';g.beginPath();g.arc(x_,y_,8.5,0,7);g.fill();
+  g.strokeStyle=q[1];g.lineWidth=1.4;g.stroke();g.save();g.translate(x_,y_);g.scale(1.25,1.25);g.shadowColor=q[1];g.shadowBlur=4;g.lineWidth=1;g.stroke(runeP2d(q[0]));g.restore()});
+ g.restore()}
+
+/* ---- the Rune Index gains the marks of the struggle ---- */
+{const _ri=runeIndex;runeIndex=function(){const r=_ri.apply(this,arguments);try{const d=$('runeidx'),w=d&&d.querySelector('.rxw');if(w&&!w.querySelector('.rxx')){
+  const sec=document.createElement('div');sec.className='rxx';
+  sec.innerHTML=`<h4 class="rxs2">Marks of the struggle <small>these show what is acting on a hero or a monster: in the Effects panel, over a buffed hero, and over a monster's health bar</small></h4><div class="rxg">${ARUNE.map((q,i)=>[q,i]).filter(([q])=>q.x).map(([q,i])=>`<div class="rxc" style="--c:${q.c}"><div class="rxs">${runeSvg(i,54)}</div><div><b>${q.n}</b><em>${q.m}</em><small>${q.d}</small><small style="opacity:.7;margin-top:3px">${q.w}</small></div></div>`).join('')}</div>`;
+  w.appendChild(sec);
+  const sm=w.querySelector('.rxh small');if(sm)sm.textContent='Carved by the first wardens of the Descent: a rune for each element, four for deeper things, marks of the body for every stat, and marks of the struggle for what acts on you in a fight.'}}catch(e){}return r}}
 
 </script></body></html>
