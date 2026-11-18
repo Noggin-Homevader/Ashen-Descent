@@ -2,6 +2,12 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.3.8
+
+- **Fixed: F did nothing and showed no prompt.** Switching the DPS meter to Party made the game think a window was
+  open the whole time, so it hid the F prompt and ignored F (for every character, until the meter went back to
+  Solo). The meter's Party view no longer counts as an open window.
+
 ## 2.3.7
 
 - **Fixed: the freeze at the start of fights.** Each time a monster died, the loot roll checked every skill in the
