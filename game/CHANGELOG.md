@@ -2,6 +2,28 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.3.9
+
+- **The Healing Fountain, rebuilt in the style of the Ashen Crystal and the gate.** A dark stepped octagonal dais
+  with gilded edges and a turning circle of runes, four rune pillars crowned with water crystals, and a stone cradle.
+  Above it floats a sphere of living water: streams spiral up from the basin into it, drops fall back, rings of water
+  circle it, and runes orbit it for what it does: Sel (Life) for health, Iska (Insight) and Dren (Clarity) for mana,
+  Ith (Tide) for the water. While you are being restored, the runes for what is being restored blaze and a stream of
+  water reaches out to you.
+- **Eleven new runes: the Marks of the Struggle.** Every effect in a fight now has its own rune:
+  - **Bloodlust and War Banner:** Siphon and Rally, which used to borrow Wildfury and Might.
+  - **Slowed:** Hinder, which used to wear the Haste rune.
+  - **Poison and acid:** Venom and Corrode.
+  - **Curses and weakening:** Hex.
+  - **Stunned or held:** Bind.
+  - **Bleeding:** Rend.
+  - **Marked for the kill:** Mark.
+  - **Taunted:** Taunt.
+  - **A monster in a frenzy:** Frenzy.
+
+  They show in the Effects panel, float over a hero who has the buff, and replace the emoji badges over a monster's
+  health bar. The Rune Index has a new section for them.
+
 ## 2.3.8
 
 - **Fixed: F did nothing and showed no prompt.** Switching the DPS meter to Party made the game think a window was
