@@ -208,7 +208,10 @@ function run() {
     const detached = { detached: true, stdio: 'ignore', windowsHide: true };
     if (info.build.kind === 'nsis') {
       // The setup installs silently over this copy (same folder) and starts the launcher again.
-      spawn(prep.file, ['--updated', '/S', '--force-run'], detached).unref();
+      // Start the setup a few seconds after this launcher has quit, so none of its files are still open when the
+      // setup replaces them (an open file makes the old version's uninstall fail).
+      const cmd = `ping -n 4 127.0.0.1 >nul & start "" "${prep.file}" --updated /S --force-run`;
+      spawn(process.env.ComSpec || 'cmd.exe', ['/d', '/c', cmd], { ...detached, windowsVerbatimArguments: true }).unref();
     } else if (info.build.kind === 'zip') {
       const script = path.join(L.launcher, 'update', 'swap-launcher.cmd');
       fs.writeFileSync(script, swapScript({ pid: process.pid, appDir: path.dirname(process.execPath), staging: prep.staging }));
