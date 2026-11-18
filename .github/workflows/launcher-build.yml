@@ -55,7 +55,7 @@ jobs:
           # Players can have their data folders (game, userdata, launcher) in the same folder as the launcher program.
           # Install the published 1.4.0 launcher, whose uninstaller clears its whole folder, put data beside it, then
           # update with the new setup (which runs that old uninstaller) and uninstall the new one. The data must survive.
-          $dir = Join-Path $env:RUNNER_TEMP 'Ashen Descent'
+          $dir = Join-Path $env:RUNNER_TEMP 'AshenDescent'   # (a silent /D= path cannot contain a space)
           $old = Join-Path $env:RUNNER_TEMP 'old-setup.exe'
           Invoke-WebRequest -Uri 'https://github.com/Noggin-Homevader/Ashen-Descent/releases/download/launcher-v1.4.0/AshenDescent-Setup.exe' -OutFile $old
           Start-Process -FilePath $old -ArgumentList '/S', '/currentuser', "/D=$dir" -Wait
@@ -63,7 +63,7 @@ jobs:
           Get-Process 'Ashen Descent' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
           # wherever the setup put it: read the install folder from the uninstall registration
           $reg = Get-ChildItem 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall', 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall' -ErrorAction SilentlyContinue | Get-ItemProperty | Where-Object { $_.DisplayName -like 'Ashen Descent*' } | Select-Object -First 1
-          if ($reg -and $reg.InstallLocation) { $dir = $reg.InstallLocation.TrimEnd('\') }
+          if ($reg -and $reg.InstallLocation) { $dir = $reg.InstallLocation.TrimEnd('\') } elseif ($reg -and $reg.DisplayIcon) { $dir = Split-Path ($reg.DisplayIcon -replace ',\d+$', '') }
           Write-Host "old launcher installed at: $dir"
           for ($i = 0; $i -lt 60 -and -not (Test-Path "$dir\Ashen Descent.exe"); $i++) { Start-Sleep -Seconds 1 }
           if (-not (Test-Path "$dir\Ashen Descent.exe")) { Get-ChildItem $dir -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "  $($_.Name)" }; Write-Host ($reg | Format-List | Out-String); throw 'old launcher did not install' }
