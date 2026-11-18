@@ -2,6 +2,19 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.3.2
+
+- **A sheath bench and an enchanting altar in the Cinder Forge.** Both are new stations inside Brannoch's forge: walk
+  up and press F.
+  - The sheath bench stands in the lower-left corner by the ore bins. It is a leatherworker's table with a hide
+    pinned out and a scabbard half stitched on it, spools of waxed thread, an awl, a round knife, a pot of wax and a
+    stool, with an A-frame rack of finished scabbards behind it in five leathers with brass fittings. It opens the
+    Sheaths tab.
+  - The enchanting altar stands in the lower-right corner by the door. It is a dark stone plinth banded with
+    glowing runes, with a blade laid across it, four element crystals (fire, frost, storm and shadow) on iron posts
+    and a ring of carved stones. A rune circle turns on the floor and motes of the four elements circle it. It opens
+    the Enchant tab.
+
 ## 2.3.1
 
 - **Fixed: classes could not be picked on the new-character screen.** A guard that ignores clicks on class cards

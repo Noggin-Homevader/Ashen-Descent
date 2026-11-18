@@ -2939,7 +2939,7 @@ function buildShop(m,mc){const T=townTh(),H_=hc,J=(c,a)=>m.jit(H_(c),a||.06),BR=
    for(let k=0;k<3;k++)m.box(bx-31.6,40,bz-48+k*48,1,10,14,J('#efe2c0',.05))}
   /* ore bins and a coal heap by the forge */
   for(const[x,z,c]of[[60,330,'#7a5a3a'],[60,390,'#8a8a92'],[60,450,'#2a2622']]){m.box(x,0,z,40,22,48,J('#4a3020',.06));m.box(x,20,z,36,4,44,J(c,.15))}
-  m.blob(200,0,90,30,12,24,J('#1a1614',.1),0,8,3)}
+  m.blob(200,0,90,30,12,24,J('#1a1614',.1),0,8,3);if(window.SMIBENCHES)SMIBENCHES(m,J,H_,tor)}
  else if(id=='arm'){/* armor stands, weapon racks, shield wall, jewel case */
   for(const d of ARMSLOTS)if(d.k=='man'){m.cyl(d.x,0,d.z,17,5,14,J(wood2,.05));m.cyl(d.x,5,d.z,14,1.5,14,J(a2,.05))}
   /* weapon wall: dark panelling, then a carved plaque with iron pegs for every blade */
@@ -7467,6 +7467,7 @@ var SHOPDRAW=(t)=>{if(!SHOPIN)return;const id=SHOPIN.id,T=Date.now(),K=CHM.K,Q=C
   else if(d.k=='card'){const t=GCH[d.i];CHM.setF(d.x,52+Math.sin(T/600+d.i)*3,d.z,54,T/1100+d.i*2,0,0,null,SHOV===d?.6:.25);Q(0,0,0,.2,.32,.008,K('#1a0a1e'),{lo:1});Q(0,0,.009,.17,.29,.002,K(t?t.col:'#ffd23a'),{em:.5,lo:1});Q(0,0,.012,.07,.07,.003,K('#ffffff'),{em:.7,lo:1});Q(0,0,-.009,.17,.29,.002,K('#5a1a4a'),{lo:1})}
   else if(d.k=='dice'){CHM.setF(d.x,31,d.z,54,0,0,0,null,SHOV===d?.4:0);for(let k=0;k<2;k++)Q(-.06+k*.12,.05,0,.05,.05,.05,K('#efe6d0'),{lo:1,az:T/900+k,ax:k*.6});Q(.2,.04,.1,.12,.04,.12,K('#5a3a2a'))}
   else if(d.k=='ball'&&SHOV===d){CHM.setF(d.x,44,d.z-8,54,0,0,0,null,0);Q(0,.14,0,.26,.26,.26,K('#e0c0ff'),{em:.35,lo:1})}
+  else if((d.k=='shb'||d.k=='enb')&&window.BENCHDRAW)BENCHDRAW(d,Q,K,T);
   else if(d.k=='ug'&&SHOV===d){CHM.setF(d.x,0,d.z,54,0,0,0,null,0);Q(0,.02,0,.5,.01,.3,K('#ffd890'),{em:.8,lo:1})}
   else if(d.k=='drg'&&SHOV===d){CHM.setF(DFPOS.x,0,DFPOS.z+52,54,0,0,0,null,0);Q(0,.02,0,.4,.01,.4,K('#ff9a3a'),{em:.9,lo:1})}}}finally{CHM.hq(GFX>=3?2:GFX>=1)}}
 function potMesh(k,Q,K){if(k=='fe'){Q(0,.3,0,.03,.3,.008,K('#ff6a2a'),{em:.5,az:.2});for(let i=0;i<8;i++)Q(.04+i*.004,.12+i*.06,0,.06,.012,.006,K(i%2?'#ffb347':'#ff5a1a'),{em:.5,az:.6});return}
@@ -12860,5 +12861,57 @@ function wLine(a,b,w,c,al){FXQ.rib.push({pts:[a,b],ws:[w,w],fd:[.6,.6],c,al,wh:.
  else if(sty=='warsong'){for(let j=0;j<3;j++){const ph=(T*.8+j/3)%1;wRing(x,y+2,z,R[0]*(.8+ph*1.2),1.4*(1-ph)+.2,A,.9*k*(1-ph))}}
  else if(sty=='abyss'){const pts=[],ws=[],fd=[];for(let i=0;i<=48;i++){const a=T*1.2+i/48*6.2832*1.5,r=R[0]*(1.25+.1*Math.sin(i*.6+T*3));pts.push([x+Math.cos(a)*r,y+2+Math.sin(i*.5+T*4)*2,z+Math.sin(a)*r]);ws.push(1.6*Math.sin(Math.PI*i/48)+.2);fd.push(Math.sin(Math.PI*i/48))}FXQ.rib.push({pts,ws,fd,c:Bc,al:.9*k,wh:.55,done:1,tp:1})}
 }catch(e){}}}
+
+/* ================= TWO NEW STATIONS IN THE CINDER FORGE =================
+   - The sheath bench (lower left, by the ore bins): a leatherworker's table with a stretched hide, a scabbard half
+     stitched, spools of waxed thread, an awl and a round knife, a stool, and an A-frame rack of finished scabbards in
+     different leathers with brass lockets and chapes. Walk up and press F: the Sheaths tab.
+   - The enchanting altar (lower right, by the door): a dark stone plinth on a glowing rune circle, four element
+     crystals on iron posts around it, and a blade laid across the top. Motes of the four elements circle it and the
+     rune circle turns. Walk up and press F: the Enchant tab. */
+var SHBPOS={x:175,z:440},ENBPOS={x:500,z:468};
+function SMIBENCHES(m,J,H_,tor){try{
+ /* ---- sheath bench ---- */
+ {const x=SHBPOS.x,z=SHBPOS.z,oak='#6a4424',oak2='#4a2e18',br=[.78,.6,.28],ir=[.3,.3,.33];
+  for(const sx of[-50,50])for(const sz of[-18,18])m.box(x+sx,0,z+sz,7,32,7,J(oak2,.05));m.box(x,8,z,100,3,36,J(oak2,.05));m.box(x,30,z,118,5,46,J(oak,.07));m.box(x,35,z,114,1,42,J('#7a5230',.08));
+  /* a hide pinned flat, and the scabbard being stitched on it */
+  m.box(x-22,35.6,z+2,52,.6,34,J('#8a5a30',.08));for(const[a,b]of[[-46,-15],[2,-15],[-46,17],[2,17]])m.box(x+a,36,z+b,1.4,1.4,1.4,H_('#c8a040'),.1);
+  m.box(x-22,36.4,z,44,2.2,5,J('#3a2414',.05));m.box(x+1,36.4,z,4,2.6,6,H_('#c8a040'),.15);m.cone(x-46,36.4,z,2.5,.4,4,[.7,.55,.25],0,0);
+  for(let k=0;k<8;k++)m.box(x-40+k*5,38.7,z+2.6,1.2,.5,.6,J('#e8dcc0',.04));
+  /* thread spools, awl, round knife and a pot of wax */
+  for(let k=0;k<3;k++){m.cyl(x+18+k*9,35,z-12,3,6,8,J(['#d8c8a0','#8a2a1a','#2a2a2a'][k],.05));m.cyl(x+18+k*9,41,z-12,3.6,.8,8,J(oak2,.05))}
+  m.cyl(x+26,35,z+6,1,9,5,J(oak2,.05));m.box(x+26,44,z+6,.6,.6,.6,ir);m.box(x+40,35.6,z+8,10,.6,6,[.7,.72,.76]);m.cyl(x+44,35,z-6,4,5,8,J('#5a3a1a',.05));m.cyl(x+44,40,z-6,3.4,.6,8,H_('#d8b060'),.2);
+  /* stool */
+  m.cyl(x+10,0,z+40,9,20,8,J(oak2,.05));m.cyl(x+10,20,z+40,11,3,10,J(oak,.06));
+  /* the rack of finished scabbards behind it */
+  const rx=x-8,rz=z-44;for(const s of[-1,1]){m.box(rx+s*46,0,rz,5,66,5,J(oak2,.05))}m.box(rx,62,rz,98,5,6,J(oak,.06));m.box(rx,2,rz,98,4,8,J(oak2,.05));
+  const LC=['#3a2414','#5a1a14','#1a1a1e','#6a4424','#2a3a2a'];for(let k=0;k<5;k++){const sx=rx-36+k*18,col=LC[k],len=34+(k%2)*8;
+   m.box(sx,60-len,rz+3,5,len,3.4,J(col,.05));m.box(sx,60-6,rz+3,6,5,4,H_('#c8a040'),.12);m.cone(sx,60-len-3,rz+3,2.6,3,4,[.72,.58,.26],0,0);m.box(sx,60,rz+3,3,4,3.6,J('#2a1a0e',.05))}
+  tor.push({x:x+44,y:z-6,nx:0,ny:0,_y:44})}
+ /* ---- enchanting altar ---- */
+ {const x=ENBPOS.x,z=ENBPOS.z,st='#3a3640',st2='#22202a';
+  m.cyl(x,0,z,30,6,16,J(st2,.05));m.cyl(x,6,z,22,24,10,J(st,.06));m.cyl(x,30,z,26,5,16,J(st2,.05));m.box(x,35,z,40,2,26,J('#14121a',.04));
+  for(let k=0;k<10;k++){const a=k/10*6.2832;m.box(x+Math.cos(a)*22.5,12,z+Math.sin(a)*22.5,3,3,1,H_('#8ac8ff'),.8)}
+  /* a blade laid across the top, edge catching the light */
+  m.box(x,37.4,z,3.5,1,30,[.75,.78,.84]);m.box(x,37.4,z+17,12,1.6,2,H_('#c8a040'),.1);m.box(x,37.4,z+22,2.4,2,8,J('#3a2414',.05));
+  /* the four element crystals on iron posts */
+  const CR=[['#ff6a2a',-1,-1],['#9fe8ff',1,-1],['#ffee55',1,1],['#a070e0',-1,1]];
+  for(const[c,sx,sz]of CR){const px=x+sx*38,pz=z+sz*30;m.box(px,0,pz,4,30,4,[.28,.28,.32]);m.box(px,30,pz,9,2,9,[.36,.36,.4]);m.cone(px,32,pz,4,11,6,H_(c),.9,0);m.cone(px,32,pz,4,-5,6,H_(c),.9,0)}
+  /* a flat ring of carved stones for the rune circle to sit in */
+  for(let k=0;k<24;k++){const a=k/24*6.2832;m.box(x+Math.cos(a)*50,0,z+Math.sin(a)*50,7,1.2,3,J(st2,.05))}}
+}catch(e){console.warn('benches',e)}}
+/* stations: they block the way, offer F and open their tab */
+{const _sd=shopDisp;shopDisp=function(){const r=_sd.apply(this,arguments);try{if(SHOPIN&&SHOPIN.id=='smi'){r.push({k:'shb',x:SHBPOS.x,z:SHBPOS.z,h:40,r:44,cr:34});r.push({k:'enb',x:ENBPOS.x,z:ENBPOS.z,h:42,r:36,cr:30})}}catch(e){}return r}}
+{const _s=STNOF;STNOF=function(d){if(d&&d.k=='shb')return['Use the sheath bench','Fit and style your scabbard'];if(d&&d.k=='enb')return['Use the enchanting altar','Bind an element into your weapon'];return _s.apply(this,arguments)}}
+{const _a=dispAct;dispAct=function(d){if(d&&(d.k=='shb'||d.k=='enb')){SHN=SHOPIN.id;stipHide();SHT=d.k=='shb'?'shth':'ench';SHS=null;showShop();return true}return _a.apply(this,arguments)}}
+{const _t=dispTip;dispTip=function(d){if(d&&d.k=='shb')return'<b>The sheath bench</b><br><small>Choose the leather, trim and style of the scabbard your sword hangs in.</small><span class="hint">Walk up and press F</span>';
+ if(d&&d.k=='enb')return'<b>The enchanting altar</b><br><small>Bind an element into the weapon you hold. It glows with that element in battle.</small><span class="hint">Walk up and press F</span>';return _t.apply(this,arguments)}}
+/* animation: the rune circle turns, the crystals pulse and motes of the four elements circle the altar */
+function BENCHDRAW(d,Q,K,T){try{const t=T/1000;
+ if(d.k=='enb'){CHM.setF(d.x,0,d.z,54,t*.25,0,0,null,0);const n=16;for(let k=0;k<n;k++){const a=k/n*6.2832,r=.78;Q(Math.cos(a)*r,.004,Math.sin(a)*r,.022,.003,.022,K('#8ac8ff'),{em:.7+.3*Math.sin(t*2+k),lo:1})}
+  for(let k=0;k<6;k++){const a=-k/6*6.2832-t*.4;Q(Math.cos(a)*.62,.004,Math.sin(a)*.62,.06,.003,.06,K('#c8a0ff'),{em:.8,lo:1})}
+  const C=['#ff6a2a','#9fe8ff','#ffee55','#a070e0'];CHM.setF(d.x,0,d.z,54,0,0,0,null,0);for(let k=0;k<8;k++){const a=t*.9+k/8*6.2832,h=.78+.12*Math.sin(t*2+k);Q(Math.cos(a)*.42,h,Math.sin(a)*.42,.018,.018,.018,K(C[k%4]),{em:1,lo:1})}
+  if(SHOV===d){Q(0,.006,0,.98,.004,.98,K('#c8a0ff'),{em:.45,lo:1})}}
+ else if(d.k=='shb'&&SHOV===d){CHM.setF(d.x,0,d.z,54,0,0,0,null,0);Q(0,.01,0,1.15,.006,.5,K('#ffd890'),{em:.6,lo:1})}}catch(e){}}
 
 </script></body></html>
