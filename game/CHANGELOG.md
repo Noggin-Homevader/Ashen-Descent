@@ -2,6 +2,27 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.4.0
+
+- **Skill levels show what they do.** The skill window lists every number a skill has at its current level, with what
+  the next level adds in brackets, for example "Armor +14% (+2%)" or "Base damage 64 (+10)".
+- **Damage grows by an even step each level.** Each skill level now adds the same amount of base damage (18.5% of the
+  level-1 value: 54, 64, 74, 84 ...), instead of +5% compounding. A skill's base damage is set by the level it is
+  learned at. Beside it you see your actual damage with your stats, hero level, mastery and element, and what the
+  next level adds to that.
+- **Buffs get stronger with their level.** Fury, Stoneskin, Keen Eye, Haste, Quickened, Clarity and Bloodlust used
+  to give the same fixed bonus at every level. Each now starts at its level-1 strength and grows per level:
+  - **Fury:** damage +15%, +2% per level.
+  - **Stoneskin:** armor +10%, +2% per level (at least +8).
+  - **Keen Eye:** critical chance +15%, +1% per level.
+  - **Haste:** speed +15%, +1.5% per level.
+  - **Quickened:** cooldown recovery +18%, +2% per level.
+  - **Clarity:** mana regeneration +40%, +4% per level.
+  - **Bloodlust:** heals 8% of damage dealt, +0.6% per level.
+
+  The Effects panel shows the strength you cast it with. Heals, wards, barriers, durations and cooldowns also show
+  their now and next-level values.
+
 ## 2.3.9
 
 - **The Healing Fountain, rebuilt in the style of the Ashen Crystal and the gate.** A dark stepped octagonal dais
