@@ -13,14 +13,28 @@
 !macroend
 
 ; ---- installer: before the old version is uninstalled, move the data folders out of its way ----
-!macro ashenHoldOne NAME
-  ${If} ${FileExists} "$INSTDIR\${NAME}\*.*"
+!macro ashenRestoreOne NAME
+  ${If} ${FileExists} "$INSTDIR.ashen-keep\${NAME}\*.*"
+    ${IfNot} ${FileExists} "$INSTDIR\${NAME}\*.*"
+      CreateDirectory "$INSTDIR"
+      Rename "$INSTDIR.ashen-keep\${NAME}" "$INSTDIR\${NAME}"
+    ${EndIf}
+  ${EndIf}
+!macroend
+Function ashenRestoreHeld
+  !insertmacro ashenDataDirs ashenRestoreOne
+  RMDir "$INSTDIR.ashen-keep"
+FunctionEnd
+
+; $R8 holds the folder name (relative to the install folder)
+Function ashenHoldDir
+  ${If} ${FileExists} "$INSTDIR\$R8\*.*"
     CreateDirectory "$INSTDIR.ashen-keep"
     ; a launcher that has just quit for this update can take a few seconds to let go of its files
     StrCpy $R9 0
     ${Do}
       ClearErrors
-      Rename "$INSTDIR\${NAME}" "$INSTDIR.ashen-keep\${NAME}"
+      Rename "$INSTDIR\$R8" "$INSTDIR.ashen-keep\$R8"
       ${IfNot} ${Errors}
         ${Break}
       ${EndIf}
@@ -39,20 +53,14 @@
       Sleep 1000
     ${Loop}
   ${EndIf}
-!macroend
-!macro ashenRestoreOne NAME
-  ${If} ${FileExists} "$INSTDIR.ashen-keep\${NAME}\*.*"
-    ${IfNot} ${FileExists} "$INSTDIR\${NAME}\*.*"
-      CreateDirectory "$INSTDIR"
-      Rename "$INSTDIR.ashen-keep\${NAME}" "$INSTDIR\${NAME}"
-    ${EndIf}
-  ${EndIf}
+FunctionEnd
+!macro ashenHoldOne NAME
+  StrCpy $R8 "${NAME}"
+  Call ashenHoldDir
 !macroend
 
-Function ashenRestoreHeld
-  !insertmacro ashenDataDirs ashenRestoreOne
-  RMDir "$INSTDIR.ashen-keep"
-FunctionEnd
+
+
 
 ; Launchers up to 1.5.3 start the update setup from inside the install folder (launcher\update\). The setup has to
 ; move that folder aside while it installs, which Windows does not allow while the setup runs from it, so the setup
