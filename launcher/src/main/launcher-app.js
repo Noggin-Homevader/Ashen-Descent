@@ -33,7 +33,7 @@ function run() {
   const log = createLog(path.join(L.launcher, 'logs'));
   log(`launcher ${app.getVersion()} starting; data at ${root} (${source})`);
   let win = null, updater = null, configError = null, started = false, config = null, settings = null;
-  let gameServer = null, mpStarted = false; // the relay address handed to the game at launch (null: no party play)
+  let gameServer = null, mpStarted = false, selfUpdating = false; // the relay address handed to the game at launch (null: no party play)
 
   try {
     config = loadConfig();
@@ -223,8 +223,11 @@ function run() {
       fs.renameSync(`${target}.new`, target);
       spawn(target, [], detached).unref();
     }
-    quitting = true;
+    // Close for the update now: the setup can only replace this launcher once it has quit. The updater is still in
+    // its 'installing' phase while it hands over, so the close guard below must not wait for it.
+    quitting = true; selfUpdating = true;
     setTimeout(() => app.quit(), 400);
+    setTimeout(() => app.exit(0), 3000).unref?.();
   }
   // Look for launcher and game updates every 30 minutes while the launcher is idle (also while it sits in the tray).
   setInterval(() => {
@@ -288,7 +291,7 @@ function run() {
         // Hosting keeps running in the tray; Quit there stops it.
         e.preventDefault(); win.hide(); updateTray(); return;
       }
-      if (updater && updater.installing) {
+      if (updater && updater.installing && !selfUpdating) {
         // Never leave an install half done on purpose; finish it, then close.
         e.preventDefault();
         win.webContents.send('launcher:closing');
