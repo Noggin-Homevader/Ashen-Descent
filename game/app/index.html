@@ -5911,12 +5911,15 @@ var HERO3D=(()=>{
    PP(...U([0,.69,.112*B]),.014,.014,.006,MT,{lo:1,em:.15});PP(...U([0,.69,.116*B]),.007,.007,.004,dk(MT,.4),{lo:1});
    for(const zz of[1,-1]){const sw2=-sw*.05*zz;UP(0,.5,zz*.096,.05,.085,.006,cl2,{lo:1,ax:lean+zz*(-.1+sw2)});UP(0,.425,zz*.104,.052,.008,.006,dk(cl2,.6),{lo:1,ax:lean+zz*(-.1+sw2)})}
    UP(0,.6,.088,.03,.022,.008,MT,{lo:1,em:.12});UP(0,.6,.094,.018,.012,.004,dk(MT,.5),{lo:1})}
+  /* how far each garment below the waist reaches behind the body, so a cape can hang outside it */
+  const LOWD=[];
   /* robe or coat skirt */
   if(robe||coat){const rc=cl,rl=coat?.55:(o.rl||1),bot=coat?.26:Math.max(.05,.6-.56*rl),fl_=coat?.12:.16,sway=-sw*.05;const ys=[.62,.55,.48,.41,.34,.27,.2,.13,.06].filter(y=>y>=bot-.001).concat([bot]);
    /* every ring of the skirt is widened and shifted so both legs stay inside it, whatever the stride */
    const LP=o.float?[]:legs.map(L=>[sh(L.H),sh(L.Kn),sh(L.An)]),atY=(pl,y)=>{for(let i=0;i<2;i++){const a_=pl[i],b_=pl[i+1];if((y<=a_[1]&&y>=b_[1])||(y>=a_[1]&&y<=b_[1])){const tt=(y-a_[1])/((b_[1]-a_[1])||1e-6);return lerp(a_,b_,tt)}}return null};
    const ring=(y,pad)=>{const u=(.62-y)/.56;let c=add(U([0,y,0]),[0,0,sway*u*u-mv*.03*u]);let rx=(.105+u*fl_)*B*(o.float?1-u*.35:1)+pad,rz=(.074+u*fl_*.8)*B*(o.float?1-u*.35:1)+pad;
     const pts=LP.map(pl=>atY(pl,c[1])).filter(Boolean);if(pts.length){const mz=pts.reduce((q,p)=>q+p[2],0)/pts.length;c=[c[0],c[1],c[2]+(mz-c[2])*.6];const lr=(.062+.01*u)*B;for(const p of pts){rx=Math.max(rx,Math.abs(p[0]-c[0])+lr+pad);rz=Math.max(rz,Math.abs(p[2]-c[2])+lr+pad)}}
+    {const c0=U([0,y,0]);LOWD.push([y,rz-(c[2]-c0[2])])}
     return{c,rx,rz}};
    LF(ys.map(y=>ring(y,0)),rc,{seg:16,em:o.float?.14:0});if(o.float){for(let k=0;k<7;k++){const an=k/7*6.2832,yy=bot-.02;UPn(Math.cos(an)*.09*B,yy-.04,Math.sin(an)*.07*B,.022,.07,.012,dk(rc,.8),{ax:lean+Math.sin(t*3+k)*.25,em:.14})}}
    const hem=col(o.hem)||tr,yb=bot,h1=ring(yb+.012,.003),h0=ring(yb,.003);LF([h1,h0],hem,{open:1,seg:16,em:.08});
@@ -5964,7 +5967,7 @@ var HERO3D=(()=>{
    if(GA.th.bone)for(let k=0;k<3;k++)UB(.03+k*.03,.565,.088,.008,.014,.008,kc('#e0d4b8'),{lo:1})}
   /* leg pieces worn at the waist */
   if(GL&&!o.float){if(GL.sh=='legplate')for(const sd of[-1,1])for(let k=0;k<2;k++)UB(sd*.075,.53-k*.045,.085+k*.006,.05,.03,.008,k%2?dk(lgM,.8):lgM,{lo:1,az:sd*.12,ax:lean-.18-k*.06});
-   else if(GL.sh=='skirt'){const sw3=-sw*.04;LF([.6,.5,.4,.3].map((y,i)=>({c:add(U([0,y,0]),[0,0,sw3*i*.3]),rx:(.11+i*.03)*B,rz:(.078+i*.026)*B})),lgC,{seg:14});const yb=.3;LF([{c:add(U([0,yb+.012,0]),[0,0,sw3*.9]),rx:.204*B,rz:.16*B},{c:add(U([0,yb,0]),[0,0,sw3*.9]),rx:.204*B,rz:.16*B}],lgA,{open:1,seg:14,em:.08})}
+   else if(GL.sh=='skirt'){const sw3=-sw*.04;[.6,.5,.4,.3].forEach((y,i)=>LOWD.push([y,(.078+i*.026)*B+Math.abs(sw3*i*.3)]));LOWD.push([.27,.16*B]);LF([.6,.5,.4,.3].map((y,i)=>({c:add(U([0,y,0]),[0,0,sw3*i*.3]),rx:(.11+i*.03)*B,rz:(.078+i*.026)*B})),lgC,{seg:14});const yb=.3;LF([{c:add(U([0,yb+.012,0]),[0,0,sw3*.9]),rx:.204*B,rz:.16*B},{c:add(U([0,yb,0]),[0,0,sw3*.9]),rx:.204*B,rz:.16*B}],lgA,{open:1,seg:14,em:.08})}
    else if(GL.sh=='legging'&&GL.gw=='c')UB(0,.47,.1,.04,.1,.006,lgA,{lo:1,ax:lean-.1-sw*.05})}
   /* studs and runes */
   if(o.studs&&!plate)for(let k=0;k<6;k++){const an=-.8+k*.32;UB(Math.sin(an)*.12,.7,Math.cos(an)*.085,.006,.006,.006,tr,{em:.2})}
@@ -6016,10 +6019,12 @@ var HERO3D=(()=>{
   const capeSheet=(cc,ct,cloak)=>{const NP=5,rows=cloak?7:9,yT=cloak?.83:.818,yB=cloak?.41:.27,shG=!!G.Shoulder,tw_=Math.sin(t*1.7+id*1.3)*.5+.5;
    const back=y=>{let d=.088;if(FITP){const i=Math.round((y-FITP.y0)/FITP.dy);const j=Math.max(0,Math.min(FITP.n-1,i));if(FITP.on[j])d=Math.max(d,FITP.RB[j])}return d*B};
    let blade=0;for(let y=.62;y<=.8;y+=.02)blade=Math.max(blade,back(y));
+   /* robes, coats and skirts flare below the waist: the cape falls over them, never through */
+   const lowAt=y=>{let d=0;for(const q of LOWD)if(Math.abs(q[0]-y)<.06)d=Math.max(d,q[1]*(1-Math.abs(q[0]-y)/.09));return d};
    const Pn=[];
    for(let p=0;p<NP;p++){const s=p/(NP-1)*2-1,R=[];
     for(let k=0;k<rows;k++){const u=k/(rows-1);let y=yT-(yT-yB)*u;const hw=(.118+u*(cloak?.05:.07))*B;
-     const fall=y<.62?Math.min(1,(.62-y)/.12):0,body=Math.max(back(y),blade*fall+back(y)*(1-fall));
+     const fall=y<.62?Math.min(1,(.62-y)/.12):0,body=Math.max(back(y),blade*fall+back(y)*(1-fall),lowAt(y)+.014*B);
      const room=.017+(shG&&y>.7?.024*(y-.7)/.12:0);
      let z=-(body+room)*(1-.3*s*s*(1-.5*fall)),x=s*hw*.8-SHS*(.012+.03*u);
      const wave=Math.sin(t*2.4-u*5.2+s*1.7+id)*(.005+.017*u*u)*(1+mv*1.4)*(.6+.4*tw_);
@@ -6037,8 +6042,8 @@ var HERO3D=(()=>{
   if(o.cape)capeSheet(col(o.cape),col(o.capetr)||tr,false);
   if(o.cloak&&!o.cape)capeSheet(col(o.cloak)||dk(cl,.7),null,true)};
   const CAPED=!!(o.cape||o.cloak);
-  if(o.standard){const sp=U([0,.75,-.11*B]);PP(sp[0],sp[1]+.2,sp[2],.007,.42,.007,kc('#3a2a18'),{lo:1});PP(sp[0]+.06,sp[1]+.48,sp[2],.06,.09,.005,col(o.standard),{lo:1,az:Math.sin(t*2)*.08});PP(sp[0],sp[1]+.63,sp[2],.014,.02,.014,kc('#d8b04a'),{lo:1,em:.3})}
-  if(o.quiver){const qp=U([-.05*(st.ws||1),.72,-.1]);PP(qp[0],qp[1],qp[2],.026,.12,.026,kc('#5a3a1e'),{pv:qp,ax:lean+.2,az:.35*(st.ws||1),lo:1});for(let k=0;k<3;k++)PP(qp[0]+(k-1)*.012,qp[1]+.13,qp[2]-.02,.006,.03,.006,kc('#e8e0d0'),{lo:1})}
+  if(o.standard){const sp=U([0,.75,(-.11-(CAPED?.04:0))*B]);PP(sp[0],sp[1]+.2,sp[2],.007,.42,.007,kc('#3a2a18'),{lo:1});PP(sp[0]+.06,sp[1]+.48,sp[2],.06,.09,.005,col(o.standard),{lo:1,az:Math.sin(t*2)*.08});PP(sp[0],sp[1]+.63,sp[2],.014,.02,.014,kc('#d8b04a'),{lo:1,em:.3})}
+  if(o.quiver){/* worn over the cape */const qp=U([-.05*(st.ws||1),.72,-.1-(CAPED?.045:0)]);PP(qp[0],qp[1],qp[2],.026,.12,.026,kc('#5a3a1e'),{pv:qp,ax:lean+.2,az:.35*(st.ws||1),lo:1});for(let k=0;k<3;k++)PP(qp[0]+(k-1)*.012,qp[1]+.13,qp[2]-.02,.006,.03,.006,kc('#e8e0d0'),{lo:1})}
   /* ---- arms: stance, two-handed grips, sheathing ---- */
   const ws=st.wt?(st.ws||1):0;let handW=null,handO=null;
   const wt=st.wt||'',offH=!!st.off,shd=Math.max(0,Math.min(1,st.shd||0)),SK_=window.WEAPK||1;
@@ -6078,8 +6083,9 @@ var HERO3D=(()=>{
    if(KIND=='2h')return{p:[s*.1,.93,-.125],ax:Math.PI+.08+pend*.02,az:-s*.5};
    if(KIND=='xbow')return{p:[0,.74,-.14],ax:-.06+pend*.02,az:s*.18};
    return{p:[s*.07,.74,-.125],ax:-.08+pend*.02,az:s*.6}};
-  const AN=wt?anchor():null;if(AN&&CAPED&&!AN.hip)AN.p[2]-=.035;
+  const AN=wt?anchor():null;if(AN&&CAPED&&!AN.hip)AN.p[2]-=.035;if(AN&&!AN.hip&&shd>=.5&&st.off&&st.off.ot=='shield'&&!(st.wt&&st.bow))AN.p[2]-=.06;/* a weapon slung on the back rides over a shield carried there, not through it */
   /* hip scabbards hang outside robes, coats and plate skirts instead of sinking into them */
+  if(AN&&AN.hip&&CAPED&&typeof AN.ax=='number'){/* under a cape the scabbard hangs nearly straight down beside the leg, so the cape covers it */const d_=AN.ax-Math.PI;if(d_>.22)AN.ax=Math.PI+.22+(d_-.22)*.15;AN.p[2]=Math.max(AN.p[2],.03)}
   if(AN&&AN.hip){const bulk=robe?.06:coat?.04:plate>=1?.025:mail?.015:0;if(bulk){AN.p[0]+=Math.sign(AN.p[0]||ws)*bulk;if(!AN.sus)AN.az*=1+bulk*14;AN.p[2]+=bulk*.25}}const ANW=AN?U([AN.p[0]*B,AN.p[1],AN.p[2]*B]):null;
   if(AN){AN.ax+=lean}
   const FK=(sd,ang,eb,ab)=>{const S=U([sd*.138*B,.795,-.004]),az=sd*ab,dU=dirOf(ang+lean,az),E=add(S,mul(dU,.18)),dF=dirOf(ang+lean+eb,az),Wr=add(E,mul(dF,.158));return{S,E,Wr,Hd:add(Wr,mul(dF,.04)),FA:ang+lean+eb,FZ:az}};
@@ -6266,7 +6272,7 @@ var HERO3D=(()=>{
   /* ---- weapon and off-hand, scaled to the new frame ---- */
   try{STFSUB=o.sg;WTHM=st.wth||'f'}catch(_){}
   const WK=.66;
-  {const sb=shd>=.5&&st.off&&st.off.ot=='shield',wb_=shd>=.5&&AN&&!AN.hip;CAPEF(sb||wb_?(wb_?-.14:-.145):null,sb&&!wb_?.36:-1,sb&&!wb_?.92:2)}WGRIP=null;if(st.wt&&handW){WSTANCE=wst;WABS=(wOn=='away'||shd>=.5)?{ax:AN.ax,az:AN.az,tw:AN.tw||0}:wabs;try{CHM.weapon(st.wt,st.wc,handW,a&&!WABS?a.sw:0,a&&!WABS?a.wa:null,ws,st.wtr,st.wb,st.wgc)}finally{WSTANCE=null;WABS=null;window.SPSH=0}}
+  {const sb=shd>=.5&&st.off&&st.off.ot=='shield',wb_=shd>=.5&&AN&&!AN.hip;CAPEF(sb||wb_?(wb_?-.14:-.125):null,-1,sb&&!wb_?.92:2)}WGRIP=null;if(st.wt&&handW){WSTANCE=wst;WABS=(wOn=='away'||shd>=.5)?{ax:AN.ax,az:AN.az,tw:AN.tw||0}:wabs;try{CHM.weapon(st.wt,st.wc,handW,a&&!WABS?a.sw:0,a&&!WABS?a.wa:null,ws,st.wtr,st.wb,st.wgc)}finally{WSTANCE=null;WABS=null;window.SPSH=0}}
   let WG2=null;if(DUAL&&DPZ&&handO&&!offAway&&shd<=0){const G1=WGRIP;WABS=DPZ.o;try{CHM.weapon('dagger',st.off.mc||'#aab4be',[handO[0],handO[1],handO[2]],0,null,-ws,st.off.tr||0,(/Dirk/.test(st.off.ob||'')?'Dagger|S:3':'Stiletto|S:1'),st.off.gc)}finally{WABS=null}WG2=WGRIP;WGRIP=G1}
   /* hands that hold the weapon close round its haft */
   for(const[Wr,Hd,sd,hc,met]of HDEF){const G_=WG2&&sd!=ws?WG2:WGRIP;let done=false;if(G_){const ga=G_.a,t=(Hd[0]-G_.o[0])*ga[0]+(Hd[1]-G_.o[1])*ga[1]+(Hd[2]-G_.o[2])*ga[2],Cp=add(G_.o,mul(ga,t)),dd=Math.hypot(Hd[0]-Cp[0],Hd[1]-Cp[1],Hd[2]-Cp[2]);if(dd<.08){HAND5G(Wr,Hd,sd,hc,met,Cp,ga,G_.r);done=true}}if(!done)HAND5(Wr,Hd,sd,hc,true,met)}
@@ -13083,6 +13089,11 @@ function pxpIn(d){try{if(!MP.run||!mpG()||d.f!==MP.run.fid||d.n===undefined)retu
  P.xp+=xp;while(P.xp>=need()){P.xp-=need();P.lv++;P.hp=Math.min(mxh(),P.hp+mxh()*.4);P.mp=mxm();P.pts+=2;P.sp++;FT.push({x:P.x,y:P.y-34,t:1.6,s:'LEVEL UP!  Lv '+P.lv,c:'#ffe27a'});toast('You’ve leveled up! Level '+P.lv)}}catch(_){}}
 {const _h=mpHookParty;mpHookParty=function(rm){const r=_h.apply(this,arguments);try{rm.on('evt',m=>{if(m.isMe)return;const d=m.data||{};if(d.k=='pxp'&&MP.run&&m.peer===MP.run.hostPeer)pxpIn(d)},()=>{})}catch(_){}return r}}
 setInterval(()=>{try{const f=MP.run?MP.run.fid:-1;if(f!==PXP.fid){PXP.fid=f;PXP.got={}}}catch(_){}},1000);
+
+/* ---- items left on a dungeon floor never follow you to town ----
+   Dropped loot stayed in the list of ground items when the party returned to camp, so a tome from the dungeon
+   floor sat at an unseen spot in town and kept the "Pick up" prompt on F. Town has no loot of its own. */
+setInterval(()=>{try{if(typeof camp!='undefined'&&camp&&typeof GR!='undefined'&&GR&&GR.length)GR=[]}catch(e){}},500);
 /* ================= THE HEALING FOUNTAIN =================
    In the plaza south of the campfire, between the Personal Chest and the Ashen Crystal:
    - an octagonal stone basin on a round paved apron, with a carved coping, eight corner posts and four lamp posts

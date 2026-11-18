@@ -2,6 +2,20 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.3.6
+
+- **Gear fits together.** Capes now fall over everything worn beneath them:
+  - **Robes and skirts:** the cape measures the robe, coat or skirt below the waist and hangs outside it, so they
+    no longer push through near the hem.
+  - **Sheathed blades:** with a cape on, a blade sheathed at the hip hangs nearly upright beside the leg, under the
+    cape instead of spearing through it.
+  - **Shields on the back:** a shield carried on the back sits over the cape all the way down, and the cape no
+    longer slices through the shield's lower edge.
+  - **Weapon and shield both on the back:** a long weapon rides over the shield instead of passing through it.
+  - **Quivers and banner poles:** both are worn over the cape.
+- **Fixed: "Pick up Tome" in town.** Loot left on a dungeon floor followed the party back to town and sat at an
+  unseen spot, holding the F prompt even with empty bags. Town no longer keeps dungeon loot.
+
 ## 2.3.5
 
 - **A Healing Fountain in town.** It stands in the plaza south of the campfire, between the Personal Chest and the
