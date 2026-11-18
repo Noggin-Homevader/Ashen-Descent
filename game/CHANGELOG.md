@@ -2,6 +2,21 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.4.1
+
+- **Heals, shields, barriers, regeneration, mana and summons level like damage.** Each starts lower at skill level 1
+  (about 70% of its old strength) and adds an even step every level, reaching about 1.7 times the old strength at
+  level 15. Examples at levels 1, 5, 10 and 15:
+  - **Mending Light:** heals 36% / 51% / 69% / 87% of max HP.
+  - **Ice Barrier:** absorbs 103 / 144 / 196 / 247 damage (at that hero's health).
+  - **Renewal-type heals:** 3.9% to 9.2% of max HP per second.
+  - **Meditate:** restores 28% to 67% of max mana.
+  - **Barriers:** damage reduction from 75% of the listed value, +3% of it per level.
+  - **Minions:** start at 80% health and damage, +10% health and +7% damage per level.
+
+  Skills that used to rely on a default amount now carry their own, so all of them level. Full heals stay full.
+  The skill window shows each amount with what the next level adds.
+
 ## 2.4.0
 
 - **Skill levels show what they do.** The skill window lists every number a skill has at its current level, with what
