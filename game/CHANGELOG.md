@@ -2,6 +2,15 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.3.4
+
+- **Fixed: shop windows turned into the Fellowship page.** After opening Fellowship (for example to form a party), any
+  change in the party redrew the Fellowship page over whatever window was open, such as a shopkeeper's. The page
+  now only refreshes while it is the one on screen.
+- **Fight reports name the cause of a freeze.** With launcher 1.5.3, the fight-start recorder also profiles the game
+  while it records, and for each slow frame it lists the functions that were running. The graphics card's name is
+  looked up once, while nothing is happening, instead of when a fight starts.
+
 ## 2.3.3
 
 - **Fight-start performance reports.** To track down the stutter that some players still see at the start of a
