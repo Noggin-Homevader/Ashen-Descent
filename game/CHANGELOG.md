@@ -2,6 +2,15 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.3.3
+
+- **Fight-start performance reports.** To track down the stutter that some players still see at the start of a
+  fight, the game now records the frames around the start of a fight: two seconds before an enemy comes within
+  reach after a quiet spell, and six seconds after. Each frame notes its time and how much of it went on the game's
+  own work, shader compiles, data sent to the graphics card, garbage collection and long tasks, plus the graphics
+  card's name. With launcher 1.5.0 the report is saved as a perf-*.json file in the launcher's logs folder. The game
+  makes at most three a session, never more than one a minute, and costs a few counters per frame.
+
 ## 2.3.2
 
 - **A sheath bench and an enchanting altar in the Cinder Forge.** Both are new stations inside Brannoch's forge: walk

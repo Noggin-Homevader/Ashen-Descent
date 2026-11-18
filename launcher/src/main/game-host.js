@@ -95,6 +95,19 @@ function run(argv, i) {
       try { process.stdout.write('ashen:shown\n'); } catch {}
     };
     ipcMain.once('game:ready', reveal);
+    // Performance reports from the game (a few seconds around the start of a fight) go to the launcher's logs folder,
+    // next to launcher.log, so they can be looked at later. Only the newest ten are kept.
+    if (ipcMain.handle) ipcMain.handle('game:perf', (e, text) => {
+      if (!win || e.sender !== win.webContents || typeof text !== 'string' || text.length > 2e6) return false;
+      try {
+        const dir = path.resolve(profile, '..', '..', 'launcher', 'logs');
+        fs.mkdirSync(dir, { recursive: true });
+        fs.writeFileSync(path.join(dir, `perf-${new Date().toISOString().replace(/[:.]/g, '-')}.json`), text);
+        const old = fs.readdirSync(dir).filter((f) => /^perf-.*\.json$/.test(f)).sort();
+        for (const f of old.slice(0, Math.max(0, old.length - 10))) fs.unlinkSync(path.join(dir, f));
+        return true;
+      } catch { return false; }
+    });
     win.webContents.once('did-finish-load', () => setTimeout(reveal, 8000).unref?.());
     setTimeout(reveal, 20000).unref?.();
     win.webContents.on('before-input-event', (e, input) => {

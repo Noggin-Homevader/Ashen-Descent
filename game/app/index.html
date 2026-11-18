@@ -12914,4 +12914,57 @@ function BENCHDRAW(d,Q,K,T){try{const t=T/1000;
   if(SHOV===d){Q(0,.006,0,.98,.004,.98,K('#c8a0ff'),{em:.45,lo:1})}}
  else if(d.k=='shb'&&SHOV===d){CHM.setF(d.x,0,d.z,54,0,0,0,null,0);Q(0,.01,0,1.15,.006,.5,K('#ffd890'),{em:.6,lo:1})}}catch(e){}}
 
+/* ================= FIGHT-START PERFORMANCE RECORDER =================
+   To find what still makes the start of a fight stutter on a real machine, the game keeps the last two seconds of
+   frame timings and, when a fight starts (an enemy comes within reach after a quiet spell), records six seconds more.
+   It saves that as a report:
+   - in the desktop game, a perf-*.json file in the launcher's logs folder, next to launcher.log;
+   - in a browser, in this browser's storage (the last three reports).
+   Each frame notes how long it took, how much of that was the game's own work (update, drawing, effects, building
+   heroes and monsters), shader compiles, data sent to the graphics card, garbage collection and long tasks, so the
+   slow frames can be put down to the CPU, the graphics card or the browser. At most three reports a session, and
+   none more often than once a minute. Cheap: a few counters per frame. */
+var PERF3=(()=>{const R={on:true,ring:[],cur:null,rec:null,quiet:0,saved:0,lastSave:-1e9,info:null};
+ const nf=()=>({upd:0,drw:0,fx:0,mon:0,hero:0,links:0,linkMs:0,comp:0,upB:0,tex:0,texB:0,draws:0});
+ R.cur=nf();
+ /* time the game's own work */
+ const timeG=(name,key)=>{try{const f=window[name];if(typeof f!='function')return;window[name]=function(){const t=performance.now();try{return f.apply(this,arguments)}finally{R.cur[key]+=performance.now()-t}}}catch(e){}};
+ timeG('update','upd');timeG('draw','drw');timeG('FXPASS','fx');timeG('HERO3D','hero');
+ for(const n of['MON3D','BEAST3D','GOLEM3D','SLIME3D','SPIDER3D','WOLF3D','WRAITH3D','BAT3D','GOBTAUR3D','DRAGON3D'])timeG(n,'mon');
+ /* what goes to the graphics card */
+ try{for(const P_ of[WebGLRenderingContext.prototype,window.WebGL2RenderingContext&&WebGL2RenderingContext.prototype].filter(Boolean)){
+  const w=(n,f)=>{const o=P_[n];if(!o)return;P_[n]=function(...a){return f.call(this,o,a)}};
+  w('linkProgram',function(o,a){const t=performance.now();const r=o.apply(this,a);R.cur.links++;R.cur.linkMs+=performance.now()-t;return r});
+  w('compileShader',function(o,a){R.cur.comp++;return o.apply(this,a)});
+  for(const n of['bufferData','bufferSubData'])w(n,function(o,a){const d=a[1];if(d&&d.byteLength)R.cur.upB+=d.byteLength;return o.apply(this,a)});
+  for(const n of['texImage2D','texSubImage2D'])w(n,function(o,a){R.cur.tex++;const s=a[a.length-1];if(s&&s.width)R.cur.texB+=s.width*s.height*4;return o.apply(this,a)});
+  for(const n of['drawArrays','drawElements'])w(n,function(o,a){R.cur.draws++;return o.apply(this,a)})}}catch(e){}
+ const lt=[];try{new PerformanceObserver(l=>{for(const e of l.getEntries())lt.push([Math.round(e.startTime),Math.round(e.duration)])}).observe({type:'longtask',buffered:false})}catch(e){}
+ const heap=()=>{try{return performance.memory?performance.memory.usedJSHeapSize/1048576:0}catch(e){return 0}};
+ const near=()=>{try{if(typeof camp!='undefined'&&camp)return 0;let n=0;for(const e of E){if(e.dead||e.hp<=0||e.ally)continue;if(Math.hypot(e.x-P.x,e.y-P.y)<300)n++}return n}catch(e){return 0}};
+ const sysInfo=()=>{try{const c=document.getElementById('c3')||document.querySelector('canvas'),gl=c&&(c.getContext('webgl2')||c.getContext('webgl'));let gpu='';try{const x=gl&&gl.getExtension('WEBGL_debug_renderer_info');gpu=x?gl.getParameter(x.UNMASKED_RENDERER_WEBGL):''}catch(e){}
+  return{when:new Date().toISOString(),version:(window.ASHEN_VERSION||document.title||''),desktop:!!window.ASHEN_DESKTOP,ua:navigator.userAgent,gpu,dpr:devicePixelRatio,screen:[screen.width,screen.height],window:[innerWidth,innerHeight],
+   canvases:[...document.querySelectorAll('canvas')].filter(q=>q.offsetParent).slice(0,4).map(q=>[q.id||q.className,q.width,q.height]),gfx:typeof GFX!='undefined'?GFX:null,fx:!!window.FXON,floor:typeof fl!='undefined'?fl:null,cls:P&&P.cls}}catch(e){return{err:String(e)}}};
+ let prevT=0,prevHeap=heap();
+ function tick(t){try{if(prevT){const c=R.cur,h=heap(),f={t:Math.round(t),ms:+(t-prevT).toFixed(1),upd:+c.upd.toFixed(1),drw:+c.drw.toFixed(1),fx:+c.fx.toFixed(1),mon:+c.mon.toFixed(1),hero:+c.hero.toFixed(1),
+   links:c.links,linkMs:+c.linkMs.toFixed(1),comp:c.comp,upMB:+(c.upB/1048576).toFixed(2),tex:c.tex,texMB:+(c.texB/1048576).toFixed(2),draws:c.draws,gc:+(prevHeap-h>1.5?prevHeap-h:0).toFixed(1),heap:+h.toFixed(1),near:near(),dom:document.getElementsByTagName('*').length};
+   prevHeap=h;R.ring.push(f);if(R.ring.length>150)R.ring.shift();
+   if(R.rec){R.rec.frames.push(f);if(t-R.rec.t0>6000)finish()}
+   else{const n=f.near;if(n===0)R.quiet+=f.ms;else{if(R.quiet>5000&&R.saved<3&&t-R.lastSave>60000)start(t,n);R.quiet=0}}}
+  prevT=t;R.cur=nf()}catch(e){}requestAnimationFrame(tick)}
+ function start(t,n){R.rec={t0:t,info:sysInfo(),frames:R.ring.slice(-Math.min(R.ring.length,120)),trigger:{enemiesNear:n}};lt.length=0}
+ function finish(){const r=R.rec;R.rec=null;R.saved++;R.lastSave=performance.now();try{
+  const F=r.frames,iv=F.map(f=>f.ms).sort((a,b)=>a-b),pct=p=>iv[Math.min(iv.length-1,Math.floor(p*iv.length))];
+  const why=f=>{const js=f.upd+f.drw,parts=[];if(f.links)parts.push('shader compile ('+f.links+' programs, '+f.linkMs+' ms)');if(f.gc>=2)parts.push('garbage collection ('+f.gc+' MB freed)');if(f.upMB>=6||f.texMB>=4)parts.push('upload to GPU ('+f.upMB+' MB buffers, '+f.texMB+' MB textures)');
+   if(js>f.ms*.6)parts.push('game code ('+js.toFixed(0)+' ms: update '+f.upd+', draw '+f.drw+' incl. monsters '+f.mon+', hero '+f.hero+', effects '+f.fx+')');if(!parts.length)parts.push('graphics card / browser (game code only '+js.toFixed(0)+' ms of '+f.ms+')');return parts.join('; ')};
+  const worst=F.slice().sort((a,b)=>b.ms-a.ms).slice(0,12).map(f=>Object.assign({at_ms_from_fight:Math.round(f.t-r.t0),why:why(f)},f));
+  const rep={info:r.info,trigger:r.trigger,summary:{frames:F.length,fps_avg:+(1000/(iv.reduce((a,b)=>a+b,0)/iv.length)).toFixed(1),frame_ms_p50:pct(.5),p95:pct(.95),p99:pct(.99),max:iv[iv.length-1],
+   over_33ms:iv.filter(x=>x>33.4).length,over_50ms:iv.filter(x=>x>50).length,over_100ms:iv.filter(x=>x>100).length,shader_links:F.reduce((a,f)=>a+f.links,0),gc_events:F.filter(f=>f.gc>=2).length,
+   upload_MB_total:+F.reduce((a,f)=>a+f.upMB,0).toFixed(1),long_tasks:lt.slice(0,40)},worst,frames:F};
+  const txt=JSON.stringify(rep);
+  if(window.ASHEN_DESKTOP&&ASHEN_DESKTOP.savePerf)ASHEN_DESKTOP.savePerf(txt).catch(()=>{});
+  else{try{const k='ad_perf';const a=JSON.parse(localStorage.getItem(k)||'[]');a.push(rep);localStorage.setItem(k,JSON.stringify(a.slice(-3)))}catch(e){}}
+  R.last=rep}catch(e){console.warn('perf3',e)}}
+ requestAnimationFrame(tick);return R})();
+
 </script></body></html>

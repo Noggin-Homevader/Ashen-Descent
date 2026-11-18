@@ -109,7 +109,11 @@ contextBridge.exposeInMainWorld('claude', {
 });
 
 // Lets the game tell it is running in the desktop app.
-contextBridge.exposeInMainWorld('ASHEN_DESKTOP', { multiplayer: enabled });
+contextBridge.exposeInMainWorld('ASHEN_DESKTOP', {
+  multiplayer: enabled,
+  // a performance report from the game, saved next to launcher.log
+  savePerf: (text) => ipcRenderer.invoke('game:perf', String(text).slice(0, 2e6)),
+});
 
 // Tell the window it can appear: once the title screen (or the vault) is on the page and has been painted.
 if (typeof document !== 'undefined') {
