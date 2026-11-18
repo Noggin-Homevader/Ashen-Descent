@@ -65,12 +65,15 @@ jobs:
           $reg = Get-ChildItem 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall', 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall' -ErrorAction SilentlyContinue | Get-ItemProperty | Where-Object { $_.DisplayName -like 'Ashen Descent*' } | Select-Object -First 1
           if ($reg -and $reg.InstallLocation) { $dir = $reg.InstallLocation.TrimEnd('\') }
           Write-Host "old launcher installed at: $dir"
-          if (-not (Test-Path "$dir\Ashen Descent.exe")) { Get-ChildItem $env:LOCALAPPDATA\Programs -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName }; throw 'old launcher did not install' }
+          for ($i = 0; $i -lt 60 -and -not (Test-Path "$dir\Ashen Descent.exe"); $i++) { Start-Sleep -Seconds 1 }
+          if (-not (Test-Path "$dir\Ashen Descent.exe")) { Get-ChildItem $dir -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "  $($_.Name)" }; Write-Host ($reg | Format-List | Out-String); throw 'old launcher did not install' }
+          Get-Process 'Ashen Descent' -ErrorAction SilentlyContinue | Stop-Process -Force
           $marks = @('userdata\profile\Local Storage\leveldb\000005.ldb', 'game\versions\2.3.3\index.html', 'launcher\logs\launcher.log', 'game\current.json')
           foreach ($m in $marks) { $f = Join-Path $dir $m; New-Item -ItemType Directory -Force (Split-Path $f) | Out-Null; Set-Content -Path $f -Value "keep $m" }
           Get-Process 'Ashen Descent' -ErrorAction SilentlyContinue | Stop-Process -Force
           $new = (Resolve-Path dist/launcher/AshenDescent-Setup.exe).Path
           Start-Process -FilePath $new -ArgumentList '--updated', '/S', '/currentuser' -Wait
+          for ($i = 0; $i -lt 60 -and ((Test-Path "$dir.ashen-keep") -or -not (Test-Path "$dir\Ashen Descent.exe")); $i++) { Start-Sleep -Seconds 1 }
           Start-Sleep -Seconds 3
           Get-Process 'Ashen Descent' -ErrorAction SilentlyContinue | Stop-Process -Force
           if (-not (Test-Path "$dir\Ashen Descent.exe")) { throw 'new launcher not installed by the update' }
