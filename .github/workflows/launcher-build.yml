@@ -71,12 +71,29 @@ jobs:
           $marks = @('userdata\profile\Local Storage\leveldb\000005.ldb', 'game\versions\2.3.3\index.html', 'launcher\logs\launcher.log', 'game\current.json')
           foreach ($m in $marks) { $f = Join-Path $dir $m; New-Item -ItemType Directory -Force (Split-Path $f) | Out-Null; Set-Content -Path $f -Value "keep $m" }
           Get-Process 'Ashen Descent' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-          $new = (Resolve-Path dist/launcher/AshenDescent-Setup.exe).Path
-          Start-Process -FilePath $new -ArgumentList '--updated', '/S', '/currentuser' -Wait
-          for ($i = 0; $i -lt 60 -and ((Test-Path "$dir.ashen-keep") -or -not (Test-Path "$dir\Ashen Descent.exe")); $i++) { Start-Sleep -Seconds 1 }
+          # run the new setup the way launchers up to 1.5.3 do: from inside the install folder's launcher\update\
+          $new = Join-Path $dir 'launcher\update\AshenDescent-Setup.exe'
+          New-Item -ItemType Directory -Force (Split-Path $new) | Out-Null
+          Copy-Item (Resolve-Path dist/launcher/AshenDescent-Setup.exe).Path $new
+          $want = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          Start-Process -FilePath $new -ArgumentList '--updated', '/S', '/currentuser'
+          $ver = ''
+          for ($i = 0; $i -lt 120; $i++) {
+            Start-Sleep -Seconds 1
+            if ((Test-Path "$dir.ashen-keep") -or -not (Test-Path "$dir\Ashen Descent.exe")) { continue }
+            $ver = (Get-Item "$dir\Ashen Descent.exe").VersionInfo.ProductVersion
+            if ($ver -like "$want*") { break }
+          }
+          Write-Host "installed launcher version: $ver"
+          if (-not ($ver -like "$want*")) { throw "the update did not install $want (found '$ver')" }
+          # the update must open the new launcher by itself
+          $up = $null
+          for ($i = 0; $i -lt 30 -and -not $up; $i++) { Start-Sleep -Seconds 1; $up = Get-Process 'Ashen Descent' -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq "$dir\Ashen Descent.exe" } }
+          if (-not $up) { throw 'the update did not reopen the launcher' }
+          Write-Host 'update reopened the launcher'
           Start-Sleep -Seconds 3
           Get-Process 'Ashen Descent' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-          if (-not (Test-Path "$dir\Ashen Descent.exe")) { throw 'new launcher not installed by the update' }
+          Start-Sleep -Seconds 2
           foreach ($m in $marks) { if ((Get-Content (Join-Path $dir $m)) -ne "keep $m") { throw "update lost $m" } }
           if (Test-Path "$dir.ashen-keep") { throw 'held data was not put back' }
           Write-Host 'update over 1.4.0 kept all data'

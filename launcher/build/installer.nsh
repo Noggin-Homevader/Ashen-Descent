@@ -16,14 +16,28 @@
 !macro ashenHoldOne NAME
   ${If} ${FileExists} "$INSTDIR\${NAME}\*.*"
     CreateDirectory "$INSTDIR.ashen-keep"
-    ClearErrors
-    Rename "$INSTDIR\${NAME}" "$INSTDIR.ashen-keep\${NAME}"
-    ${If} ${Errors}
-      ; something has the folder open (the game or the launcher is still running): stop before anything is removed
-      Call ashenRestoreHeld
-      MessageBox MB_OK|MB_ICONEXCLAMATION "Ashen Descent is still running. Close the game and the launcher (right-click the tray icon, Quit), then run the setup again.$\r$\n$\r$\nNothing was changed and your saves are safe." /SD IDOK
-      Quit
-    ${EndIf}
+    ; a launcher that has just quit for this update can take a few seconds to let go of its files
+    StrCpy $R9 0
+    ${Do}
+      ClearErrors
+      Rename "$INSTDIR\${NAME}" "$INSTDIR.ashen-keep\${NAME}"
+      ${IfNot} ${Errors}
+        ${Break}
+      ${EndIf}
+      IntOp $R9 $R9 + 1
+      ${If} $R9 >= 20
+        ; still in use (the game or the launcher is running): stop before anything is removed
+        Call ashenRestoreHeld
+        MessageBox MB_OK|MB_ICONEXCLAMATION "Ashen Descent is still running. Close the game and the launcher (right-click the tray icon, Quit), then run the setup again.$\r$\n$\r$\nNothing was changed and your saves are safe." /SD IDOK
+        ; never leave the player without a launcher: open the one that is installed
+        ${If} ${Silent}
+        ${AndIf} ${FileExists} "$INSTDIR\Ashen Descent.exe"
+          Exec '"$INSTDIR\Ashen Descent.exe"'
+        ${EndIf}
+        Quit
+      ${EndIf}
+      Sleep 1000
+    ${Loop}
   ${EndIf}
 !macroend
 !macro ashenRestoreOne NAME
@@ -40,16 +54,44 @@ Function ashenRestoreHeld
   RMDir "$INSTDIR.ashen-keep"
 FunctionEnd
 
+; Launchers up to 1.5.3 start the update setup from inside the install folder (launcher\update\). The setup has to
+; move that folder aside while it installs, which Windows does not allow while the setup runs from it, so the setup
+; copies itself to the temp folder and continues from there.
+Function ashenRelocate
+  StrLen $R1 "$INSTDIR\"
+  StrCpy $R2 "$EXEPATH" $R1
+  ${If} $R2 == "$INSTDIR\"
+    CopyFiles /SILENT "$EXEPATH" "$TEMP\ashen-descent-setup.exe"
+    ${GetParameters} $R3
+    Exec '"$TEMP\ashen-descent-setup.exe" $R3'
+    Quit
+  ${EndIf}
+FunctionEnd
+
+; After a silent update started by the launcher (--updated), open the new launcher. A second copy started by the
+; launcher's own update script just hands over to this one.
+Function ashenRelaunch
+  ${If} ${Silent}
+    ${GetParameters} $R3
+    ClearErrors
+    ${GetOptions} $R3 "--updated" $R4
+    ${IfNot} ${Errors}
+    ${AndIf} ${FileExists} "$INSTDIR\Ashen Descent.exe"
+      Exec '"$INSTDIR\Ashen Descent.exe"'
+    ${EndIf}
+  ${EndIf}
+FunctionEnd
+
 !macro customInit
+  Call ashenRelocate
   ; data held aside by a setup that was interrupted is put back first
   Call ashenRestoreHeld
-  ; give a launcher that has just asked for this update a moment to close its files
-  Sleep 1500
   !insertmacro ashenDataDirs ashenHoldOne
 !macroend
 
 !macro customInstall
   Call ashenRestoreHeld
+  Call ashenRelaunch
 !macroend
 
 ; ---- uninstaller: remove only the launcher's own files, never the game or the player's data ----
