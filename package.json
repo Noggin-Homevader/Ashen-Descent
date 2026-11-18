@@ -1,7 +1,7 @@
 {
   "name": "ashen-descent-launcher",
   "productName": "Ashen Descent",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "private": true,
   "description": "Launcher and automatic updater for Ashen Descent",
   "author": "Noggin-Homevader",
@@ -66,7 +66,9 @@
       "createStartMenuShortcut": true,
       "shortcutName": "Ashen Descent",
       "deleteAppDataOnUninstall": false,
-      "artifactName": "AshenDescent-Setup.${ext}"
+      "artifactName": "AshenDescent-Setup.${ext}",
+      "include": "launcher/build/installer.nsh",
+      "warningsAsErrors": false
     },
     "mac": {
       "target": [

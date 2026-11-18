@@ -48,6 +48,43 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false' # unsigned until signing certificates are added (see docs/LAUNCHER.md)
         run: npm run dist
+      - name: Test that updating and uninstalling never touch the game or saves
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          # Players can have their data folders (game, userdata, launcher) in the same folder as the launcher program.
+          # Install the published 1.4.0 launcher, whose uninstaller clears its whole folder, put data beside it, then
+          # update with the new setup (which runs that old uninstaller) and uninstall the new one. The data must survive.
+          $dir = Join-Path $env:RUNNER_TEMP 'AshenDescent'   # (a silent /D= path cannot contain a space)
+          $old = Join-Path $env:RUNNER_TEMP 'old-setup.exe'
+          Invoke-WebRequest -Uri 'https://github.com/Noggin-Homevader/Ashen-Descent/releases/download/launcher-v1.4.0/AshenDescent-Setup.exe' -OutFile $old
+          Start-Process -FilePath $old -ArgumentList '/S', '/currentuser', "/D=$dir" -Wait
+          Start-Sleep -Seconds 2
+          Get-Process 'Ashen Descent' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+          # wherever the setup put it: read the install folder from the uninstall registration
+          $reg = Get-ChildItem 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall', 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall' -ErrorAction SilentlyContinue | Get-ItemProperty | Where-Object { $_.DisplayName -like 'Ashen Descent*' } | Select-Object -First 1
+          if ($reg -and $reg.InstallLocation) { $dir = $reg.InstallLocation.TrimEnd('\') } elseif ($reg -and $reg.DisplayIcon) { $dir = Split-Path ($reg.DisplayIcon -replace ',\d+$', '') }
+          Write-Host "old launcher installed at: $dir"
+          for ($i = 0; $i -lt 60 -and -not (Test-Path "$dir\Ashen Descent.exe"); $i++) { Start-Sleep -Seconds 1 }
+          if (-not (Test-Path "$dir\Ashen Descent.exe")) { Get-ChildItem $dir -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "  $($_.Name)" }; Write-Host ($reg | Format-List | Out-String); throw 'old launcher did not install' }
+          Get-Process 'Ashen Descent' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+          $marks = @('userdata\profile\Local Storage\leveldb\000005.ldb', 'game\versions\2.3.3\index.html', 'launcher\logs\launcher.log', 'game\current.json')
+          foreach ($m in $marks) { $f = Join-Path $dir $m; New-Item -ItemType Directory -Force (Split-Path $f) | Out-Null; Set-Content -Path $f -Value "keep $m" }
+          Get-Process 'Ashen Descent' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+          $new = (Resolve-Path dist/launcher/AshenDescent-Setup.exe).Path
+          Start-Process -FilePath $new -ArgumentList '--updated', '/S', '/currentuser' -Wait
+          for ($i = 0; $i -lt 60 -and ((Test-Path "$dir.ashen-keep") -or -not (Test-Path "$dir\Ashen Descent.exe")); $i++) { Start-Sleep -Seconds 1 }
+          Start-Sleep -Seconds 3
+          Get-Process 'Ashen Descent' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+          if (-not (Test-Path "$dir\Ashen Descent.exe")) { throw 'new launcher not installed by the update' }
+          foreach ($m in $marks) { if ((Get-Content (Join-Path $dir $m)) -ne "keep $m") { throw "update lost $m" } }
+          if (Test-Path "$dir.ashen-keep") { throw 'held data was not put back' }
+          Write-Host 'update over 1.4.0 kept all data'
+          Start-Process -FilePath "$dir\Uninstall Ashen Descent.exe" -ArgumentList '/S', "_?=$dir" -Wait
+          Start-Sleep -Seconds 2
+          foreach ($m in $marks) { if ((Get-Content (Join-Path $dir $m)) -ne "keep $m") { throw "uninstall lost $m" } }
+          if (Test-Path "$dir\Ashen Descent.exe") { throw 'uninstall left the launcher behind' }
+          Write-Host 'uninstall removed the program and kept all data'
       - name: Test the Windows install script on the built zip
         if: runner.os == 'Windows'
         shell: pwsh

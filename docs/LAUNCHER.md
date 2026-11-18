@@ -228,3 +228,17 @@ each OS:
   the desktop game, use **Copy backup code** in the old game, then **Import backup code** in the desktop game's Vault.
 - **Fonts.** The Almendra title font is downloaded during `npm run dist`. A build made without network access
   uses a fallback serif. The game itself loads its fonts from Google Fonts when online.
+
+## Updates never touch the game or saves (1.5.1)
+
+A player's data folders (`game`, `userdata`, `launcher`) can sit in the same folder as the launcher program, for
+example when both were put on `E:\Ashen Descent`. The default Windows uninstaller deletes its whole folder, and an
+update runs the previous version's uninstaller, so before 1.5.1 an update could delete the game and the saves.
+`launcher/build/installer.nsh` now:
+- removes only the launcher's own files when uninstalling;
+- before an update runs an older uninstaller, moves the data folders aside (a rename on the same drive) and puts them
+  back once the new launcher is installed; if a folder is in use it stops, changes nothing, and asks the player to
+  close the game;
+- the launcher starts its update setup a few seconds after quitting, so its own files are closed.
+The Windows build job installs the published 1.4.0 launcher with data beside it, updates and uninstalls, and fails if
+any data file is lost.
