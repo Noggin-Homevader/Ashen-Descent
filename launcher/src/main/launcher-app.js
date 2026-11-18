@@ -1,6 +1,7 @@
 'use strict';
 /** The launcher window: wires the Updater to the title-screen UI over IPC. */
 const path = require('path');
+const os = require('os');
 const fs = require('fs');
 const { app, BrowserWindow, ipcMain, shell, net, Menu, dialog, Tray, nativeImage } = require('electron');
 const { loadConfig, Settings } = require('../core/config');
@@ -207,11 +208,23 @@ function run() {
   function applySelfUpdate(info, prep) {
     const detached = { detached: true, stdio: 'ignore', windowsHide: true };
     if (info.build.kind === 'nsis') {
-      // The setup installs silently over this copy (same folder) and starts the launcher again.
-      // Start the setup a few seconds after this launcher has quit, so none of its files are still open when the
-      // setup replaces them (an open file makes the old version's uninstall fail).
-      const cmd = `ping -n 4 127.0.0.1 >nul & start "" "${prep.file}" --updated /S --force-run`;
-      spawn(process.env.ComSpec || 'cmd.exe', ['/d', '/c', cmd], { ...detached, windowsVerbatimArguments: true }).unref();
+      // The setup installs silently over this copy (same folder) and opens the new launcher when it is done (see
+      // installer.nsh); this script opens it too, in case it did not. The setup runs from a copy in
+      // the temp folder: while installing it moves the launcher's data folder aside, which it cannot do while it is
+      // running from inside that folder. The script waits a few seconds first so this launcher has fully quit.
+      const tmpSetup = path.join(os.tmpdir(), `ashen-descent-update-${info.version || 'new'}.exe`);
+      fs.copyFileSync(prep.file, tmpSetup);
+      const script = path.join(os.tmpdir(), 'ashen-descent-update.cmd');
+      fs.writeFileSync(script, [
+        '@echo off',
+        'ping -n 4 127.0.0.1 >nul',
+        `"${tmpSetup}" --updated /S`,
+        'ping -n 2 127.0.0.1 >nul',
+        `start "" "${process.execPath}"`,
+        `del "${tmpSetup}" >nul 2>&1`,
+        '',
+      ].join('\r\n'));
+      spawn(process.env.ComSpec || 'cmd.exe', ['/d', '/c', script], detached).unref();
     } else if (info.build.kind === 'zip') {
       const script = path.join(L.launcher, 'update', 'swap-launcher.cmd');
       fs.writeFileSync(script, swapScript({ pid: process.pid, appDir: path.dirname(process.execPath), staging: prep.staging }));

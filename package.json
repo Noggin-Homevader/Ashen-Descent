@@ -1,7 +1,7 @@
 {
   "name": "ashen-descent-launcher",
   "productName": "Ashen Descent",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "private": true,
   "description": "Launcher and automatic updater for Ashen Descent",
   "author": "Noggin-Homevader",
