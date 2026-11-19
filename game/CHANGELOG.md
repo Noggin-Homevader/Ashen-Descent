@@ -2,6 +2,23 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.4.6
+
+Weapon overhaul, part 1: axes and greataxes, and steel that looks like steel.
+
+- **Every axe and greataxe is remodelled** (Bearded, Twin-bit, Crescent, Hatchet, Francisca, Dwarven and Spiked
+  axes; Bearded, Twin-bit and Executioner greataxes):
+  - Blades are now wedges, thick at the eye and ground down to a polished, bevelled cutting edge, instead of flat plates.
+    The steel darkens toward the eye like forged metal.
+  - Heads join the haft along the full height of a forged eye with flared lips, and iron langets are riveted down the
+    haft.
+  - Hafts taper and swell, show wood grain and end in an iron butt cap. Grips are wound leather with stitched collars
+    (gilt on Magic and above).
+  - Gems sit in proper settings on Rare and above, and runes are inlaid in the cheeks on Legendary and above.
+- **Steel reads as steel on every weapon.** Metal reflects a darker sky with a warm horizon, faces seen head-on are
+  darker than faces seen at an angle, and blades are a deeper steel so their bright edges stand out. Before, swords,
+  axe heads and mace heads looked flat cream-white in warm light.
+
 ## 2.4.5
 
 - **Enchanted weapons, upgraded.** Every enchanted weapon keeps its soft glow along the edge, now with a bright core
