@@ -2,6 +2,19 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.5.0
+
+Armor overhaul, part 1: cloth that hangs, and a bow fix.
+
+- **Robes and coats hang in folds.** Skirts ripple into soft folds that deepen toward the hem, and the hem trim follows
+  them. The front opening and its trim stay flat. Capes still fall outside the folds, never through them.
+- **Trousers and leather boots crease.** Cloth trousers show gentle creases down the thigh and shin, and leather boot
+  shafts slouch at the ankle. Plate worn over them still fits cleanly outside.
+- **Metal armor is a deeper tone,** so plate, pauldrons and helms catch highlights instead of looking flat.
+- **Fixed: bows held by a fat barrel.** In 2.4.9 the new wound grip on shortbows, longbows and warbows came out four
+  times too thick (the grip sits in front of the limbs and its size was measured from the wrong point). Bows have a
+  slim wound grip now. Scythes, which have two grips, keep their original handles.
+
 ## 2.4.9
 
 Weapon overhaul, part 4: staves and ranged weapons.
