@@ -2,6 +2,11 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.4.4
+
+- **Bandit King's Reaver restored.** The reshaped haft from 2.4.2 came apart into broken segments. The Reaver is back
+  to its original model.
+
 ## 2.4.3
 
 - **Every monster part has a proper icon.** The higher tiers (Tough Goblin Hide, Dire Wolf Pelt, Ancient Bone Shard,
