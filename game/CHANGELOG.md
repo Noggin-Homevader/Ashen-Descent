@@ -11,7 +11,7 @@ Roomier shops, party members inside them, and new potion models.
     and material stores sit by the counter.
   - The breaking wheel, the lectern, the sheath bench and the enchanting altar line the front by the door.
   - Four hanging lanterns light the larger room.
-  - Ask Bram "Where is everything?" for directions to the new layout.
+  - Ask Brannoch "Where is everything?" for directions to the new layout.
 - **Shop instances for parties.** Party members inside the same shop can now see each other, with name tags, walking
   around the room.
   - Players outside your party never appear inside your shop.
