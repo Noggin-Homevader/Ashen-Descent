@@ -2,6 +2,17 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.4.7
+
+Weapon overhaul, part 2: every blade. Swords, short swords, holy blades, greatswords, daggers, shivs and stilettos
+(37 styles) keep their shapes and gain detail:
+
+- **Wound leather grips** with raised spiralling ridges replace the smooth grip cylinders.
+- **Tonal steel:** each blade is darker along its spine and fuller and brightens toward the bevel, with a polished
+  cutting edge, so the cross-section reads at a glance.
+- **Steel reflections are less orange.** The warm horizon reflection added in 2.4.6 is toned down, so blades stay
+  steel-coloured in firelight.
+
 ## 2.4.6
 
 Weapon overhaul, part 1: axes and greataxes, and steel that looks like steel.
