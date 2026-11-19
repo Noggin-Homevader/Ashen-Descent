@@ -2,6 +2,35 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.5.3
+
+Roomier shops, party members inside them, and new potion models.
+
+- **A bigger Cinder Forge.** The forge is now 960 by 760, so every bench has room to walk around and use.
+  - The anvil and the Dragonforge are on the left, the workbench and recipe racks on the right, and the crystal altar
+    and material stores sit by the counter.
+  - The breaking wheel, the lectern, the sheath bench and the enchanting altar line the front by the door.
+  - Four hanging lanterns light the larger room.
+  - Ask Bram "Where is everything?" for directions to the new layout.
+- **Shop instances for parties.** Party members inside the same shop can now see each other, with name tags, walking
+  around the room.
+  - Players outside your party never appear inside your shop.
+  - The town's notice board and the musician's stage no longer show up inside shop rooms.
+  - In town, a player who is in a shop still appears at its door, as before.
+  - When a party member walks in, a short message tells you.
+- **New potion models, one per potion.** Each potion is now a single solid bottle with glass, liquid, cork, seal and
+  metal fittings, and its size matches its grade:
+  - **Minor** is a small vial.
+  - **Lesser** is a round flask tied with twine.
+  - **Greater** is a tall bottle with a label and a red wax seal.
+  - **Grand** is a large faceted decanter with gilt bands and a glowing gem stopper.
+  - The elixirs each have their own shape: a slim teardrop for Swift Tonic, a banded iron jar for Stoneskin Draught, a
+    long-necked flask with a bone stopper for Fury Draught, and a gourd for Regen Salve.
+  - The same models appear on the apothecary's stands (turning slowly, faster when you hover one), on dropped loot,
+    and as the icons in your bag, belt and shop windows. Smaller grades draw smaller in their icons.
+- **Shop windows show wares on display.** Each item sits in a larger card, in a lit niche on a small pedestal, with the
+  price on a brass tag.
+
 ## 2.5.2
 
 Every bench has its own menu, and the shop windows get a detail pass.
