@@ -2,6 +2,21 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.4.5
+
+- **Enchanted weapons, upgraded.** Every enchanted weapon keeps its soft glow along the edge, now with a bright core
+  line, and each element has its own effect on top:
+  - **Fire:** flames up the blade and rising embers.
+  - **Ice:** cold mist and drifting frost crystals.
+  - **Lightning:** arcs crackling along the blade and jumping off it.
+  - **Water:** a stream spiralling around the blade.
+  - **Wind:** two thin gusts winding around it.
+  - **Earth:** grit and pebbles falling away.
+  - **Nature:** a twining vine of light and drifting spores.
+  - **Shadow and Death:** dark purple or sickly green flames.
+  - **Holy:** a radiant edge with sparkling glints.
+  - **Arcane:** motes orbiting the blade on a turning ring.
+
 ## 2.4.4
 
 - **Bandit King's Reaver restored.** The reshaped haft from 2.4.2 came apart into broken segments. The Reaver is back
