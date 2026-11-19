@@ -3016,7 +3016,7 @@ function buildShop(m,mc){const T=townTh(),H_=hc,J=(c,a)=>m.jit(H_(c),a||.06),BR=
   for(const s_ of[0,1])for(const bz of[170,690]){const x=s_?SRW-9:9;m.box(x,58,bz,3,84,46,H_(s_?'#2b4a7a':'#7a1a14'));m.box(x,140,bz,4,4,52,J(wood2,.05));m.box(x+(s_?-1:1),70,bz,2,42,24,H_('#e8c050'),.25)}
   for(const[x,z]of[[44,610],[66,636],[SRW-60,240],[SRW-56,610],[SRW-80,636]]){m.cyl(x,0,z,13,30,10,J('#6a4424',.06));m.cyl(x,10,z,13.6,2,10,[.25,.25,.27]);m.cyl(x,22,z,13.6,2,10,[.25,.25,.27])}
   m.box(44,0,250,14,6,80,J(wood2,.05));for(let k=0;k<5;k++)m.box(44,6,222+k*14,2.4,70,2.4,[.72,.74,.78]);for(let k=0;k<5;k++)m.cone(44,76,222+k*14,2.4,9,4,[.8,.82,.86]);m.box(44,58,250,10,4,84,J(wood,.05));
-  m.box(SRW-300,0,40,60,26,30,J(wood,.05));m.box(SRW-300,26,40,62,6,32,J(wood2,.05));for(const dx of[-24,24])m.box(SRW-300+dx,4,56,4,22,1,[.3,.3,.33])}
+  m.box(SRW-300,0,40,60,26,30,J(wood,.05));m.box(SRW-300,26,40,62,6,32,J(wood2,.05));for(const dx of[-24,24])m.box(SRW-300+dx,4,56,4,22,1,[.3,.3,.33]);if(window.GLDBENCHES)GLDBENCHES(m,J,H_,tor)}
  else if(id=='gam'){/* the oracle's tent interior: draped canvas, round table, crystal ball */
   for(let k=0;k<20;k++){const z=k*(SRH/20)+SRH/40;for(const s of[0,1])m.box(s?SRW-14:14,0,z,8,SRWH,SRH/20+1,H_(k%2?a1:'#1a0a1e'))}
   for(let k=0;k<16;k++){const x=k*(SRW/16)+SRW/32;m.box(x,0,14,SRW/16+1,SRWH,8,H_(k%2?a1:'#1a0a1e'))}
@@ -7486,7 +7486,7 @@ var SHOPDRAW=(t)=>{if(!SHOPIN)return;const id=SHOPIN.id,T=Date.now(),K=CHM.K,Q=C
   else if(d.k=='card'){const t=GCH[d.i];CHM.setF(d.x,52+Math.sin(T/600+d.i)*3,d.z,54,T/1100+d.i*2,0,0,null,SHOV===d?.6:.25);Q(0,0,0,.2,.32,.008,K('#1a0a1e'),{lo:1});Q(0,0,.009,.17,.29,.002,K(t?t.col:'#ffd23a'),{em:.5,lo:1});Q(0,0,.012,.07,.07,.003,K('#ffffff'),{em:.7,lo:1});Q(0,0,-.009,.17,.29,.002,K('#5a1a4a'),{lo:1})}
   else if(d.k=='dice'){CHM.setF(d.x,31,d.z,54,0,0,0,null,SHOV===d?.4:0);for(let k=0;k<2;k++)Q(-.06+k*.12,.05,0,.05,.05,.05,K('#efe6d0'),{lo:1,az:T/900+k,ax:k*.6});Q(.2,.04,.1,.12,.04,.12,K('#5a3a2a'))}
   else if(d.k=='ball'&&SHOV===d){CHM.setF(d.x,44,d.z-8,54,0,0,0,null,0);Q(0,.14,0,.26,.26,.26,K('#e0c0ff'),{em:.35,lo:1})}
-  else if((d.k=='shb'||d.k=='enb')&&window.BENCHDRAW)BENCHDRAW(d,Q,K,T);
+  else if((d.k=='shb'||d.k=='enb'||d.bd)&&window.BENCHDRAW)BENCHDRAW(d,Q,K,T);
   else if(d.k=='ug'&&SHOV===d){CHM.setF(d.x,0,d.z,54,0,0,0,null,0);Q(0,.02,0,.5,.01,.3,K('#ffd890'),{em:.8,lo:1})}
   else if(d.k=='drg'&&SHOV===d){CHM.setF(DFPOS.x,0,DFPOS.z+52,54,0,0,0,null,0);Q(0,.02,0,.4,.01,.4,K('#ff9a3a'),{em:.9,lo:1})}}}finally{CHM.hq(GFX>=3?2:GFX>=1)}}
 function potMesh(k,Q,K){if(k=='fe'){Q(0,.3,0,.03,.3,.008,K('#ff6a2a'),{em:.5,az:.2});for(let i=0;i<8;i++)Q(.04+i*.004,.12+i*.06,0,.06,.012,.006,K(i%2?'#ffb347':'#ff5a1a'),{em:.5,az:.6});return}
@@ -13465,5 +13465,228 @@ ENCHFX=function(el,Lt,at,t){try{if(!window.FXON||typeof FXQ=='undefined'||!FXQ.r
  case'Arcane':default:{const u=.55+.3*Math.sin(t*1.3),pts=[],ws=[];for(let i=0;i<=16;i++){pts.push(around(u,i/16*6.283+t*3,R*2.2));ws.push(.35)}rib(pts,ws,[.85,.5,1],.7,.6);
   if(typeof sfxBub=='function')for(let k=0;k<3;k++){const p=around(u,t*3+k*2.09,R*2.2);sfxBub(p[0],p[1],p[2],.7,.7,'Arcane',.95,.3,k)}}}
 }catch(e){}};
+
+/* ================= ONE MENU PER BENCH =================
+   Every bench, board and counter inside a shop opens its own window: no tab bar, no "Other stalls". To salvage you walk
+   to the breaking wheel, to read your recipes you walk to the lectern, and so on.
+   New stations:
+   - Cinder Forge: the salvage wheel (by the door, left), the material stores (back right), the recipe lectern (by the
+     door, right) and the crystal altar (left of the counter). The workbench, recipe racks, anvil, Dragonforge, sheath
+     bench and enchanting altar were already there.
+   - Guildhall: the ledger desk for your own quests (left of the counter), the bounty board with its trophy skull (by the
+     door, left) and the guild armory rack (right of the counter). The Quest Board, Muster Board and Guild Store stall
+     were already there.
+   Keepers still talk, sell what they sell themselves and tell you where each bench is. */
+var BENCH2={smi:{svb:{x:255,z:492,tab:'salv',r:36,cr:28},mtb:{x:540,z:168,tab:'mats',r:40,cr:34},lct:{x:402,z:488,tab:'rbook',r:24,cr:18},cra:{x:205,z:184,tab:'crys',r:30,cr:24}},
+ gld:{ldg:{x:290,z:190,tab:'qac',r:40,cr:34},bty:{x:250,z:690,tab:'bnt',r:44,cr:30},gar:{x:650,z:200,tab:'gsp',r:44,cr:36}}};
+var BENCHN={forge:['Workbench','the crafting bench'],salv:['Salvage','the breaking wheel'],mats:['Materials','the material stores'],rbook:['Recipe Book','the recipe lectern'],
+ upg:['Enhance','the anvil'],ench:['Enchant','the enchanting altar'],crys:['Crystals','the crystal altar'],shth:['Sheaths','the sheath bench'],drg:['Dragonforge','the Dragonforge'],
+ qst:['Quest Board','the Quest Board'],qac:['My Quests','the ledger desk'],bnt:['Bestiary Bounties','the bounty board'],gsh:['Guild Store','the store stall'],gsp:['Guild Shop','the guild armory'],
+ sell:['Sell & Salvage','the scales'],up:['Upgrades','the tailor’s table'],arm:['Armory',''],sup:['Supplies',''],gam:['Fates','']};
+var BENCHI={forge:'⚒',salv:'⚙',mats:'\u{1F4E6}',rbook:'\u{1F4D6}',upg:'\u{1F528}',ench:'✨',crys:'\u{1F48E}',shth:'\u{1F5E1}',drg:'\u{1F409}',qst:'\u{1F4DC}',qac:'\u{1F4D2}',bnt:'\u{1F480}',gsh:'\u{1F9F4}',gsp:'\u{1F6E1}',sell:'⚖',up:'\u{1F392}'};
+
+/* ---- the benches themselves ---- */
+function vdisc(m,x,y,z,R,th,col,em){/* an upright wheel in the y-z plane, built from horizontal slices */const n=10;for(let k=0;k<n;k++){const yy=-R+(k+.5)*2*R/n,w=2*Math.sqrt(Math.max(0,R*R-yy*yy));m.box(x,y+yy-R/n,z,th,2*R/n+.2,w,col,em)}}
+function SMIBENCHES2(m,J,H_,tor){try{const B=BENCH2.smi,oak='#6a4424',oak2='#4a2e18',ir=[.3,.3,.33],ir2=[.42,.42,.46],st='#5a5650',st2='#3a3834';
+ /* ---- salvage: a heavy breaking block with a vise, a treadle grindstone, a barrel of broken blades and a scrap heap ---- */
+ {const{x,z}=B.svb;for(const sx of[-26,26])for(const sz of[-14,14])m.box(x+sx,0,z+sz,8,26,8,J(oak2,.05));m.box(x,26,z,66,8,38,J(oak,.07));m.box(x,34,z,62,1,34,J('#7a5230',.08));
+  m.box(x-18,35,z-6,14,6,10,ir);m.box(x-18,41,z-6,4,6,14,ir2);m.box(x-18,47,z-6,18,2,3,ir2);
+  for(let k=0;k<4;k++)m.box(x+4+k*6,35.2,z+(k%2?6:-2),5,.8,2.4,J(['#8a8f98','#b08a3a','#6a6a70','#c8c0b0'][k],.05),0,k*.5);
+  /* the grindstone on its frame, and the treadle */
+  const gx=x+46,gz=z;for(const s of[-1,1])m.box(gx,0,gz+s*9,4,32,4,J(oak2,.05));m.box(gx,30,gz,4,3,22,J(oak2,.05));vdisc(m,gx,32,gz,15,6,J('#8a8478',.05));vdisc(m,gx,32,gz,5,7,ir2);m.box(gx,4,gz+16,22,2,6,J(oak,.05));
+  /* barrel of broken blades */
+  const bx=x-46,bz=z+10;m.cyl(bx,0,bz,11,24,10,J('#6a4424',.06));for(const yy of[5,18])m.cyl(bx,yy,bz,11.6,2,10,ir);
+  for(let k=0;k<6;k++){const a=k*1.1,r=4+(k%3)*2;m.box(bx+Math.cos(a)*r,22,bz+Math.sin(a)*r,1.4,10+(k%3)*6,3,[.66,.68,.72],0,a)}
+  /* scrap heap and a sledge */
+  for(let k=0;k<9;k++){const a=k*2.4,r=5+(k%4)*3;m.box(x+10+Math.cos(a)*r,0,z+30+Math.sin(a)*r*.6,5+(k%3)*2,2+(k%2)*2,4,J(k%3?'#5a5a60':'#7a5a3a',.08),0,a)}
+  m.box(x+30,0,z-26,3,34,3,J(oak2,.05),0,.3);m.box(x+30,34,z-26,10,6,6,ir)}
+ /* ---- material stores: shelving with ingots, leather rolls, cloth bolts and a gem tray; crates and a barrel ---- */
+ {const{x,z}=B.mtb;for(const sx of[-34,34])for(const sz of[-14,14])m.box(x+sx,0,z+sz,4,70,4,J(oak2,.05));
+  for(const yy of[2,24,46,68])m.box(x,yy,z,72,3,32,J(oak,.06));
+  const IG=[[.72,.48,.28],[.58,.6,.64],[.85,.68,.3],[.82,.84,.88]];for(let k=0;k<4;k++)for(let l=0;l<2;l++)m.box(x-24+k*16,5+l*3.2,z-4+l*1.4,12,3,6,IG[k]);
+  const LC=['#6a4424','#8a5a30','#3a2414','#a0704a'];for(let k=0;k<4;k++)m.cyl(x-24+k*16,27,z+2,5,15,8,J(LC[k],.05));
+  const CC=['#8a2a2a','#2a4a8a','#e8dcc0','#3a6a3a','#6a3a8a'];for(let k=0;k<5;k++)m.box(x-26+k*13,49,z,11,8,26,J(CC[k],.05));
+  m.box(x,71,z,30,2,18,J('#3a2a1a',.05));const GC=['#ff4a5a','#4a8aff','#4ad07a','#c070ff','#ffd23a','#ffffff'];for(let k=0;k<6;k++)m.cone(x-12+(k%3)*12,73,z-4+Math.floor(k/3)*8,2.6,5,5,H_(GC[k]),.5,k);
+  m.box(x-20,0,z+34,24,20,22,J(oak,.08));m.box(x-20,20,z+34,25,1.5,23,J(oak2,.05));m.box(x+14,0,z+40,18,14,18,J(oak,.08));m.box(x+14,14,z+40,19,1.5,19,J(oak2,.05));
+  m.cyl(x+40,0,z+30,9,22,10,J(oak,.06));m.cyl(x+40,6,z+30,9.5,2,10,ir);m.cyl(x+40,16,z+30,9.5,2,10,ir)}
+ /* ---- recipe lectern: an open book on a carved stand, a candle and a basket of scrolls ---- */
+ {const{x,z}=B.lct;m.cyl(x,0,z,12,4,10,J(oak2,.05));m.cyl(x,4,z,4,30,8,J(oak,.06),0,3);m.box(x,34,z,30,3,22,J(oak,.06));m.box(x,37,z+5,30,2,10,J(oak,.06));
+  m.box(x-7.5,38,z,14,1.6,18,J('#efe4c8',.04));m.box(x+7.5,38,z,14,1.6,18,J('#efe4c8',.04));m.box(x,38.4,z,1.4,2.4,18,J('#5a2a1a',.05));m.box(x+3,36,z+9,1.2,4,1,H_('#a0202a'));
+  for(let k=0;k<5;k++)m.box(x-7.5,39,z-6+k*3,10,.3,.5,J('#5a4a3a',.03));for(let k=0;k<5;k++)m.box(x+7.5,39,z-6+k*3,10,.3,.5,J('#5a4a3a',.03));
+  m.cyl(x+18,37,z-8,2,7,8,[.92,.88,.76]);m.blob(x+18,46,z-8,1.4,2.6,1.4,H_('#ffd890'),0,5,3,1);tor.push({x:x+18,y:z-8,nx:0,ny:0,_y:47});
+  m.cyl(x-20,0,z+10,8,12,10,J('#8a6a3a',.08));for(let k=0;k<5;k++)m.cyl(x-22+(k%3)*3,10,z+8+(k>2?4:0),1.6,10,6,J('#e8dcc0',.04))}
+ /* ---- crystal altar: a stepped stone plinth, an iron socket ring and a crystal cluster; one crystal floats above ---- */
+ {const{x,z}=B.cra;m.cyl(x,0,z,22,5,12,J(st2,.05));m.cyl(x,5,z,16,22,10,J(st,.06));m.cyl(x,27,z,19,4,12,J(st2,.05));m.cyl(x,31,z,14,2,12,ir2);
+  for(let k=0;k<8;k++){const a=k/8*6.2832;m.box(x+Math.cos(a)*16.5,14,z+Math.sin(a)*16.5,2.2,2.2,1,H_('#7ad0ff'),.8,a)}
+  const CR=[['#9a7aff',0,0,6,16],['#5ad0ff',5,3,3.4,10],['#c8a0ff',-5,2,3,9],['#7ae0d0',2,-5,3,8],['#ff8ad8',-3,-4,2.4,7]];
+  for(const[c,dx,dz,r,h]of CR){m.cone(x+dx,33,z+dz,r,h,6,H_(c),.7,dx);m.cone(x+dx,33,z+dz,r,-2,6,H_(c),.7,dx)}
+  for(let k=0;k<5;k++){const a=k/5*6.2832+.3;m.box(x+Math.cos(a)*30,0,z+Math.sin(a)*30,6,3,4,J(st2,.06),0,a);m.box(x+Math.cos(a)*30,3,z+Math.sin(a)*30,2,.5,2,H_('#7ad0ff'),.6)}}
+}catch(e){console.warn('benches2',e)}}
+function GLDBENCHES(m,J,H_,tor){try{const B=BENCH2.gld,wood='#6a4424',wood2='#4a2e18',ir=[.3,.3,.33];
+ /* ---- ledger desk: a writing desk with the great ledger, an inkwell and quill, a candle and a chair ---- */
+ {const{x,z}=B.ldg;for(const sx of[-30,30])for(const sz of[-14,14])m.box(x+sx,0,z+sz,5,30,5,J(wood2,.05));m.box(x,30,z,70,4,36,J(wood,.06));m.box(x,24,z-15,64,6,3,J(wood2,.05));
+  m.box(x-8,34,z+2,17,2.2,24,J('#efe4c8',.04));m.box(x+9,34,z+2,17,2.2,24,J('#efe4c8',.04));m.box(x,33.6,z+2,36,1.4,26,J('#5a1a14',.05));m.box(x,34.6,z+2,1.2,2.6,24,J('#3a1010',.05));
+  for(let k=0;k<6;k++){m.box(x-8,36.3,z-7+k*3.6,13,.3,.6,J('#4a3a2a',.03));m.box(x+9,36.3,z-7+k*3.6,13,.3,.6,J('#4a3a2a',.03))}
+  m.cyl(x+26,34,z-6,3,4,8,[.12,.12,.16]);m.cone(x+26,38,z-6,.8,16,4,J('#efe8d8',.05),0,.4);m.cyl(x-26,34,z-8,2.2,8,8,[.92,.88,.76]);m.blob(x-26,44,z-8,1.4,2.6,1.4,H_('#ffd890'),0,5,3,1);tor.push({x:x-26,y:z-8,nx:0,ny:0,_y:45});
+  for(let k=0;k<4;k++)m.box(x+22,34+k*1.2,z+8,12,1,9,J('#e8dcc0',.06),0,k*.15);
+  m.cyl(x,0,z+30,9,18,8,J(wood2,.05));m.box(x,18,z+30,20,3,18,J(wood,.06));m.box(x,21,z+38,20,22,3,J(wood,.06))}
+ /* ---- bounty board: a timber frame with wanted posters and red seals, and a monster skull nailed above ---- */
+ {const{x,z}=B.bty;for(const s of[-1,1])m.box(x+s*36,0,z,6,92,6,J(wood2,.05));m.box(x,30,z,76,56,4,J('#5a3a20',.07));m.box(x,86,z,84,5,8,J(wood,.06));m.box(x,28,z,80,3,8,J(wood,.06));
+  const PC=['#efe2c0','#e8d8b0','#f4e8cc','#e0d0a8','#efe2c0','#e8d8b0'];for(let k=0;k<6;k++){const px=x-24+(k%3)*24,py=40+Math.floor(k/3)*22;m.box(px,py,z-2.6,18,18,.6,J(PC[k],.04),0,(k-2.5)*.05);m.box(px,py+6,z-3.1,8,1,.4,J('#3a2a1a',.03));m.box(px,py+2,z-3.1,12,.8,.4,J('#5a4a3a',.03));m.cyl(px,py-6,z-3.2,2,.4,8,H_('#a0202a'))}
+  m.blob(x,98,z-2,9,8,8,H_('#e8dcc0'),.1,8,3);for(const s of[-1,1])m.cone(x+s*8,100,z-2,2.6,16,6,H_('#d8ccb0'),0,s*.9);for(const s of[-1,1])m.blob(x+s*3.6,98,z-8,1.6,1.6,1,[.05,.03,.02],0,5,3);
+  m.box(x+44,60,z-6,2,2,10,ir);m.cyl(x+44,46,z-12,3,10,6,[.25,.22,.2]);m.blob(x+44,51,z-12,2,3,2,H_('#ffb060'),0,5,3,1);tor.push({x:x+44,y:z-12,nx:0,ny:0,_y:52})}
+ /* ---- guild armory: a weapon rack and an armor stand in guild colours ---- */
+ {const{x,z}=B.gar;for(const s of[-1,1])m.box(x+s*30,0,z-10,4,56,4,J(wood2,.05));m.box(x,52,z-10,64,4,6,J(wood,.06));m.box(x,18,z-10,64,3,8,J(wood,.06));
+  const WC=[[.7,.72,.78],[.62,.64,.7],[.78,.8,.86],[.66,.68,.74],[.72,.74,.8]];for(let k=0;k<5;k++){const wx=x-24+k*12;m.box(wx,10,z-8,1.6,40+(k%2)*8,3,WC[k]);m.box(wx,10,z-8,6,2,3,J('#c8a040',.05));m.box(wx,4,z-8,2.2,6,2.2,J('#3a2414',.05))}
+  const ax=x+46,az=z+6;m.cyl(ax,0,az,10,3,10,J(wood2,.05));m.cyl(ax,3,az,2,40,6,J(wood,.05));m.box(ax,30,az,22,22,12,[.55,.57,.62]);m.box(ax,30,az+6.2,8,18,.6,H_('#2b4a7a'));for(const s of[-1,1])m.blob(ax+s*13,48,az,6,4,7,[.6,.62,.68],0,8,3);m.blob(ax,58,az,6,7,6,[.58,.6,.66],0,8,3);
+  vdisc(m,x-48,26,z+6,13,3,H_('#2b4a7a'));vdisc(m,x-46.4,26,z+6,10,3,H_('#c8a040'),.1)}
+}catch(e){console.warn('gldbenches',e)}}
+{const _sb=window.SMIBENCHES;SMIBENCHES=function(m,J,H_,tor){const r=_sb?_sb.apply(this,arguments):undefined;SMIBENCHES2(m,J,H_,tor);return r}}
+
+/* ---- the stations: block the way, offer F, open their own window ---- */
+{const _sd=shopDisp;shopDisp=function(){const r=_sd.apply(this,arguments);try{const L=SHOPIN&&BENCH2[SHOPIN.id];if(L)for(const k in L){const b=L[k];r.push({k,x:b.x,z:b.z,h:40,r:b.r,cr:b.cr,bd:1,tab:b.tab})}
+ for(const d of r)if(d.k=='shb'||d.k=='enb')d.bd=1}catch(e){}return r}}
+var BENCHSAY={svb:['Use the breaking wheel','Salvage gear into materials'],mtb:['Check the material stores','Your materials and where to get more'],lct:['Read the recipe book','Your recipes and discoveries'],cra:['Use the crystal altar','Socket and attune crystals'],
+ ldg:['Open the guild ledger','Your accepted quests'],bty:['Read the bounty board','Bestiary bounties'],gar:['Browse the guild armory','Guild gear and provisions']};
+{const _s=STNOF;STNOF=function(d){if(d&&BENCHSAY[d.k])return BENCHSAY[d.k];if(d&&d.k=='gsh')return['Browse the Guild Store','Monster parts and materials'];return _s.apply(this,arguments)}}
+{const _a=dispAct;dispAct=function(d){if(d&&BENCHSAY[d.k]&&d.tab){SHN=SHOPIN.id;stipHide();SHT=d.tab;SHS=null;showShop();return true}return _a.apply(this,arguments)}}
+var BENCHTIP={svb:'<b>The breaking wheel</b><br><small>Break gear down into crafting materials. Salvaging a piece made for your class teaches its pattern.</small>',
+ mtb:'<b>The material stores</b><br><small>Every metal, wood, leather, cloth and gem you carry, and where to find more.</small>',
+ lct:'<b>The recipe lectern</b><br><small>Every combination you have forged, its mastery, and the discoveries you have made.</small>',
+ cra:'<b>The crystal altar</b><br><small>Socket, attune and combine your crystals.</small>',
+ ldg:'<b>The guild ledger</b><br><small>The quests you have taken, their progress and rewards.</small>',
+ bty:'<b>The bounty board</b><br><small>Standing bounties on every kind of monster in the bestiary.</small>',
+ gar:'<b>The guild armory</b><br><small>Gear forged for guild members and provisions, cheaper with rank.</small>'};
+{const _t=dispTip;dispTip=function(d){if(d&&BENCHTIP[d.k])return BENCHTIP[d.k]+'<span class="hint">Walk up and press F</span>';return _t.apply(this,arguments)}}
+/* hover glow and a little life: the wheel sparks, the candle flickers, the crystal floats and turns */
+{const _bd=window.BENCHDRAW;BENCHDRAW=function(d,Q,K,T){if(d&&BENCHSAY[d.k]){try{const t=T/1000;CHM.setF(d.x,0,d.z,54,0,0,0,null,0);
+  if(d.k=='cra'){const y=1.02+.06*Math.sin(t*1.6);CHM.setF(d.x,0,d.z,54,t*.8,0,0,null,0);Q(0,y,0,.07,.13,.07,K('#b090ff'),{em:.9,lo:1,n:1.8});Q(0,y,0,.1,.03,.1,K('#e8d8ff'),{em:1,lo:1});
+   CHM.setF(d.x,0,d.z,54,0,0,0,null,0);for(let k=0;k<6;k++){const a=t*1.2+k/6*6.2832;Q(Math.cos(a)*.3,.75+.08*Math.sin(t*2+k),Math.sin(a)*.3,.014,.014,.014,K(['#9a7aff','#5ad0ff','#ff8ad8'][k%3]),{em:1,lo:1})}}
+  if(d.k=='svb'&&SHOV===d){for(let k=0;k<5;k++){const a=t*9+k*1.3,u=(t*3+k*.2)%1;Q(.85-u*.25,.55+u*.25-u*u*.5,Math.cos(a)*.1,.008,.008,.008,K('#ffb040'),{em:1,lo:1})}}
+  if(SHOV===d)Q(0,.01,0,(d.r||30)/54*1.25,.005,(d.r||30)/54*1.25,K(d.k=='cra'?'#b090ff':'#ffd890'),{em:.55,lo:1})}catch(e){}return}
+ return _bd?_bd.apply(this,arguments):undefined}}
+
+/* ---- inside a shop, a window shows only the bench it was opened from ---- */
+{const _tb=shopTabs;shopTabs=function(N){const t=_tb.apply(this,arguments);if(!SHOPIN||!G3.on)return t;return t.includes(SHT)?[SHT]:[t[0]]}}
+{const _ss=showShop;showShop=function(){const r=_ss.apply(this,arguments);try{const w=document.querySelector('#ovc .shopw');if(w&&SHOPIN&&G3.on&&!w.querySelector('.tabs')&&BENCHN[SHT]&&BENCHN[SHT][1]){
+  const inf=w.querySelector('.swinfo'),pl=document.createElement('div');pl.className='bplq';pl.innerHTML=`<i>${BENCHI[SHT]||'✦'}</i><b>${BENCHN[SHT][0]}</b><small>at ${BENCHN[SHT][1]}</small>`;(inf||w.firstChild).after(pl)}}catch(e){}return r}}
+/* keepers no longer hand you every bench: they tell you where to walk */
+var BENCHWHERE={smi:'"The workbench is on the right, with the recipe racks along the wall. Salvage on the breaking wheel by the door, your recipes on the lectern beside it, materials in the stores at the back right, crystals at the altar by my counter. The anvil is for enhancing, the sheath bench and the enchanting altar are down by the door, and the Dragonforge is the big one at the back."',
+ tra:'"Loot goes on the scales on the left. Bag upgrades are at the tailor’s table on the right."',
+ gld:'"Contracts hang on the Quest Board by the west wall, and your own are in the ledger on the desk beside me. Bounties are posted on the board by the door, and the guild armory and the store stall are at the back right."'};
+{const _o=convOpts;convOpts=function(id){const o=_o.apply(this,arguments);if(!SHOPIN||!G3.on||!BENCHWHERE[id])return o;const out=o.filter(q=>!/^tab:/.test(q[1]));out.splice(Math.min(1,out.length),0,['Where is everything?','fn:where']);return out}}
+{const _p=cvPick;cvPick=function(i){try{if(CONV&&SHOPIN&&G3.on&&BENCHWHERE[CONV.id]){const o=convOpts(CONV.id)[i];if(o&&o[1]=='fn:where'){CONV.line=BENCHWHERE[CONV.id];convRender();return}}}catch(e){}return _p.apply(this,arguments)}}
+/* bounties from the journal: only at the board itself */
+{const _g=window.GUILDFN;GUILDFN=function(v){if(v=='bnt'&&G3.on&&!(SHOPIN&&SHOPIN.id=='gld')){toast('Bounties are posted on the bounty board in the Guildhall');return true}if(v=='bnt'&&SHOPIN&&SHOPIN.id=='gld'){toast('The bounty board is by the door');return true}return _g?_g(v):false}}
+/* the camp directory: where each trade is, without jumping between them */
+{const _cm=campMenu;campMenu=function(){if(!G3.on)return _cm.apply(this,arguments);SHN='menu';
+ $('ovc').innerHTML=`<div class="shopw k-menu"><div class="swh"><div class="swi">\u{1F3D5}</div><div class="swt"><h1 class="shopm">${typeof townName=='function'?townName():'Ashen Hollow'}</h1><div class="npcsay">Health and mana are restored in camp. Walk to a stall and step inside to trade: every bench has its own work.</div></div></div>
+ <div class="cdir">${CNP.filter(n=>!n.ch&&n.x>-5000&&n.id!='save').map(n=>`<div class="cdr" style="--ac:${n.ac||'#c8a050'}"><i>${TICO[n.id]||'✦'}</i><span><b>${n.ti}</b><small>${n.nm}, ${n.rl}. ${n.d||''}</small></span></div>`).join('')}</div>
+ <div class="swf"><button onclick="saveUi()">Save game</button><button class="pri" onclick="$('ov').hidden=true">Back to camp</button></div></div>`;$('ov').hidden=false}}
+/* a window opened at a bench says so: "Step away" instead of "Leave counter" */
+var ATBENCH=0;
+{const _a=dispAct;dispAct=function(d){ATBENCH=1;return _a.apply(this,arguments)}}
+{const _t=TALK;TALK=function(){ATBENCH=0;return _t.apply(this,arguments)}}
+{const _ss=showShop;showShop=function(){const r=_ss.apply(this,arguments);try{if(ATBENCH&&SHOPIN){const b=[...document.querySelectorAll('#ovc .shopw .swf button')].find(q=>/Leave counter/.test(q.textContent));if(b)b.textContent='Step away'}}catch(e){}return r}}
+
+/* ================= SHOP AND BENCH WINDOWS: MORE DETAIL, SAME DESIGN =================
+   The dark leather panel with gilt trim, the ember accents and the layout all stay. Added:
+   filigree in all four corners and a crest at the top; a fine leather grain and a soft vignette; a turning rune ring
+   round the keeper's medallion; a flourish under the title; a brass plaque naming the bench; bevelled chips; riveted
+   panels; engraved section headings; item cards with a rarity glow, a lift and a sweep of light on hover; gilt-edged
+   buttons and an ember sheen on the main ones; inset bars; and a matching scrollbar. */
+{const svg=s=>`url("data:image/svg+xml,${encodeURIComponent(s)}")`;
+ const corner=svg(`<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#ffe2a0'/><stop offset='.55' stop-color='#c8a050'/><stop offset='1' stop-color='#7a5a24'/></linearGradient></defs><g fill='none' stroke='url(#g)' stroke-linecap='round'><path d='M4 40 V12 Q4 4 12 4 H40' stroke-width='2.4'/><path d='M10 30 V16 Q10 10 16 10 H30' stroke-width='1.2' opacity='.7'/><path d='M4 22 Q14 22 16 14 Q18 8 24 6' stroke-width='1.3'/><path d='M22 4 Q22 14 14 16 Q8 18 6 24' stroke-width='1.3'/><path d='M40 4 q5 0 7 4 q-4 -1 -7 1' stroke-width='1.4'/><path d='M4 40 q0 5 4 7 q-1 -4 1 -7' stroke-width='1.4'/></g><circle cx='12' cy='12' r='3.4' fill='url(#g)'/><circle cx='12' cy='12' r='1.4' fill='#5a2408'/><circle cx='26' cy='18' r='1.3' fill='#c8a050'/><circle cx='18' cy='26' r='1.3' fill='#c8a050'/></svg>`);
+ const crest=svg(`<svg xmlns='http://www.w3.org/2000/svg' width='120' height='22' viewBox='0 0 120 22'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#ffe2a0'/><stop offset='1' stop-color='#8a6224'/></linearGradient></defs><g fill='none' stroke='url(#g)' stroke-width='1.4' stroke-linecap='round'><path d='M2 11 H38 Q46 11 50 5'/><path d='M118 11 H82 Q74 11 70 5'/><path d='M30 11 q6 -6 12 0 q-6 6 -12 0' /><path d='M90 11 q-6 -6 -12 0 q6 6 12 0'/></g><path d='M60 1 L69 11 L60 21 L51 11 Z' fill='#2a1a0e' stroke='url(#g)' stroke-width='1.6'/><path d='M60 6 L65 11 L60 16 L55 11 Z' fill='#ff8a3a'/><circle cx='60' cy='11' r='1.6' fill='#ffe2a0'/></svg>`);
+ const flourish=svg(`<svg xmlns='http://www.w3.org/2000/svg' width='180' height='10' viewBox='0 0 180 10'><g fill='none' stroke='#c8a050' stroke-linecap='round'><path d='M2 5 H70 Q80 5 84 1' stroke-width='1.1'/><path d='M178 5 H110 Q100 5 96 1' stroke-width='1.1'/><path d='M84 1 Q90 9 96 1' stroke-width='1.3'/></g><circle cx='90' cy='5' r='1.8' fill='#ffb060'/></svg>`);
+ const grain=svg(`<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .55  0 0 0 0 .4  0 0 0 0 .25  0 0 0 .55 0'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='.18'/></svg>`).replace('%2523n','%23n');
+ const rivets=`radial-gradient(circle at 7px 7px,#e8c070 0 1.4px,#5a3a14 1.9px,transparent 2.6px),radial-gradient(circle at calc(100% - 7px) 7px,#e8c070 0 1.4px,#5a3a14 1.9px,transparent 2.6px),radial-gradient(circle at 7px calc(100% - 7px),#e8c070 0 1.4px,#5a3a14 1.9px,transparent 2.6px),radial-gradient(circle at calc(100% - 7px) calc(100% - 7px),#e8c070 0 1.4px,#5a3a14 1.9px,transparent 2.6px)`;
+ const st=document.createElement('style');st.id='uiplus';st.textContent=`
+/* ---- the frame: four filigree corners, a crest, leather grain and a vignette ---- */
+.shopw,.cvbox{isolation:isolate}
+.shopw{background:
+ radial-gradient(130% 90% at 50% 50%,transparent 55%,#0008 100%),
+ ${grain},
+ radial-gradient(120% 70% at 50% -10%,color-mix(in srgb,var(--sa,#c8641e) 24%,transparent),transparent 60%),
+ linear-gradient(180deg,#2c1c12,#160f0a 70%)!important;
+ box-shadow:inset 0 0 0 1px #000a,inset 0 0 0 5px #24170e,inset 0 0 0 6px #6a4e26,inset 0 0 0 7px #2a1a0e,inset 0 0 0 8px #c8a05030,inset 0 30px 40px -30px #ffb06018,0 22px 60px #000d,0 0 0 1px #000!important}
+.shopw::before,.shopw::after{border:0!important;border-radius:0!important;opacity:1!important;width:auto!important;height:auto!important;inset:4px;z-index:-1}
+.shopw::before{background:${corner} left top/58px 58px no-repeat,${corner} right top/58px 58px no-repeat;}
+.shopw::after{background:${corner} left bottom/58px 58px no-repeat,${corner} right bottom/58px 58px no-repeat}
+@supports (transform:scale(-1)){.shopw::before{background:none}.shopw::after{background:none}}
+.shopw>.uipc{position:absolute;width:58px;height:58px;background:${corner} center/contain no-repeat;pointer-events:none;z-index:2;filter:drop-shadow(0 1px 1px #000a)}
+.shopw>.uipc.tl{left:4px;top:4px}.shopw>.uipc.tr{right:4px;top:4px;transform:scaleX(-1)}.shopw>.uipc.bl{left:4px;bottom:4px;transform:scaleY(-1)}.shopw>.uipc.br{right:4px;bottom:4px;transform:scale(-1,-1)}
+.shopw>.uipcr{position:absolute;left:50%;top:-11px;width:120px;height:22px;transform:translateX(-50%);background:${crest} center/contain no-repeat;pointer-events:none;z-index:3;filter:drop-shadow(0 2px 2px #000c)}
+/* ---- header: rune ring round the medallion, flourish under the title, a parchment-edged quote ---- */
+.shopw .swi{position:relative}
+.shopw .swi::after{content:'';position:absolute;inset:-9px;border-radius:50%;background:repeating-conic-gradient(from 0deg,#c8a050 0 3deg,transparent 3deg 15deg);-webkit-mask:radial-gradient(circle,transparent 62%,#000 63%,#000 70%,transparent 71%);mask:radial-gradient(circle,transparent 62%,#000 63%,#000 70%,transparent 71%);opacity:.55;animation:uiring 40s linear infinite;pointer-events:none}
+.shopw .swi::before{content:'';position:absolute;inset:-3px;border-radius:50%;box-shadow:0 0 0 1px #ffe2a040,inset 0 2px 3px #fff4,inset 0 -3px 6px #0008;pointer-events:none}
+@keyframes uiring{to{transform:rotate(360deg)}}
+.shopw .swt h1.shopm{position:relative;padding-bottom:7px}
+.shopw .swt h1.shopm::after{content:'';position:absolute;left:0;bottom:-2px;width:180px;height:10px;background:${flourish} left/contain no-repeat;opacity:.9}
+.shopw .npcsay{position:relative;padding-left:26px!important;background:linear-gradient(90deg,#3a28160d,#0003),linear-gradient(90deg,#0006,#0002)!important;box-shadow:inset 0 1px 0 #ffffff08,inset 0 -1px 0 #0006}
+.shopw .npcsay::before{content:'\\201C';position:absolute;left:7px;top:-3px;font:700 26px Georgia,serif;color:#c8a050;opacity:.75}
+/* ---- chips and the bench plaque ---- */
+.shopw .chip{background:linear-gradient(180deg,#2a1c12,#120c08)!important;border:1px solid #8a6a3080!important;box-shadow:inset 0 1px 0 #ffe2a018,inset 0 -1px 2px #0008,0 1px 2px #0008}
+.shopw .chip b{color:#ffe2a0}
+.coin{background:radial-gradient(circle at 35% 30%,#fff7c8,#f0b840 45%,#a06a18 75%,#6a4410)!important;box-shadow:inset 0 0 0 1.5px #b07a20,inset 0 0 0 3px #ffd87030,0 0 5px #ffb34777!important}
+.bplq{display:flex;align-items:center;gap:10px;margin:2px 0 12px;padding:7px 14px 7px 8px;border-radius:10px;position:relative;
+ background:${rivets},linear-gradient(180deg,#5a4020,#3a2812 45%,#2a1c0e);border:1px solid #c8a05099;box-shadow:inset 0 1px 0 #ffe2a040,inset 0 -2px 4px #0008,0 3px 10px #0008}
+.bplq i{font-style:normal;width:30px;height:30px;display:grid;place-items:center;border-radius:50%;font-size:15px;background:radial-gradient(circle at 35% 30%,#ffd890,#c8641e 50%,#5a2408 90%);box-shadow:0 0 0 1.5px #2a1a0e,0 0 0 3px #c8a050,0 0 10px #ff8a2a55}
+.bplq b{font:700 16px Almendra,Georgia,serif;letter-spacing:.6px;background:linear-gradient(180deg,#fff0c8,#e8b860 60%,#b07a28);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 1px 0 #000a)}
+.bplq small{opacity:.75;font-style:italic;color:#e0cca0}
+.bplq::after{content:'';position:absolute;left:50px;right:14px;bottom:5px;height:1px;background:linear-gradient(90deg,#c8a05060,transparent)}
+/* ---- engraved section headings ---- */
+.shopw .swb h2,.shopw .swb h3{display:flex;align-items:center;gap:8px;font-family:Almendra,Georgia,serif;letter-spacing:.6px;color:#f0c860;text-shadow:0 1px 0 #000a}
+.shopw .swb h2::before{content:'';width:7px;height:7px;transform:rotate(45deg);background:linear-gradient(135deg,#ffe2a0,#a8701e);box-shadow:0 0 6px #ffb06066;flex:0 0 auto}
+.shopw .swb h2::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,#c8a05070,transparent);box-shadow:0 1px 0 #0008}
+/* ---- riveted panels ---- */
+.shopw .fpc,.shopw .fopt,.shopw .fprev,.shopw .dt,.shopw .gsh-top,.shopw .rbr,.shopw .fres,.shopw .cmgr{position:relative;background-image:${rivets},linear-gradient(180deg,#ffffff07,#0000 40%,#0002)!important;box-shadow:inset 0 1px 0 #ffffff0d,inset 0 0 0 1px #0007,inset 0 -8px 16px -10px #000a,0 2px 6px #0007!important}
+.shopw .dt{border:1px solid #8a6a3060!important;background-color:#140d08!important}
+/* ---- item cards ---- */
+.shopw .bt{position:relative;overflow:hidden;background:radial-gradient(90% 60% at 50% 30%,#ffffff0d,transparent 70%),linear-gradient(180deg,#2c1e14,#150e09)!important;border-width:1.5px!important;box-shadow:inset 0 1px 0 #ffffff14,inset 0 0 0 1px #0009,inset 0 -10px 14px -10px #000c,0 2px 5px #0008!important;transition:transform .12s ease,box-shadow .15s ease,filter .15s}
+.shopw .bt::before{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:currentColor;opacity:0}
+.shopw .bt::after{content:'';position:absolute;top:-20%;bottom:-20%;width:40%;left:-60%;background:linear-gradient(100deg,transparent,#ffffff22 45%,#fff3 50%,#ffffff22 55%,transparent);transform:skewX(-12deg);pointer-events:none;opacity:0}
+.shopw .bt:hover{transform:translateY(-2px);box-shadow:inset 0 1px 0 #ffffff1c,inset 0 0 0 1px #0009,0 6px 14px #000a,0 0 12px #ffb06033!important;filter:brightness(1.08)}
+.shopw .bt:hover::after{opacity:1;animation:uisweep .7s ease-out}
+@keyframes uisweep{from{left:-60%}to{left:130%}}
+.shopw .bt.sel{box-shadow:inset 0 0 0 1px #ffe2a0aa,0 0 0 2px #c8a050,0 0 18px #ffb06066!important}
+.shopw .bt .ic{filter:drop-shadow(0 2px 2px #000c) drop-shadow(0 0 4px #ffffff10)}
+.shopw .bt .bs{letter-spacing:.8px;font-size:9.5px;opacity:.85;text-shadow:0 1px 0 #000}
+.shopw .bt .bf{border-top:1px solid #8a6a3035;padding-top:2px;margin-top:2px}
+.shopw .bt .pr{color:#ffd890;text-shadow:0 0 6px #ffb06055}
+.shopw .bt.no{filter:saturate(.55) brightness(.8)}
+/* ---- buttons: gilt edge and an inner highlight; the main ones glow like embers ---- */
+.shopw button:not(.bt):not(.tabs button):not(.cmb){background:linear-gradient(180deg,#3a2818,#1e140c)!important;border:1px solid #8a6a30a0!important;box-shadow:inset 0 1px 0 #ffe2a026,inset 0 -2px 3px #0008,0 2px 4px #0008!important;color:#ead8b0;transition:filter .12s,box-shadow .15s,transform .08s}
+.shopw button:not(.bt):not(.tabs button):hover{filter:brightness(1.15);border-color:#c8a050!important}
+.shopw button:not(.bt):active{transform:translateY(1px)}
+.shopw button.pri,.shopw .swf .pri,.shopw .fgo.pri{position:relative;overflow:hidden;background:linear-gradient(180deg,#e8782e,#a03a12 60%,#7a2a0c)!important;border:1px solid #ffb06aa0!important;color:#fff4e0!important;text-shadow:0 1px 1px #0008;box-shadow:inset 0 1px 0 #ffd0a080,inset 0 -3px 6px #5a1a0499,0 4px 14px #c8501a55!important}
+.shopw button.pri::after{content:'';position:absolute;top:0;bottom:0;width:30%;left:-40%;background:linear-gradient(100deg,transparent,#ffe8c055,transparent);transform:skewX(-14deg);pointer-events:none}
+.shopw button.pri:hover::after{animation:uisweep .8s ease-out}
+/* ---- bars, inputs and the scrollbar ---- */
+.shopw .obar{box-shadow:inset 0 1px 3px #000c,0 1px 0 #ffffff0d;border:1px solid #0008}
+.shopw .obar i{box-shadow:inset 0 1px 0 #ffffff40,inset 0 -2px 3px #0005}
+.shopw .swb{scrollbar-width:thin;scrollbar-color:#8a6a30 #120c08}
+.shopw ::-webkit-scrollbar{width:9px;height:9px}.shopw ::-webkit-scrollbar-track{background:#120c08;border-radius:6px}.shopw ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#c8a050,#7a5a24);border-radius:6px;border:2px solid #120c08}
+/* ---- workbench details ---- */
+.shopw .fsl button{position:relative}
+.shopw .fsl button.on{box-shadow:inset 0 0 0 1px #ffe2a0aa,0 0 12px #ff8a2a66!important}
+.shopw .fpc.main{box-shadow:inset 0 0 0 1px #ff9a3a66,inset 0 1px 0 #ffffff12,0 0 14px #ff8a2a22!important}
+.shopw .fpo button.on{box-shadow:inset 0 0 0 1px #ffe2a0,0 0 8px #ffb06066!important}
+.shopw .fstrip{box-shadow:inset 0 1px 3px #000c,0 0 0 1px #c8a05040}
+/* ---- the conversation box and the camp directory share the frame ---- */
+.cvbox{background:${grain},linear-gradient(180deg,#2c1c12f2,#160f0af2)!important;box-shadow:inset 0 0 0 1px #000a,inset 0 0 0 5px #24170e,inset 0 0 0 6px #6a4e26,0 16px 40px #000c!important}
+.cvbox .cvo button{background:linear-gradient(180deg,#2a1c12,#160f0a)!important;border:1px solid #8a6a3070!important;box-shadow:inset 0 1px 0 #ffe2a014!important}
+.cvbox .cvo button:hover{border-color:#c8a050!important;box-shadow:inset 0 1px 0 #ffe2a024,0 0 10px #ffb06033!important}
+.cvbox .cvo button kbd{background:radial-gradient(circle at 35% 30%,#ffd890,#c8641e 60%,#5a2408)!important;color:#fff4e0!important;border:0!important;box-shadow:0 0 0 1px #2a1a0e,0 0 0 2px #c8a050}
+.cdir{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;margin:6px 0 4px}
+.cdr{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border-radius:10px;background:${rivets},linear-gradient(180deg,#2a1c12,#140d08);border:1px solid #6a4e2a90;border-left:3px solid var(--ac);box-shadow:inset 0 1px 0 #ffffff0c,0 2px 5px #0008}
+.cdr i{font-style:normal;font-size:20px;width:34px;height:34px;flex:0 0 auto;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--ac) 70%,#fff),var(--ac) 50%,#1a0e06);box-shadow:0 0 0 1.5px #2a1a0e,0 0 0 3px #c8a05099}
+.cdr b{display:block;font:700 14px Almendra,Georgia,serif;color:#f0d8a0}.cdr small{opacity:.75;line-height:1.35}
+.k-menu .swi{background:radial-gradient(circle at 35% 30%,#ffe2a0,#a0702a 50%,#3a2410 90%)!important}
+`;document.head.appendChild(st);
+ /* corner pieces and the crest are real elements so all four corners can be mirrored */
+ const deco=()=>{for(const w of document.querySelectorAll('.shopw')){if(w.querySelector(':scope>.uipc'))continue;for(const c of['tl','tr','bl','br']){const e=document.createElement('i');e.className='uipc '+c;w.appendChild(e)}const cr=document.createElement('i');cr.className='uipcr';w.appendChild(cr)}};
+ let q=0;new MutationObserver(()=>{if(q)return;q=1;requestAnimationFrame(()=>{q=0;deco()})}).observe(document.getElementById('ov')||document.body,{childList:true,subtree:true});}
 
 </script></body></html>

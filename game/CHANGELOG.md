@@ -2,6 +2,34 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.5.2
+
+Every bench has its own menu, and the shop windows get a detail pass.
+
+- **One menu per bench.** Inside a shop, each bench, board and counter opens only its own window: no tab bar, and no
+  "Other stalls" button. Walk to the bench you need. A brass plaque at the top of the window names the bench you are at.
+- **New benches in the Cinder Forge,** for the work that had no bench of its own:
+  - **The breaking wheel** (left of the door): a breaking block with a vise, a treadle grindstone, a barrel of broken
+    blades and a scrap heap. Salvage.
+  - **The material stores** (back right): shelves of ingots, leather rolls and cloth bolts, a tray of gems, crates and
+    a barrel. Materials.
+  - **The recipe lectern** (right of the door): an open book by candlelight and a basket of scrolls. Recipe Book.
+  - **The crystal altar** (left of the counter): a stepped stone plinth ringed with runes, a crystal cluster, and a
+    crystal that floats and turns above it. Crystals.
+  - The workbench, recipe racks, anvil, Dragonforge, sheath bench and enchanting altar keep their work.
+- **New benches in the Guildhall:**
+  - **The ledger desk** (left of the counter): the great ledger, inkwell and quill, candle and chair. My Quests.
+  - **The bounty board** (left of the door): wanted posters with red seals under a monster skull. Bestiary Bounties.
+  - **The guild armory** (back right): a weapon rack and an armor stand in guild colours. Guild Shop.
+  - The Quest Board, Muster Board and store stall keep their work.
+- **Keepers point the way.** Brannoch, Maren and Old Pell no longer open every bench from the conversation; ask them
+  "Where is everything?" and they tell you where each bench stands.
+- **The camp menu is a directory** of every stall and what it does, with Save game. It no longer jumps you into shops.
+- **Shop and bench windows, more detail, same design:** filigree in all four corners and a crest at the top, a fine
+  leather grain and vignette, a turning rune ring round the keeper's medallion, a flourish under the title, bevelled
+  chips, riveted panels, engraved section headings, item cards with a lift and a sweep of light on hover, gilt-edged
+  buttons with an ember sheen on the main ones, inset bars and a matching scrollbar. The conversation box matches.
+
 ## 2.5.1
 
 Armor overhaul, part 2: shoulders, fur and bracers.
