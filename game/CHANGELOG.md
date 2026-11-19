@@ -2,6 +2,22 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.4.3
+
+- **Every monster part has a proper icon.** The higher tiers (Tough Goblin Hide, Dire Wolf Pelt, Ancient Bone Shard,
+  Warlord Orc Tusk, Void Iron Scrap and the rest) and the Dragon Scale showed a plain tan orb. Each tier now shows
+  its part's picture, tinted for its tier (steel for tier 2; ember, void, spectral or primal for tier 3) and marked
+  with tier pips. The Dragon Scale has its own scaled icon.
+- **Crafting materials cover every stat.** Strength, Dexterity, Vitality, Energy and Luck now come from several
+  materials each, alongside damage, armor, health, mana, crit, speed, block and cooldown reduction:
+  - **Strength:** Iron, Obsidian, Ironwood, Emberwood, Rawhide, Ruby (and Orc Tusk and Bone infusions).
+  - **Dexterity:** Mithril, Ashwood, Yew, Tanned Leather, Topaz (and Bat Wing infusions).
+  - **Vitality:** Oak, Wool, Hardened Leather, Drakehide, Emerald (and Wolf Pelt infusions).
+  - **Energy:** Copper, Silver, Linen, Silk, Spellweave, Amethyst, Sapphire (and Ooze Gel infusions).
+  - **Luck:** Gold, Quartz, Diamond (and Mutant Essence infusions).
+  - **Starmetal** adds a little of every base stat. Ruby, Sapphire, Emerald, Topaz and Onyx keep their on-hit effects
+    and now add a stat too.
+
 ## 2.4.2
 
 - **Projectiles look like their element.** The yellow glow disc around every projectile is gone. Spells now fly as
