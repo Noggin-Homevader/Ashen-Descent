@@ -7545,36 +7545,36 @@ function WPNFIT(d,n0){const n1=CHM.n;if(n1<=n0)return;const B=CHM.dbg();let x0=1
 
 /* ================= CRAFTING: materials, salvage, the workbench, recipes and quality ================= */
 var CMAT={
- copper:{n:'Copper Ingot',ty:'metal',t:1,c:'#c87a4a',b:{cdr:.06},d:'Soft and quick to work. Copper conducts magic, so it adds a little cooldown reduction.'},
- bronze:{n:'Bronze Ingot',ty:'metal',t:1,c:'#b08a4a',b:{arm:.12,blk:.05},d:'Sturdy and forgiving. Adds armor and block.'},
- iron:{n:'Iron Ingot',ty:'metal',t:2,c:'#8a8f98',b:{dmg:.12},d:'Honest iron: raw damage.'},
+ copper:{n:'Copper Ingot',ty:'metal',t:1,c:'#c87a4a',b:{cdr:.06,ene:.05},d:'Soft and quick to work. Copper conducts magic: cooldown reduction and energy.'},
+ bronze:{n:'Bronze Ingot',ty:'metal',t:1,c:'#b08a4a',b:{arm:.12,blk:.05},d:'Sturdy and forgiving: armor and block.'},
+ iron:{n:'Iron Ingot',ty:'metal',t:2,c:'#8a8f98',b:{dmg:.12,str:.06},d:'Honest iron: raw damage and strength.'},
  steel:{n:'Steel Ingot',ty:'metal',t:3,c:'#c8d0d8',b:{dmg:.1,crit:.05},d:'Folded steel holds a keen edge: damage and critical chance.'},
- silver:{n:'Silver Ingot',ty:'metal',t:3,c:'#e8eef4',b:{mp:.3},fx:{holy:10},d:'Bane of the dead: bonus Holy damage against skeletons and wraiths.'},
- gold:{n:'Gold Ingot',ty:'metal',t:3,c:'#e8c050',b:{lck:.1,mp:.2},d:'Gilded fittings court fortune: luck and mana.'},
+ silver:{n:'Silver Ingot',ty:'metal',t:3,c:'#e8eef4',b:{mp:.3,ene:.06},fx:{holy:10},d:'Bane of the dead: mana, energy, and bonus Holy damage against skeletons and wraiths.'},
+ gold:{n:'Gold Ingot',ty:'metal',t:3,c:'#e8c050',b:{lck:.12,mp:.2},d:'Gilded fittings court fortune: luck and mana.'},
  mithril:{n:'Mithril Ingot',ty:'metal',t:4,c:'#bfe8ff',b:{spd:.08,dex:.1},d:'Light as silk and hard as dragonbone: speed and dexterity.'},
- obsidian:{n:'Obsidian Shard',ty:'metal',t:4,c:'#3a2a4a',b:{crit:.08},fx:{bleed:8},d:'Volcanic glass: brutal crits and bleeding wounds.'},
- starmetal:{n:'Starmetal Ingot',ty:'metal',t:5,c:'#a8c8ff',b:{dmg:.1,arm:.1,hp:.4},fx:{shock:6},d:'Fallen from the sky. A little of everything, and a crackle of lightning.'},
- ash:{n:'Ashwood Plank',ty:'wood',t:1,c:'#c8aa80',b:{spd:.05},d:'Light ashwood: speed.'},
- oak:{n:'Oak Plank',ty:'wood',t:2,c:'#8a6238',b:{hp:.5},d:'Stout oak: health.'},
+ obsidian:{n:'Obsidian Shard',ty:'metal',t:4,c:'#3a2a4a',b:{crit:.08,str:.06},fx:{bleed:8},d:'Volcanic glass: brutal crits, strength and bleeding wounds.'},
+ starmetal:{n:'Starmetal Ingot',ty:'metal',t:5,c:'#a8c8ff',b:{dmg:.08,arm:.08,hp:.3,str:.04,dex:.04,vit:.04,ene:.04},fx:{shock:6},d:'Fallen from the sky. A little of everything (damage, armor, health and every base stat) and a crackle of lightning.'},
+ ash:{n:'Ashwood Plank',ty:'wood',t:1,c:'#c8aa80',b:{spd:.05,dex:.05},d:'Light ashwood: speed and dexterity.'},
+ oak:{n:'Oak Plank',ty:'wood',t:2,c:'#8a6238',b:{hp:.5,vit:.06},d:'Stout oak: health and vitality.'},
  yew:{n:'Yew Stave',ty:'wood',t:3,c:'#b0603a',b:{crit:.06,dex:.08},d:"The bowyer's favourite: crits and dexterity."},
- ironwood:{n:'Ironwood',ty:'wood',t:4,c:'#4a3a30',b:{arm:.12,dmg:.08},d:'Dense as metal: armor and damage.'},
- emberwood:{n:'Emberwood',ty:'wood',t:5,c:'#d8601a',b:{dmg:.1},fx:{burn:8},d:'It still smoulders, and sets foes alight.'},
- rawhide:{n:'Rawhide',ty:'leather',t:1,c:'#b08a60',b:{hp:.4},d:'Crude but tough: health.'},
- leather:{n:'Tanned Leather',ty:'leather',t:2,c:'#7a4a2a',b:{dex:.08},d:'Supple leather: dexterity.'},
+ ironwood:{n:'Ironwood',ty:'wood',t:4,c:'#4a3a30',b:{arm:.12,str:.08},d:'Dense as metal: armor and strength.'},
+ emberwood:{n:'Emberwood',ty:'wood',t:5,c:'#d8601a',b:{dmg:.1,str:.06},fx:{burn:8},d:'It still smoulders: damage and strength, and it sets foes alight.'},
+ rawhide:{n:'Rawhide',ty:'leather',t:1,c:'#b08a60',b:{hp:.4,str:.04},d:'Crude but tough: health and strength.'},
+ leather:{n:'Tanned Leather',ty:'leather',t:2,c:'#7a4a2a',b:{dex:.08,spd:.03},d:'Supple leather: dexterity and speed.'},
  hardleather:{n:'Hardened Leather',ty:'leather',t:3,c:'#5a3a22',b:{arm:.1,vit:.06},d:'Boiled and waxed: armor and vitality.'},
  drakehide:{n:'Drakehide',ty:'leather',t:4,c:'#3a6a4a',b:{vit:.12,hp:.6},d:'Scaled and fireproof: vitality and health.'},
- linen:{n:'Linen Bolt',ty:'cloth',t:1,c:'#e8dcc0',b:{mp:.4},d:'Plain linen: mana.'},
- wool:{n:'Wool Bolt',ty:'cloth',t:2,c:'#9a8a78',b:{hp:.5},d:'Warm wool: health.'},
+ linen:{n:'Linen Bolt',ty:'cloth',t:1,c:'#e8dcc0',b:{mp:.4,ene:.04},d:'Plain linen: mana and energy.'},
+ wool:{n:'Wool Bolt',ty:'cloth',t:2,c:'#9a8a78',b:{hp:.5,vit:.05},d:'Warm wool: health and vitality.'},
  silk:{n:'Silk Bolt',ty:'cloth',t:3,c:'#d8a8c8',b:{cdr:.06,ene:.06},d:'Spider-spun silk: cooldowns and energy.'},
  spellweave:{n:'Spellweave',ty:'cloth',t:4,c:'#6a5ad8',b:{ene:.12,mp:.6},d:'Thread woven with runes: energy and mana.'},
- quartz:{n:'Quartz',ty:'gem',t:1,c:'#f4f4fc',b:{mp:.4},d:'Clear quartz: mana.'},
- amethyst:{n:'Amethyst',ty:'gem',t:2,c:'#b070e0',b:{ene:.1},d:'Amethyst: energy.'},
- ruby:{n:'Ruby',ty:'gem',t:3,c:'#e0303a',fx:{burn:10},d:'Sets foes alight on hit.'},
- sapphire:{n:'Sapphire',ty:'gem',t:3,c:'#3a6ae0',fx:{chill:10},d:'Chills foes on hit.'},
- emerald:{n:'Emerald',ty:'gem',t:3,c:'#3ac86a',fx:{pois:10},d:'Poisons foes on hit.'},
- topaz:{n:'Topaz',ty:'gem',t:3,c:'#f0c030',fx:{shock:8},d:'Shocks foes on hit.'},
- onyx:{n:'Onyx',ty:'gem',t:4,c:'#3a3a48',fx:{ls:3},d:'Drinks life: heals you for part of the damage you deal.'},
- diamond:{n:'Diamond',ty:'gem',t:5,c:'#e8f8ff',b:{crit:.08},fx:{holy:12},d:'Flawless: crits and holy light.'},
+ quartz:{n:'Quartz',ty:'gem',t:1,c:'#f4f4fc',b:{mp:.4,lck:.04},d:'Clear quartz: mana and a little luck.'},
+ amethyst:{n:'Amethyst',ty:'gem',t:2,c:'#b070e0',b:{ene:.1,cdr:.04},d:'Amethyst: energy and cooldown reduction.'},
+ ruby:{n:'Ruby',ty:'gem',t:3,c:'#e0303a',b:{str:.06},fx:{burn:10},d:'Strength, and it sets foes alight on hit.'},
+ sapphire:{n:'Sapphire',ty:'gem',t:3,c:'#3a6ae0',b:{ene:.06},fx:{chill:10},d:'Energy, and it chills foes on hit.'},
+ emerald:{n:'Emerald',ty:'gem',t:3,c:'#3ac86a',b:{vit:.06},fx:{pois:10},d:'Vitality, and it poisons foes on hit.'},
+ topaz:{n:'Topaz',ty:'gem',t:3,c:'#f0c030',b:{dex:.06},fx:{shock:8},d:'Dexterity, and it shocks foes on hit.'},
+ onyx:{n:'Onyx',ty:'gem',t:4,c:'#3a3a48',b:{crit:.04},fx:{ls:3},d:'Critical chance, and it drinks life: heals you for part of the damage you deal.'},
+ diamond:{n:'Diamond',ty:'gem',t:5,c:'#e8f8ff',b:{crit:.08,lck:.08},fx:{holy:12},d:'Flawless: crits, luck and holy light.'},
  dust:{n:'Ash Dust',ty:'ess',t:1,c:'#9ab0c8',d:'Salvaged from Magic gear. As a catalyst it guarantees Magic or better.'},
  shard:{n:'Ember Shard',ty:'ess',t:2,c:'#ffb347',d:'Salvaged from Rare gear. As a catalyst it guarantees Rare or better.'},
  soul:{n:'Soul Cinder',ty:'ess',t:3,c:'#ff6a2a',d:'Salvaged from Legendary gear. As a catalyst it guarantees Legendary.'},
@@ -7620,7 +7620,7 @@ const patKnown=(sl,id)=>!!(P.pat&&P.pat[sl+':'+id]);
 const patPrice=()=>Math.round(150+Math.max(1,P.lv)*35);
 function patBuy(sl,id){cmInit();const p=patPrice();if(P.gold<p)return toast('Not enough Cinders');P.gold-=p;P.pat[sl+':'+id]=1;const q=patList(sl).find(o=>o.id==id);toast('Learned pattern: '+(q?q.n:id));NPCSAY&&NPCSAY('learn');showShop()}
 /* ---- infusions (monster parts) and catalysts (salvage essences) ---- */
-var INF={hide:{arm:.15},pelt:{hp:.6},wing:{spd:.06},silk:{fx:{pois:6}},gel:{mp:.6},bone:{crit:.05,str:.06},tusk:{fx:{bleed:6}},ecto:{fx:{ls:1.5}},sigil:{fx:{burn:6}},rune:{arm:.1,blk:.05},iron:{dmg:.1}};
+var INF={hide:{arm:.15},pelt:{hp:.6,vit:.05},wing:{spd:.06,dex:.05},silk:{fx:{pois:6}},gel:{mp:.6,ene:.05},bone:{crit:.05,str:.06},tusk:{str:.06,fx:{bleed:6}},ecto:{fx:{ls:1.5}},sigil:{fx:{burn:6}},rune:{arm:.1,blk:.05},iron:{dmg:.1},ess:{lck:.08}};
 const INFQ=3,CATS=['dust','shard','soul','primal'];
 /* ---- named discoveries: special combinations worth finding ---- */
 var DISC=[
@@ -13388,5 +13388,32 @@ function EPJ(p){const ty=(ARRTY[p.id]&&isArrowP(p)&&ARRTY[p.id])||p.ty||'Arcane'
   for(let k=0;k<6;k++){const a=t*6+k*1.047;Q(Math.cos(a)*.16,Math.sin(a)*.16,Math.sin(t*4+k)*.05,.018,.018,.018,K(k%2?'#c870ff':'#ffffff'),{em:1,lo:1})}pjRib([at(0),at(R*2),at(R*4)],[R*.25,R*.15,.05],[.85,.55,1],.7);break}}
  return true}
 {const _pm=projMesh0;projMesh0=function(p){try{if(p&&p.ty&&!(p.f=='e'&&p.ek)&&EPJ(p))return}catch(e){}return _pm.apply(this,arguments)}}
+/* ================= MONSTER PART ICONS FOR EVERY TIER =================
+   Only the first tier of each monster part had a picture. Tough, Thick, Ancient, Warlord and the other higher tiers
+   (and the Dragon Scale) showed a plain tan orb. Each tier now uses its part's picture, tinted toward its tier and
+   marked with tier pips, and the Dragon Scale has its own. */
+var MTIERC={2:['#c8d8e8','#8aa8c8'],3:['#ffb347','#ff6a2a']};
+/* some top tiers are not fiery: void iron, phase silk, spectral ectoplasm, primal runes, prime gel */
+var MT3C={iron:['#d0a0ff','#7a3aff'],silk:['#e0b0ff','#9a4aff'],ecto:['#d8fbff','#5ad0ff'],rune:['#b0f0ff','#3ab0ff'],gel:['#c8ff9a','#3ac84a']};
+{const _mi=matIcon;matIcon=function(t){
+ const m=/^([a-z]+?)([23])$/.exec(t);
+ if(t=='dsc')return icn('mat_dsc',q=>{icGlow(q,'#3ac8a0','40');
+  /* overlapping dragon scales in a shield shape */
+  const sc=(x,y,r,c0,c1)=>{q.beginPath();q.moveTo(x-r,y-r*.4);q.quadraticCurveTo(x-r,y+r*.9,x,y+r*1.25);q.quadraticCurveTo(x+r,y+r*.9,x+r,y-r*.4);q.quadraticCurveTo(x,y-r*.1,x-r,y-r*.4);q.closePath();gfill(q,y-r*.4,y+r*1.25,c0,c1,'#0e3a2c');q.fill();ink(q,1.6);
+   q.strokeStyle='#d8fff0a0';q.lineWidth=1;q.beginPath();q.moveTo(x,y);q.lineTo(x,y+r*1.05);q.stroke()};
+  for(const[x,y]of[[20,14],[44,14]])sc(x,y,11,'#7ae8c0','#2a9a78');
+  sc(32,22,12,'#8af0c8','#2aa880');for(const[x,y]of[[20,32],[44,32]])sc(x,y,11,'#6ad8b0','#23876a');sc(32,40,11,'#8af0c8','#2aa880');
+  q.fillStyle='#ffffffd0';q.beginPath();q.arc(26,26,1.8,0,7);q.fill()});
+ if(!m||!MN[t])return _mi(t);
+ const base=m[1],tr=+m[2],C=tr==3&&MT3C[base]||MTIERC[tr];
+ return icn('mat_'+t,q=>{
+  /* the base part's own picture, drawn here */
+  const ic=icn;try{icn=(k,draw)=>{draw(q);return''};delete ICN['mat'+base];_mi(base)}finally{icn=ic}try{delete ICN['mat'+base]}catch(e){}
+  /* tint toward the tier: a frosted steel sheen for tier 2, an ember glow for tier 3 */
+  q.save();q.globalCompositeOperation='source-atop';const g=q.createLinearGradient(0,8,0,58);g.addColorStop(0,C[0]+(tr==3?'55':'40'));g.addColorStop(1,C[1]+(tr==3?'70':'45'));q.fillStyle=g;q.fillRect(0,0,64,64);q.restore();
+  q.save();q.globalCompositeOperation='destination-over';const r=q.createRadialGradient(32,34,6,32,34,32);r.addColorStop(0,C[1]+(tr==3?'90':'60'));r.addColorStop(1,C[1]+'00');q.fillStyle=r;q.fillRect(0,0,64,64);q.restore();
+  if(tr==3){q.fillStyle='#fff3c0';for(const[x,y,s]of[[52,12,3.5],[12,16,2.5]]){q.beginPath();q.moveTo(x,y-s);q.lineTo(x+s*.3,y-s*.3);q.lineTo(x+s,y);q.lineTo(x+s*.3,y+s*.3);q.lineTo(x,y+s);q.lineTo(x-s*.3,y+s*.3);q.lineTo(x-s,y);q.lineTo(x-s*.3,y-s*.3);q.closePath();q.fill()}}
+  /* tier pips */
+  for(let i=0;i<tr;i++){q.fillStyle='#1a1008';q.beginPath();q.arc(52-i*7,56,3.4,0,7);q.fill();q.fillStyle=C[0];q.beginPath();q.arc(52-i*7,56,2.3,0,7);q.fill()}})}}
 
 </script></body></html>
