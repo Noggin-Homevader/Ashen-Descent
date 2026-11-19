@@ -13415,5 +13415,49 @@ var MT3C={iron:['#d0a0ff','#7a3aff'],silk:['#e0b0ff','#9a4aff'],ecto:['#d8fbff',
   if(tr==3){q.fillStyle='#fff3c0';for(const[x,y,s]of[[52,12,3.5],[12,16,2.5]]){q.beginPath();q.moveTo(x,y-s);q.lineTo(x+s*.3,y-s*.3);q.lineTo(x+s,y);q.lineTo(x+s*.3,y+s*.3);q.lineTo(x,y+s);q.lineTo(x-s*.3,y+s*.3);q.lineTo(x-s,y);q.lineTo(x-s*.3,y-s*.3);q.closePath();q.fill()}}
   /* tier pips */
   for(let i=0;i<tr;i++){q.fillStyle='#1a1008';q.beginPath();q.arc(52-i*7,56,3.4,0,7);q.fill();q.fillStyle=C[0];q.beginPath();q.arc(52-i*7,56,2.3,0,7);q.fill()}})}}
+/* ================= ENCHANTMENTS, UPGRADED =================
+   Every enchanted weapon keeps the soft glow along its edge (now with a brighter core line), and each element gets
+   its own effect on top:
+   Fire: flames up the blade and rising embers.  Ice: a frosted edge, cold mist and drifting frost crystals.
+   Lightning: arcs that jump along and off the blade.  Water: a stream that spirals around it.
+   Wind: two thin gusts that wind around it.  Earth: grit and pebbles falling away.
+   Nature: a twining vine of light and drifting spores.  Shadow: dark flames.  Death: sickly green-black flames.
+   Holy: a radiant edge with sparkling glints.  Arcane: motes orbiting the blade on a turning ring. */
+var ENCHB={Fire:[1,.5,.15],Primal:[1,.4,.15],Ice:[.6,.9,1],Lightning:[1,.95,.4],Water:[.35,.75,1],Wind:[.75,1,.9],Earth:[.85,.65,.35],
+ Nature:[.5,1,.4],Shadow:[.65,.4,1],Death:[.6,1,.45],Holy:[1,.93,.6],Arcane:[.85,.45,1]};
+ENCHFX=function(el,Lt,at,t){try{if(!window.FXON||typeof FXQ=='undefined'||!FXQ.rib||typeof FIRE=='undefined')return;
+ const c=ENCHB[el]||FIRE.hx(((typeof EC2!='undefined'&&EC2[el])||['#ffffff'])[0]),now=performance.now(),TW=Math.floor(now/60);
+ const A=at(0),B=at(Lt),dv=[B.x-A.x,B.y-A.y,B.z-A.z],dl=Math.hypot(...dv)||1,d=dv.map(v=>v/dl);
+ /* two directions across the blade, for things that wind around it */
+ let n1=[d[2],0,-d[0]];{const l=Math.hypot(...n1);n1=l<.2?[1,0,0]:n1.map(v=>v/l)}const n2=[d[1]*n1[2]-d[2]*n1[1],d[2]*n1[0]-d[0]*n1[2],d[0]*n1[1]-d[1]*n1[0]];
+ const P_=u=>{const p=at(Lt*u);return[p.x,p.y,p.z]},around=(u,a,r)=>{const p=P_(u);return[p[0]+(n1[0]*Math.cos(a)+n2[0]*Math.sin(a))*r,p[1]+(n1[1]*Math.cos(a)+n2[1]*Math.sin(a))*r,p[2]+(n1[2]*Math.cos(a)+n2[2]*Math.sin(a))*r]};
+ const rib=(pts,ws,col,al,wh)=>FXQ.rib.push({pts,ws,fd:pts.map(()=>1),c:col,al,wh:wh==null?.6:wh,done:1,tp:1});
+ /* the glow along the edge, as before, plus a thin bright core */
+ {const pts=[],ws=[],fd=[],n=8,pu=.82+.18*Math.sin(t*5);for(let i=0;i<n;i++){const u=.12+.88*i/(n-1),e=Math.sin(Math.PI*(.15+.85*i/(n-1)));pts.push(P_(u));ws.push((1.2+1.8*e)*pu);fd.push(.55+.45*e)}
+  FXQ.rib.push({pts,ws,fd,c,al:.95,wh:.7,done:1,tp:1});rib(pts.slice(),ws.map(w=>w*.32),[1,1,1].map((v,i)=>.6+.4*c[i]),.9,.95)}
+ const spiral=(turns,r,spd,ph,col,w,al,wh)=>{const pts=[],ws=[];for(let i=0;i<=14;i++){const u=.1+.9*i/14;pts.push(around(u,ph+t*spd+u*turns*6.283,r*(.6+.4*Math.sin(Math.PI*u))));ws.push(w*Math.sin(Math.PI*(.1+.8*i/14)))}rib(pts,ws,col,al,wh)};
+ const R=Math.max(2.2,Lt*.06);
+ switch(el){
+ case'Fire':case'Primal':for(let i=0;i<6;i++){const p=P_(.25+.75*i/5),fl=.75+.25*Math.sin(t*9+i*1.7);FIRE.add(p[0],p[1]-1.5,p[2],2.6*fl,7*fl,FIRE.std,i*1.3+t)}
+  for(let k=0;k<3;k++){const ph=(t*.9+k/3)%1,p=around(.3+.6*((k*.41+Math.floor(t*.9+k/3)*.29)%1),k*2.1,R*.6);rib([[p[0],p[1]+ph*14,p[2]],[p[0],p[1]+ph*14+1.6,p[2]]],[.9*(1-ph),.2],[1,.7,.3],1-ph,.9)}break;
+ case'Ice':for(let i=0;i<3;i++){const p=P_(.3+.3*i);FIRE.add(p[0],p[1]-1,p[2],2.2,3.2,ELPAL.frost,i*1.7+t)}
+  for(let k=0;k<4;k++){const ph=(t*.5+k/4)%1,p=around(.2+.7*((k*.37)%1),k*1.57+t,R*(1+ph*1.5)),s=1.6*(1-ph)+.4;
+   rib([[p[0]-s,p[1]+ph*6,p[2]],[p[0]+s,p[1]+ph*6,p[2]]],[.35,.35],[.85,.97,1],1-ph,.95);rib([[p[0],p[1]+ph*6-s,p[2]],[p[0],p[1]+ph*6+s,p[2]]],[.35,.35],[.85,.97,1],1-ph,.95)}break;
+ case'Lightning':if(typeof pjBolt=='function'){for(let k=0;k<3;k++){const u0=((TW*.37+k*.33)%1)*.6+.15;pjBolt(around(u0,TW*1.7+k*2,R*.9),around(Math.min(1,u0+.3),TW*2.3+k,R*.9),TW*13+k*7,.9,[1,.92,.35],1)}
+  for(let k=0;k<2;k++){const u=.25+((TW*.61+k*.5)%1)*.7,a=TW*2.3+k*3;pjBolt(P_(u),around(u,a,R*3.4),TW*31+k,.7,[.75,.88,1],.95)}}break;
+ case'Water':spiral(1.6,R*1.2,4,0,[.15,.55,1],.9,.9,.2);spiral(1.6,R*1.2,4,3.14,[.3,.75,1],.6,.7,.3);
+  if(typeof sfxBub=='function')for(let i=0;i<2;i++){const ph=(t*.8+i/2)%1,p=P_(.4+.5*((i*.53+t*.11)%1));sfxBub(p[0],p[1]-ph*8,p[2],.9*(1-ph)+.2,.9*(1-ph)+.2,'Water',.8*(1-ph),.4,i)}break;
+ case'Wind':spiral(2.2,R*1.15,7,0,[.55,1,.8],.45,.55,.25);spiral(2.2,R*.95,-6,1.6,[.7,1,.88],.35,.45,.3);break;
+ case'Earth':{const p=P_(.35);FIRE.add(p[0],p[1]-2,p[2],2.4,2.6,ELPAL.dust,t)}
+  for(let k=0;k<4;k++){const ph=(t*.9+k/4)%1,p=around(.2+.7*((k*.29)%1),k*1.9,R*.8),y=p[1]-ph*ph*16;rib([[p[0],y,p[2]],[p[0],y+.9,p[2]]],[.9,.9],[.6,.45,.25],1-ph*.6,.2)}break;
+ case'Nature':spiral(1.2,R*1.2,2.5,0,[.45,1,.4],.6,.75,.5);
+  {const p=P_(.45);FIRE.add(p[0],p[1],p[2],1.8,2.4,ELPAL.spore,t)}
+  for(let k=0;k<3;k++){const ph=(t*.4+k/3)%1,p=around(.3+.6*((k*.43)%1),k*2.1+t*.5,R*(1+ph*2));rib([[p[0],p[1]+ph*8,p[2]],[p[0]+.8,p[1]+ph*8+.6,p[2]]],[.5,.3],[.75,1,.45],1-ph,.6)}break;
+ case'Shadow':case'Death':{const pal=el=='Death'?ELPAL.death:ELPAL.shadow;for(let i=0;i<4;i++){const p=P_(.3+.65*i/3),fl=.75+.25*Math.sin(t*7+i*1.9);FIRE.add(p[0],p[1]-1.5,p[2],2.4*fl,6*fl,pal,i*1.1+t)}}break;
+ case'Holy':for(let k=0;k<3;k++){const ph=(t*1.2+k/3)%1,p=P_(.2+.75*((k*.41+Math.floor(t*1.2+k/3)*.33)%1)),s=2.6*Math.sin(Math.PI*ph);
+   rib([[p[0]-s,p[1],p[2]],[p[0]+s,p[1],p[2]]],[.4,.4],[1,.97,.8],.95,.95);rib([[p[0],p[1]-s*1.4,p[2]],[p[0],p[1]+s*1.4,p[2]]],[.4,.4],[1,.97,.8],.95,.95)}break;
+ case'Arcane':default:{const u=.55+.3*Math.sin(t*1.3),pts=[],ws=[];for(let i=0;i<=16;i++){pts.push(around(u,i/16*6.283+t*3,R*2.2));ws.push(.35)}rib(pts,ws,[.85,.5,1],.7,.6);
+  if(typeof sfxBub=='function')for(let k=0;k<3;k++){const p=around(u,t*3+k*2.09,R*2.2);sfxBub(p[0],p[1],p[2],.7,.7,'Arcane',.95,.3,k)}}}
+}catch(e){}};
 
 </script></body></html>
