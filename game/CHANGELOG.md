@@ -2,6 +2,21 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.4.2
+
+- **Projectiles look like their element.** The yellow glow disc around every projectile is gone. Spells now fly as
+  their element: a crackling ball of lightning with arcs that fork as it flies, a ball of fire trailing flames, a
+  cluster of ice shards, a swirling orb of water, a tumbling rock, crescents of wind, a seed in a ring of leaves, a
+  radiant star, a dark orb trailing shadow, a sickly death-flame and a turning arcane rune.
+- **Elemental arrows.** Arrows take their element's colours and effect: the Explosive Arrow is red and burns in
+  flight, Storm and Arc Shots crackle, the Shadow Arrow trails smoke, the Harpoon swirls with water, the Poison
+  Arrow drips venom. The cast-time bubble on Assassin-style skills stays removed.
+- **Bandit King's Reaver** has a straight haft held at the grip, with the head above the hand instead of a curved,
+  bow-like shaft held by the butt spike.
+- **Camera in doorways and narrow corridors.** Walking through a narrow doorway could put the camera inside the wall
+  or press it against the back of the hero's head. The over-the-shoulder offset now centres in tight spaces, and the
+  camera keeps a short clear distance behind the hero instead of snapping into the wall.
+
 ## 2.4.1
 
 - **Heals, shields, barriers, regeneration, mana and summons level like damage.** Each starts lower at skill level 1
