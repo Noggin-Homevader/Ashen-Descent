@@ -2,6 +2,16 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.4.8
+
+Weapon overhaul, part 3: hafted weapons, and depth on every weapon so far.
+
+- **Maces, warhammers, war mauls, spears, halberds and scythes** (24 styles) get wound leather grips and visible wood
+  grain on their hafts.
+- **Baked shadowing on 74 weapons.** Every axe, blade and hafted weapon now carries ambient occlusion: sockets, guards,
+  flanges, spikes and the joins between parts darken naturally, so the models read as solid forged pieces instead of
+  evenly lit shapes.
+
 ## 2.4.7
 
 Weapon overhaul, part 2: every blade. Swords, short swords, holy blades, greatswords, daggers, shivs and stilettos
