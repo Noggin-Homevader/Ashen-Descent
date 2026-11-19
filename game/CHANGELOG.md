@@ -2,6 +2,24 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.5.1
+
+Armor overhaul, part 2: shoulders, fur and bracers.
+
+- **Fixed: class shoulder pads poking through modelled shoulder gear.** A class's own default pads were still drawn
+  inside mantles, shawls, spiked mantles, shoulderguards and leaf pads, showing as a pale dome on top of them. They
+  now only appear when no shoulder piece is worn.
+- **Leather Shoulderguards remodelled.** The old guard was a dome on three flat bands stacked straight down, like a
+  hamburger. It is now a domed cop over the shoulder with three lames that tilt and step outward down the arm, each
+  with a darker rolled edge and rivets fore and aft.
+- **Spaulders and leather shoulder pads** step down the slope of the arm with shadowed, overlapping edges instead of
+  stacked discs with pale rims.
+- **Fur collars and fur trims are layered pelts:** a dark underlayer, staggered tufts of different sizes and lie, and
+  tapering locks in two uneven rows with lighter tips. Before they looked like a ring of foam with drips. Fur on
+  shoulder pieces is a ruff of tufts instead of one round bun.
+- **Bracers and glove cuffs fit the forearm.** They were scaled about 20% past the arm and looked like tubes. Bracers
+  also gain two lacing straps and a slight crease.
+
 ## 2.5.0
 
 Armor overhaul, part 1: cloth that hangs, and a bow fix.
