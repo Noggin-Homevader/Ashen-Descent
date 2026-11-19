@@ -2,6 +2,14 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.4.9
+
+Weapon overhaul, part 4: staves and ranged weapons.
+
+- **Staves, skull staves, wands, shortbows, longbows, warbows and crossbows** (27 styles) get wound leather grips, wood
+  grain on their shafts and limbs, and baked shadowing around their heads, cages, nocks and fittings.
+- Every weapon in the game has now had the overhaul pass.
+
 ## 2.4.8
 
 Weapon overhaul, part 3: hafted weapons, and depth on every weapon so far.
