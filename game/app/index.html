@@ -2917,7 +2917,7 @@ function buildShop(m,mc){const T=townTh(),H_=hc,J=(c,a)=>m.jit(H_(c),a||.06),BR=
   if((CNPALL||CNP).some(n=>n.id=='smi'&&(n.tabs||[]).includes('drg'))){PROP(m,'p_dforge',DFPOS.x,0,DFPOS.z,0,1,PROPPAL(H_,{wood,wood2,stone:'#5a5450',stone2:'#2e2a2a',cloth:'#6a1a14',bone:'#d8ccb0'}));tor.push({x:DFPOS.x,y:DFPOS.z+10,nx:0,ny:0,_y:52},{x:DFPOS.x,y:DFPOS.z+12,nx:0,ny:0,_y:24})}
   m.box(120,0,110,96,40,80,J(T.st,.06),BR);m.box(120,40,110,70,4,56,H_('#ff5a14'),1);m.box(120,42,110,44,4,30,H_('#ffd890'),1);for(let k=0;k<5;k++)m.blob(120+R(-24,24),44,110+R(-16,16),R(4,8),R(2,4),R(4,8),H_(pick(['#ff7a2a','#ffb347','#2a1a14'])),.2,6,3,.8);
   m.box(120,96,96,110,30,96,J(T.st2,.06),BR);m.box(120,126,90,60,30,60,J(T.st2,.06),BR);m.box(120,40,152,90,56,4,J('#2a2a30',.04));
-  m.box(230,0,300,22,16,14,J('#2a2a30',.04));m.box(230,16,300,46,10,16,J('#4a4a52',.04));m.cone(253,16,300,4,7,4,J('#4a4a52',.04),0,0);
+  m.box(300,0,300,22,16,14,J('#2a2a30',.04));m.box(300,16,300,46,10,16,J('#4a4a52',.04));m.cone(323,16,300,4,7,4,J('#4a4a52',.04),0,0);
   m.cyl(300,0,150,16,30,12,J('#4a3018',.06));m.cyl(300,30.5,150,15,.6,12,H_('#3a6aaa'),.3);m.cyl(80,0,250,18,8,12,J('#5a5a62',.04));m.box(80,20,250,4,30,4,J(wood,.05));
   for(let k=0;k<6;k++){const x=40+k*40;m.box(x,70,3,3,40,3,J('#6a6a72',.05));m.box(x,104,3,12,6,4,J('#4a4a52',.05))}
   for(let k=0;k<5;k++)m.box(SRW-20,30+k*4,120+k*30,26,4,14,J('#6a6a72',.06),0,.2);
@@ -2939,7 +2939,7 @@ function buildShop(m,mc){const T=townTh(),H_=hc,J=(c,a)=>m.jit(H_(c),a||.06),BR=
    for(let k=0;k<6;k++){const z=bz-60+k*24;if(k%2==0){m.box(bx-27,38,z,2,12,2,J('#5a3a1a',.05));m.box(bx-27,50,z,5,5,9,ir2)}else{m.box(bx-27,38,z-2,1.4,14,1.4,ir);m.box(bx-27,38,z+2,1.4,14,1.4,ir)}}
    for(let k=0;k<3;k++)m.box(bx-31.6,40,bz-48+k*48,1,10,14,J('#efe2c0',.05))}
   /* ore bins and a coal heap by the forge */
-  for(const[x,z,c]of[[60,330,'#7a5a3a'],[60,390,'#8a8a92'],[60,450,'#2a2622']]){m.box(x,0,z,40,22,48,J('#4a3020',.06));m.box(x,20,z,36,4,44,J(c,.15))}
+  for(const[x,z,c]of[[44,560,'#7a5a3a'],[44,620,'#8a8a92'],[44,680,'#2a2622']]){m.box(x,0,z,40,22,48,J('#4a3020',.06));m.box(x,20,z,36,4,44,J(c,.15))}
   m.blob(200,0,90,30,12,24,J('#1a1614',.1),0,8,3);if(window.SMIBENCHES)SMIBENCHES(m,J,H_,tor)}
  else if(id=='arm'){/* armor stands, weapon racks, shield wall, jewel case */
   for(const d of ARMSLOTS)if(d.k=='man'){m.cyl(d.x,0,d.z,17,5,14,J(wood2,.05));m.cyl(d.x,5,d.z,14,1.5,14,J(a2,.05))}
@@ -4372,7 +4372,7 @@ for(const m of MIN.concat(mpGM())){const z=m.r*3;if(!vis(m.x,m.y,z*.5))continue;
 if(window.WORLDDRAW)try{WORLDDRAW(vis)}catch(_e){}for(const c of CH){if(!vis(c.x,c.y,30))continue;if(DGG&&!EXP[Math.floor(c.y/CSZ)*DGW+Math.floor(c.x/CSZ)])continue;chestMesh(c)}
 for(const e of E){const z=e.r*3;if(DGG&&!(e.vs>0))continue;if(!vis(e.x,e.y,z*.5))continue;CHM.hq(EHQ(e));enemyMesh(e,z*(e.cmd?1.3:1.25))}
 DY=DY.filter(d=>performance.now()-d.t0<750);for(const d of DY){const e=d.e,z=e.r*3;if(!vis(e.x,e.y,z*.5))continue;enemyMesh(e,z*(e.cmd?1.3:1.25),(performance.now()-d.t0)/750)}
-if(camp){const t=Date.now();if(window.SHOPDRAW)SHOPDRAW(t);for(const n of CNP){if(n.ch||(window.NPCDRAW&&NPCDRAW(n,t)))continue;const fa=n.s>0?Math.PI/2:-Math.PI/2,lk={...n.lk};if(lk.hd=='bare')delete lk.hd;CHM.setF(n.x-n.s*2,0,n.y,54,fa+Math.sin(t/1700+n.x)*.2,0,0,null,0);(window.HERO3D||CHM.human)(lk,{mv:0,ph:0,bob:Math.sin(t/520+n.y)*.012,id:(n.x|0)+3,t,ws:1,wt:null})}if(!window.SHOPIN)MPchars(Date.now())}
+if(camp){const t=Date.now();if(window.SHOPDRAW)SHOPDRAW(t);for(const n of CNP){if(n.ch||(window.NPCDRAW&&NPCDRAW(n,t)))continue;const fa=n.s>0?Math.PI/2:-Math.PI/2,lk={...n.lk};if(lk.hd=='bare')delete lk.hd;CHM.setF(n.x-n.s*2,0,n.y,54,fa+Math.sin(t/1700+n.x)*.2,0,0,null,0);(window.HERO3D||CHM.human)(lk,{mv:0,ph:0,bob:Math.sin(t/520+n.y)*.012,id:(n.x|0)+3,t,ws:1,wt:null})}if(!window.SHOPIN)MPchars(Date.now());else if(window.MPshopChars)try{MPshopChars()}catch(e){}}
 if(TCH.on&&TCH.tg&&!over&&!camp&&TCH.tg.hp>0)SPG.ring(TCH.tg.x,TCH.tg.y,TCH.tg.r*1.5+4,1.5,1.4,.9,CHM.K('#ffe27a'),.9,20,Date.now()/500,.6);
 MPdg(vis);SPG.draw(vis);CHM.flush()}
 
@@ -4880,7 +4880,7 @@ function mpPush(force){
  if(!MP.room||!P||!started)return;
  const eq=JSON.stringify(mpEq()),eqc=eq!==MP.lastEq;if(eqc)MP.lastEq=eq;
  const pa=MP.party,pp=mpPartyPeers();
- const L={v:1,fc:socCode(),n:mpNick(),cls:P.cls,sn:P.sub&&P.sub.n||'',lv:P.lv,cp:camp?1:0,fl:camp?0:fl,x:camp?Math.round(window.SHOPIN?SHOPIN.ox:P.x):0,y:camp?Math.round(window.SHOPIN?SHOPIN.oy:P.y):0,fy:+(P._yaw||0).toFixed(2),sx:P.sex=='f'?'f':'m',pc:pa?pa.code:null,po:pa&&pa.open?1:0,pn:pa?pa.name:null,pm:pa?pp.length:0,ph:pa&&pa.host?1:0};
+ const L={v:1,fc:socCode(),n:mpNick(),cls:P.cls,sn:P.sub&&P.sub.n||'',lv:P.lv,sh:window.SHOPIN?SHOPIN.id:'',sx:window.SHOPIN?Math.round(P.x):0,sy:window.SHOPIN?Math.round(P.y):0,cp:camp?1:0,fl:camp?0:fl,x:camp?Math.round(window.SHOPIN?SHOPIN.ox:P.x):0,y:camp?Math.round(window.SHOPIN?SHOPIN.oy:P.y):0,fy:+(P._yaw||0).toFixed(2),sx:P.sex=='f'?'f':'m',pc:pa?pa.code:null,po:pa&&pa.open?1:0,pn:pa?pa.name:null,pm:pa?pp.length:0,ph:pa&&pa.host?1:0};
  const key=JSON.stringify(L);
  if(force||key!==MP.lastL||eqc){MP.lastL=key;const patch=Object.assign({},L);if(eqc||force)patch.eq=JSON.parse(eq);MP.room.presence(patch).catch(()=>{})}
  if(pa&&pa.rm){const live=MP.log.reduce((a,x)=>a+x[1],0)/4;const Q={v:1,n:mpNick(),cls:P.cls,lv:P.lv,x:MP.run?Math.round(P.x):0,y:MP.run?Math.round(P.y):0,ar:MP.run?1:0,gt:MP.gt?1:0,hp:Math.max(0,Math.round(P.hp)),mh:Math.round(mxh()),mp:Math.max(0,Math.round(P.mp)),mm:Math.round(mxm()),dm:Math.round(MP.dmg),dps:Math.round(live),fl:camp?0:fl,cp:camp?1:0,ho:pa.host?1:0,j:pa.j,mn:mpMinOut(),sp:(window.SUPF?SUPF():0),hr:(typeof hotOn=='function'&&hotOn())?1:0,sb:window.HFXSB?HFXSB():0,bv:window.BUFBITS?BUFBITS():0};
@@ -7369,7 +7369,7 @@ function pickOracle(){const q=ORC_R[Math.floor(Math.random()*ORC_R.length)];ORAC
 
 /* ================= SHOP INTERIORS: walk through the door into each shop ================= */
 var SRW=640,SRH=540,SRWH=150;/* the guild hall is a bigger room */
-const SRSZ={gld:[940,780]};
+const SRSZ={gld:[940,780],smi:[960,760]};/* the forge grew to fit its benches */
 function shopKeeperPos(){return{x:SRW/2,z:112}}
 function enterShop(id){if(!camp||SHOPIN)return;const src=(CNPALL||CNP).find(n=>n.id==id);if(!src)return;{const z_=SRSZ[id]||[640,540];SRW=z_[0];SRH=z_[1]}
  TOWNSV={x:P.x,y:P.y,W,H,CPO,BG,BK,portal,fp:{x:FP.x,y:FP.y},yaw:C3.yaw,dst:C3.dst,tor:DGX.tor,townr:window.TOWNR,door:{x:src.x,y:src.y}};
@@ -7380,7 +7380,7 @@ function enterShop(id){if(!camp||SHOPIN)return;const src=(CNPALL||CNP).find(n=>n
  const hearth={smi:[120,110,[1.3,.62,.24],420],sup:[SRW/2,300,[.5,1.1,.55],380],gam:[SRW/2,290,[.9,.45,1.25],380],arm:[SRW/2,280,[1.05,.9,.7],460],tra:[SRW/2,280,[1.05,.86,.6],460],gld:[130,40,[1.25,.72,.36],560]}[id];
  FP.x=hearth[0];FP.y=hearth[1];window.FPC=hearth[2];window.FPR=hearth[3];window.FPH=id=='smi'||id=='sup'||id=='gam'||id=='gld'?20:110;
  CPO=[{x:SRW/2,y:kp.z+40,r:30},{x:SRW/2-80,y:kp.z+40,r:30},{x:SRW/2+80,y:kp.z+40,r:30}];for(const d of shopDisp())if(d.r&&!d.nocol)CPO.push({x:d.x,y:d.z,r:d.cr||d.r});if(id=='gld'){for(const s_ of[-1,1])for(const z_ of[380,440,500,560])CPO.push({x:SRW/2+s_*210,y:z_,r:34});for(const s_ of[-1,1])for(const z_ of[300,600])CPO.push({x:SRW/2+s_*330,y:z_,r:22})}
- if(id=='smi'){CPO.push({x:120,y:110,r:46},{x:230,y:300,r:22});if((CNPALL||CNP).some(n=>n.id=='smi'&&(n.tabs||[]).includes('drg')))CPO.push({x:DFPOS.x,y:DFPOS.z-6,r:50},{x:DFPOS.x-40,y:DFPOS.z+20,r:14},{x:DFPOS.x+40,y:DFPOS.z+20,r:14},{x:DFPOS.x,y:DFPOS.z+52,r:12})}if(id=='arm'||id=='sup'){const q=SPX[id];CPO.push({x:q.x,y:q.z,r:32})}if(id=='sup'||id=='gam')CPO.push({x:FP.x,y:FP.y,r:id=='gam'?52:30});
+ if(id=='smi'){CPO.push({x:120,y:110,r:46},{x:300,y:300,r:22});if((CNPALL||CNP).some(n=>n.id=='smi'&&(n.tabs||[]).includes('drg')))CPO.push({x:DFPOS.x,y:DFPOS.z-6,r:50},{x:DFPOS.x-40,y:DFPOS.z+20,r:14},{x:DFPOS.x+40,y:DFPOS.z+20,r:14},{x:DFPOS.x,y:DFPOS.z+52,r:12})}if(id=='arm'||id=='sup'){const q=SPX[id];CPO.push({x:q.x,y:q.z,r:32})}if(id=='sup'||id=='gam')CPO.push({x:FP.x,y:FP.y,r:id=='gam'?52:30});
  portal=null;BG=mkBg(BK='shop',[]);toast((src.ti||'Shop')+(id=='gam'?': '+(ORACLE?ORACLE.nm:'')+' awaits':' · hover the wares, click to buy, walk out the door to leave'))}
 function exitShop(){if(!SHOPIN)return;const S=TOWNSV;SHOPIN=null;CNP.length=0;CNP.push(...CNPALL);
  if(S){W=S.W;H=S.H;CPO=S.CPO;portal=S.portal;FP.x=S.fp.x;FP.y=S.fp.y;P.x=S.door.x+(S.door.x<W/2?40:-40);P.y=S.door.y+6;BK='camp';BG=S.BG;try{C3.yaw=S.yaw}catch(e){}}
@@ -7398,7 +7398,7 @@ const SUPKS=['hp0','hp','hp2','hp3','mp0','mp','mp2','mp3','sp','ar','fu','rg','
 const SUPSLOTS=SUPKS.map((k,i)=>{const side=i<7?0:1,j=i%7;return{k,x:side?SRW-70:70,z:170+j*52,h:40+(j%2)*10}}).concat([{k:'tome',x:SRW/2+140,z:430,h:54}]);
 const TRASLOTS=[{k:'sell',x:SRW/2-120,z:300,h:44},{k:'up',x:SRW/2+120,z:300,h:44}];
 const GAMSLOTS=[{k:'card',i:0,x:150,z:180},{k:'card',i:1,x:SRW-150,z:180},{k:'card',i:2,x:SRW/2,z:420},{k:'dice',x:140,z:400},{k:'ball',x:SRW/2,z:282}];
-const SMISLOTS=(()=>{const sl=Object.keys(typeof RSL!='undefined'?RSL:{}).concat(Object.keys(typeof RCA!='undefined'?RCA:{}));return sl.map((s,i)=>({k:'rcp',sl:s,x:SRW-26,z:150+i*(330/Math.max(1,sl.length-1)),h:60})).concat([{k:'ug',x:230,z:300,h:30},{k:'drg',x:122,z:262,h:30}])})();
+const SMISLOTS=(()=>{const sl=Object.keys(typeof RSL!='undefined'?RSL:{}).concat(Object.keys(typeof RCA!='undefined'?RCA:{}));return sl.map((s,i)=>({k:'rcp',sl:s,x:SRW-26,z:150+i*(330/Math.max(1,sl.length-1)),h:60})).concat([{k:'ug',x:300,z:300,h:30},{k:'drg',x:150,z:452,h:30}])})();
 function shopDisp(){if(!SHOPIN)return[];const id=SHOPIN.id,out=[];
  if(id=='arm'){spcMark();const items=(P.sg||[]).map((x,i)=>({x,i})).filter(o=>!o.x._spc),wp=items.filter(o=>o.x.slot=='Weapon'),jw=items.filter(o=>o.x.slot=='Ring'||o.x.slot=='Amulet'),mn=items.filter(o=>!['Weapon','Ring','Amulet'].includes(o.x.slot));
   const MS=ARMSLOTS.filter(d=>d.k=='man'),WS=ARMSLOTS.filter(d=>d.k=='wpn'),JC=ARMSLOTS.find(d=>d.k=='jew');
@@ -7478,7 +7478,7 @@ var SHOPDRAW=(t)=>{if(!SHOPIN)return;const id=SHOPIN.id,T=Date.now(),K=CHM.K,Q=C
   else if(d.k=='wpn0'){}
   else if(d.k=='jew'&&window.JEWDRAW){JEWDRAW(d,T)}
   else if(d.k=='jew'){const c=K(RC[d.it.r]||'#aaa');CHM.setF(d.x,40,d.z,54,T/1400,0,0,null,SHOV===d?.5:.15);if(d.it.slot=='Ring'){for(let k=0;k<10;k++){const a=k/10*6.2832;Q(Math.cos(a)*.07,.1+Math.sin(a)*.07,0,.018,.018,.018,K('#d8b04a'),{lo:1})}Q(0,.18,0,.03,.03,.03,c,{em:.8,lo:1})}else{for(let k=0;k<12;k++){const a=k/12*3.1416;Q(Math.cos(a)*.1,.22-Math.sin(a)*.12,0,.01,.01,.01,K('#d8b04a'),{lo:1})}Q(0,.06,0,.04,.05,.02,c,{em:.8,lo:1})}}
-  else if(d.k=='pot'){CHM.setF(d.x,(d.top||d.h-6)+.3,d.z,d.spc?50:58,(d.yaw||0)+.35,0,0,null,SHOV===d?.4:0);potMesh(d.key,Q,K)}
+  else if(d.k=='pot'){CHM.setF(d.x,(d.top||d.h-6)+.3,d.z,d.spc?50:58,(d.yaw||0)+.35+(SHOV===d?t/900:t/5200)%6.2832,0,0,null,SHOV===d?.4:0);potMesh(d.key,Q,K)}
   else if(d.k=='spc'){const hv=SHOV===d?.45:.08;if(d.it.slot=='Weapon'){/* a weapon lies across the plinth, blade flat */const lk=mqLook(d.it),wt=lk.st.wt,L=WLEN[wt]||1,S=Math.min(40,30/L),yw=d.yw||0,o=L*S*.36;CHM.setF(d.x+Math.cos(yw)*o,38.9,d.z-Math.sin(yw)*o,S,yw,0,0,null,hv);try{WSTANCE=null;WABS={ax:0,az:1.5708,tw:WMT};STFSUB=null;WTHM=lk.st.wth||'f';CHM.weapon(lk.st.wt,lk.st.wc,[0,0,0],0,null,1,lk.st.wtr,lk.st.wb,lk.st.wgc)}catch(e){}finally{WABS=null}}
    else{CHM.setF(d.x,38.4+(d.it.slot=='Ring'||d.it.slot=='Amulet'?0:7),d.z,d.it.slot=='Ring'||d.it.slot=='Amulet'?34:18,d.yw||0,0,0,null,hv);try{if(d.it.slot=='Ring'||d.it.slot=='Amulet')JEWMESH(CHM.P,CHM.K,d.it,d.it.r||0);else if(CHM.itemDraw)CHM.itemDraw(d.it)}catch(e){}}}
   else if(d.k=='tra'){CHM.setF(d.x,d.h-8,d.z,54,0,0,0,null,SHOV===d?.35:0);if(d.key=='sell'){Q(0,.02,0,.04,.3,.04,K('#6a5a3a'));Q(0,.32,0,.5,.02,.02,K('#8a7a4a'));for(const s of[-1,1]){Q(s*.45,.18,0,.012,.14,.012,K('#8a7a4a'),{lo:1});Q(s*.45,.04,0,.16,.02,.16,K('#c8a040'),{em:.25})}Q(-.45,.1,0,.06,.05,.06,K('#d8b04a'),{em:.4,lo:1})}else{Q(0,.22,0,.24,.24,.14,K('#7a5a2e'),{n:.6});Q(0,.36,.13,.2,.08,.03,K('#5a3a1a'));for(const s of[-1,1])Q(s*.15,.2,-.12,.03,.2,.02,K('#4a3020'));Q(0,.48,0,.06,.03,.04,K('#c8a040'),{em:.3})}}
@@ -9830,7 +9830,7 @@ function PROP(m,nm,x,y,z,yaw,sc,pal,opt){const g=PRPLOAD()[nm];if(!g)return;sc=s
 function propPt(x,z,yaw,lx,lz){const c=Math.cos(yaw||0),s=Math.sin(yaw||0);return{x:x+lx*c+lz*s,z:z-lx*s+lz*c}}
 function PROPPAL(H_,o){o=o||{};const g=h=>H_(h);return[g(o.wood||'#5a3e24'),g(o.wood2||'#3e2a18'),g(o.brass||'#c8a040'),g(o.iron||'#3a3a42'),g(o.cloth||'#5a1a24'),g(o.stone||'#6a6460'),g(o.stone2||'#3a3634'),g(o.fire||'#ffa040'),g(o.bone||'#d8ccb0'),g(o.glass||'#a8c8d8'),g(o.lace||'#efe6d0'),g(o.coal||'#a8361a')]}
 /* the Dragonforge stands beside the smith's hearth, its anvil before the jaws */
-var DFPOS={x:122,z:196};
+var DFPOS={x:150,z:386};
 var SPX={arm:{x:320,z:368,yaw:Math.PI/2},sup:{x:460,z:392,yaw:-Math.PI/2}};
 /* the three display plinths on the special table (local x,z), their tops at y=38 */
 var SPSL=[0,1,2].map(k=>{const a=Math.PI/2+2*Math.PI*k/3;return[Math.cos(a)*14,Math.sin(a)*14]});
@@ -12921,7 +12921,7 @@ function wLine(a,b,w,c,al){FXQ.rib.push({pts:[a,b],ws:[w,w],fd:[.6,.6],c,al,wh:.
    - The enchanting altar (lower right, by the door): a dark stone plinth on a glowing rune circle, four element
      crystals on iron posts around it, and a blade laid across the top. Motes of the four elements circle it and the
      rune circle turns. Walk up and press F: the Enchant tab. */
-var SHBPOS={x:175,z:440},ENBPOS={x:500,z:468};
+var SHBPOS={x:250,z:600},ENBPOS={x:760,z:640};
 function SMIBENCHES(m,J,H_,tor){try{
  /* ---- sheath bench ---- */
  {const x=SHBPOS.x,z=SHBPOS.z,oak='#6a4424',oak2='#4a2e18',br=[.78,.6,.28],ir=[.3,.3,.33];
@@ -13477,7 +13477,7 @@ ENCHFX=function(el,Lt,at,t){try{if(!window.FXON||typeof FXQ=='undefined'||!FXQ.r
      door, left) and the guild armory rack (right of the counter). The Quest Board, Muster Board and Guild Store stall
      were already there.
    Keepers still talk, sell what they sell themselves and tell you where each bench is. */
-var BENCH2={smi:{svb:{x:255,z:492,tab:'salv',r:36,cr:28},mtb:{x:540,z:168,tab:'mats',r:40,cr:34},lct:{x:402,z:488,tab:'rbook',r:24,cr:18},cra:{x:205,z:184,tab:'crys',r:30,cr:24}},
+var BENCH2={smi:{svb:{x:390,z:640,tab:'salv',r:36,cr:28},mtb:{x:700,z:168,tab:'mats',r:40,cr:34},lct:{x:620,z:560,tab:'rbook',r:24,cr:18},cra:{x:300,z:196,tab:'crys',r:30,cr:24}},
  gld:{ldg:{x:290,z:190,tab:'qac',r:40,cr:34},bty:{x:250,z:690,tab:'bnt',r:44,cr:30},gar:{x:650,z:200,tab:'gsp',r:44,cr:36}}};
 var BENCHN={forge:['Workbench','the crafting bench'],salv:['Salvage','the breaking wheel'],mats:['Materials','the material stores'],rbook:['Recipe Book','the recipe lectern'],
  upg:['Enhance','the anvil'],ench:['Enchant','the enchanting altar'],crys:['Crystals','the crystal altar'],shth:['Sheaths','the sheath bench'],drg:['Dragonforge','the Dragonforge'],
@@ -13488,6 +13488,8 @@ var BENCHI={forge:'⚒',salv:'⚙',mats:'\u{1F4E6}',rbook:'\u{1F4D6}',upg:'\u{1F
 /* ---- the benches themselves ---- */
 function vdisc(m,x,y,z,R,th,col,em){/* an upright wheel in the y-z plane, built from horizontal slices */const n=10;for(let k=0;k<n;k++){const yy=-R+(k+.5)*2*R/n,w=2*Math.sqrt(Math.max(0,R*R-yy*yy));m.box(x,y+yy-R/n,z,th,2*R/n+.2,w,col,em)}}
 function SMIBENCHES2(m,J,H_,tor){try{const B=BENCH2.smi,oak='#6a4424',oak2='#4a2e18',ir=[.3,.3,.33],ir2=[.42,.42,.46],st='#5a5650',st2='#3a3834';
+ /* ---- hanging lanterns over the work areas of the bigger forge ---- */
+ for(const[lx,lz]of[[250,240],[730,250],[260,560],[700,560]]){m.box(lx,104,lz,1,46,1,[.2,.2,.22]);m.box(lx,100,lz,10,2,10,[.25,.24,.26]);m.blob(lx,94,lz,4.5,6,4.5,H_('#ffcf7a'),0,6,3,1);m.box(lx,86,lz,8,2,8,[.25,.24,.26]);tor.push({x:lx,y:lz,nx:0,ny:0,_y:92})}
  /* ---- salvage: a heavy breaking block with a vise, a treadle grindstone, a barrel of broken blades and a scrap heap ---- */
  {const{x,z}=B.svb;for(const sx of[-26,26])for(const sz of[-14,14])m.box(x+sx,0,z+sz,8,26,8,J(oak2,.05));m.box(x,26,z,66,8,38,J(oak,.07));m.box(x,34,z,62,1,34,J('#7a5230',.08));
   m.box(x-18,35,z-6,14,6,10,ir);m.box(x-18,41,z-6,4,6,14,ir2);m.box(x-18,47,z-6,18,2,3,ir2);
@@ -13571,7 +13573,7 @@ var BENCHTIP={svb:'<b>The breaking wheel</b><br><small>Break gear down into craf
 {const _ss=showShop;showShop=function(){const r=_ss.apply(this,arguments);try{const w=document.querySelector('#ovc .shopw');if(w&&SHOPIN&&G3.on&&!w.querySelector('.tabs')&&BENCHN[SHT]&&BENCHN[SHT][1]){
   const inf=w.querySelector('.swinfo'),pl=document.createElement('div');pl.className='bplq';pl.innerHTML=`<i>${BENCHI[SHT]||'✦'}</i><b>${BENCHN[SHT][0]}</b><small>at ${BENCHN[SHT][1]}</small>`;(inf||w.firstChild).after(pl)}}catch(e){}return r}}
 /* keepers no longer hand you every bench: they tell you where to walk */
-var BENCHWHERE={smi:'"The workbench is on the right, with the recipe racks along the wall. Salvage on the breaking wheel by the door, your recipes on the lectern beside it, materials in the stores at the back right, crystals at the altar by my counter. The anvil is for enhancing, the sheath bench and the enchanting altar are down by the door, and the Dragonforge is the big one at the back."',
+var BENCHWHERE={smi:'"Walk in and the anvil is to your left, the Dragonforge against the left wall past it, ore bins by the door. The crystal altar sits back left by my counter, the material stores back right. The workbench is on the right with the recipe racks along the right wall. Down by the door: the sheath bench on the left, the salvage wheel and the recipe lectern in the middle, the enchanting altar on the right."',
  tra:'"Loot goes on the scales on the left. Bag upgrades are at the tailor’s table on the right."',
  gld:'"Contracts hang on the Quest Board by the west wall, and your own are in the ledger on the desk beside me. Bounties are posted on the board by the door, and the guild armory and the store stall are at the back right."'};
 {const _o=convOpts;convOpts=function(id){const o=_o.apply(this,arguments);if(!SHOPIN||!G3.on||!BENCHWHERE[id])return o;const out=o.filter(q=>!/^tab:/.test(q[1]));out.splice(Math.min(1,out.length),0,['Where is everything?','fn:where']);return out}}
@@ -13588,6 +13590,8 @@ var ATBENCH=0;
 {const _a=dispAct;dispAct=function(d){ATBENCH=1;return _a.apply(this,arguments)}}
 {const _t=TALK;TALK=function(){ATBENCH=0;return _t.apply(this,arguments)}}
 {const _ss=showShop;showShop=function(){const r=_ss.apply(this,arguments);try{if(ATBENCH&&SHOPIN){const b=[...document.querySelectorAll('#ovc .shopw .swf button')].find(q=>/Leave counter/.test(q.textContent));if(b)b.textContent='Step away'}}catch(e){}return r}}
+/* the recipe racks hang on the forge's east wall wherever that wall is */
+{const _e=enterShop;enterShop=function(id){try{if(id=='smi'){const w=(SRSZ.smi||[640])[0];for(const d of SMISLOTS)if(d.k=='rcp')d.x=w-26}}catch(e){}return _e.apply(this,arguments)}}
 
 /* ================= SHOP AND BENCH WINDOWS: MORE DETAIL, SAME DESIGN =================
    The dark leather panel with gilt trim, the ember accents and the layout all stay. Added:
@@ -13688,5 +13692,125 @@ var ATBENCH=0;
  /* corner pieces and the crest are real elements so all four corners can be mirrored */
  const deco=()=>{for(const w of document.querySelectorAll('.shopw')){if(w.querySelector(':scope>.uipc'))continue;for(const c of['tl','tr','bl','br']){const e=document.createElement('i');e.className='uipc '+c;w.appendChild(e)}const cr=document.createElement('i');cr.className='uipcr';w.appendChild(cr)}};
  let q=0;new MutationObserver(()=>{if(q)return;q=1;requestAnimationFrame(()=>{q=0;deco()})}).observe(document.getElementById('ov')||document.body,{childList:true,subtree:true});}
+
+/* ================= POTIONS, BLOWN WHOLE: one solid turned model per potion, sized by grade ================= */
+/* each bottle is a single lathe-turned mesh (glass, liquid, cork, seal, metal) drawn through the moulded-mesh path;
+   Minor is a small vial, Lesser a round flask, Greater a shouldered bottle, Grand a faceted decanter */
+var POTM={};
+function potLathe(segs){const V=[],N=[],M=[],S=[],I=[];
+ for(const g of segs){const n=g.n||16,a0=g.a0||0,a1=g.a1==null?Math.PI*2:g.a1,full=g.a1==null,pts=g.p,base=V.length/3,cols=full?n:n+1;
+  for(let i=0;i<pts.length;i++){const p0=pts[Math.max(0,i-1)],p1=pts[Math.min(pts.length-1,i+1)];let dy=p1[0]-p0[0],dr=p1[1]-p0[1];const l=Math.hypot(dy,dr)||1;dy/=l;dr/=l;
+   for(let k=0;k<cols;k++){const a=a0+(a1-a0)*k/n,c=Math.cos(a),s=Math.sin(a),r=pts[i][1];V.push(c*r,pts[i][0],s*r);N.push(c*dy,-dr,s*dy);M.push(g.m);
+    /* a lit streak down one side reads as glass */
+    const hl=Math.max(0,Math.cos(a+.75)),sh=g.sh!=null?g.sh:(g.gl?150+105*Math.pow(hl,6)+20*hl:205+50*hl*hl);S.push(Math.min(255,sh|0))}}
+  for(let i=0;i<pts.length-1;i++)for(let k=0;k<(full?n:n);k++){const a=base+i*cols+k,b=base+i*cols+(full?(k+1)%n:k+1),d=a+cols,e=b+cols;I.push(a,d,b,b,d,e)}}
+ const nv=V.length/3,nt=I.length/3,pos=new Int16Array(nv*3),nr=new Int8Array(nv*3);for(let i=0;i<nv*3;i++){pos[i]=Math.round(V[i]*15000);nr[i]=Math.round(N[i]*127)}
+ let ymin=1e9,ymax=-1e9;for(let v=0;v<nv;v++){const y=V[v*3+1];if(y<ymin)ymin=y;if(y>ymax)ymax=y}
+ return{nv,nt,cnt:[nt,nt,nt,nt,nt],pos,nr,mat:Uint8Array.from(M),sh:Uint8Array.from(S),idx:Uint16Array.from(I),ymin,ymax}}
+/* materials: 0 glass, 1 liquid, 2 cork, 3 gold, 4 wax, 5 label, 6 iron, 7 gem, 8 twine, 9 bone, 10 silver */
+const PB={/* sample a circle arc (centre y, radius) from angle a0 to a1, as profile points */
+ arc:(cy,R,a0,a1,k)=>{const o=[];for(let i=0;i<=k;i++){const a=a0+(a1-a0)*i/k;o.push([cy-Math.cos(a)*R,Math.sin(a)*R])}return o},
+ split:(pts,fy)=>{/* cut a bottom-to-top profile at fill height fy */const lo=[],hi=[];for(let i=0;i<pts.length;i++){const p=pts[i];if(p[0]<=fy)lo.push(p);else{if(!hi.length&&i>0){const q=pts[i-1],t=(fy-q[0])/(p[0]-q[0]),c=[fy,q[1]+(p[1]-q[1])*t];lo.push(c);hi.push(c)}hi.push(p)}}return[lo,hi]},
+ bot:pts=>[[0,0],[0,pts[0][1]]].concat(pts),
+ band:(y,r,h,d)=>[[y-h,r],[y-h*.6,r+d],[y+h*.6,r+d],[y+h,r]]};
+function potBody(prof,fy,n,o){const[lo,hi]=PB.split(prof,fy);const out=[{p:lo,m:1,n,gl:1}];if(hi.length>1)out.push({p:hi,m:0,n,gl:1});return out.concat(o||[])}
+const POTSHAPE={
+ /* Minor: a slim round-bottomed vial with a cork */
+ 0:()=>potBody(PB.arc(.044,.044,0,Math.PI/2,6).concat([[.13,.044],[.152,.04],[.164,.022],[.176,.02]]),.115,14,[
+  {p:[[.172,.02],[.176,.027],[.186,.027],[.19,.021]],m:0,n:14,gl:1},
+  {p:[[.186,.018],[.19,.022],[.222,.024],[.23,.02],[.232,0]],m:2,n:12}]),
+ /* Lesser: a round flask, its neck tied with twine */
+ 1:()=>potBody(PB.bot(PB.arc(.092,.088,.35,Math.PI*.86,12)).concat([[.2,.026],[.25,.025]]),.13,18,[
+  {p:PB.band(.205,.026,.008,.005),m:8,n:16,sh:200},
+  {p:[[.246,.024],[.252,.034],[.262,.034],[.266,.026]],m:0,n:18,gl:1},
+  {p:[[.262,.022],[.266,.025],[.3,.027],[.31,.022],[.312,0]],m:2,n:14}]),
+ /* Greater: a shouldered bottle with a paper label and a red wax seal */
+ 2:()=>potBody([[0,0],[.002,.062],[.012,.07],[.2,.07],[.24,.062],[.27,.042],[.29,.028],[.33,.026]],.215,20,[
+  {p:[[.326,.026],[.332,.036],[.342,.036],[.346,.028]],m:0,n:20,gl:1},
+  {p:[[.338,.03],[.344,.04],[.352,.041],[.356,.034],[.37,.032],[.384,.028],[.39,0]],m:4,n:16},
+  {p:[[.33,.0285],[.334,.034],[.338,.0335]],m:4,n:16},
+  {p:[[.06,.0712],[.15,.0712]],m:5,n:18,a0:-1.35,a1:1.35,sh:235},
+  {p:PB.band(.058,.0712,.003,.0015),m:3,n:18,a0:-1.35,a1:1.35},{p:PB.band(.152,.0712,.003,.0015),m:3,n:18,a0:-1.35,a1:1.35}]),
+ /* Grand: a faceted decanter on a gilt foot, gilt collars and a glowing gem stopper */
+ 3:()=>potBody([[.022,.06],[.05,.095],[.1,.116],[.17,.118],[.23,.1],[.28,.06],[.31,.034],[.37,.03]],.21,8,[
+  {p:[[0,0],[.004,.072],[.014,.078],[.022,.064],[.024,.058]],m:3,n:16},
+  {p:PB.band(.1,.116,.006,.004),m:3,n:8},{p:PB.band(.17,.118,.006,.004),m:3,n:8},
+  {p:[[.305,.034],[.31,.046],[.322,.047],[.33,.034],[.355,.032],[.362,.042],[.372,.042],[.378,.03]],m:3,n:16},
+  {p:[[.376,.012],[.382,.03]].concat(PB.arc(.43,.05,.75,Math.PI,8)).map((p,i)=>i==0?p:p[1]<.001?[p[0],0]:p),m:7,n:8},
+  {p:[[.475,.006],[.5,.0001]],m:3,n:8}]),
+ /* Swiftness: a slender teardrop with a silver collar */
+ sp:()=>potBody([[0,0],[.004,.03]].concat(PB.arc(.075,.06,.95,Math.PI*.8,9).slice(1)).concat([[.2,.03],[.26,.019],[.29,.018]]),.16,16,[
+  {p:PB.band(.27,.019,.01,.006),m:10,n:14},
+  {p:[[.288,.016],[.292,.02],[.322,.022],[.33,.018],[.338,0]],m:2,n:12}]),
+ /* Ironskin: a squat banded jar with an iron lid */
+ ar:()=>potBody([[0,0],[.003,.088],[.012,.098],[.18,.1],[.205,.085],[.22,.07]],.17,18,[
+  {p:PB.band(.05,.099,.012,.008),m:6,n:18},{p:PB.band(.16,.1,.012,.008),m:6,n:18},
+  {p:[[.215,.07],[.222,.084],[.236,.086],[.244,.06],[.25,.03],[.258,.03],[.27,.012],[.276,0]],m:6,n:18}]),
+ /* Fury: a round-bellied flask with a long neck and a bone stopper */
+ fu:()=>potBody(PB.bot(PB.arc(.09,.09,.35,Math.PI*.82,12)).concat([[.22,.022],[.3,.02]]),.15,18,[
+  {p:[[.296,.02],[.3,.028],[.31,.028],[.314,.019]],m:0,n:16,gl:1},
+  {p:[[.31,.016],[.316,.024],[.33,.026],[.36,.012],[.39,.002]],m:9,n:10}]),
+ /* Renewal: a gourd with a twine waist */
+ rg:()=>potBody(PB.bot(PB.arc(.075,.075,.4,Math.PI*.83,9)).concat(PB.arc(.205,.05,Math.PI*.25,Math.PI*.8,6)).concat([[.27,.02],[.3,.019]]),.185,16,[
+  {p:PB.band(.145,.04,.009,.006),m:8,n:16,sh:200},
+  {p:[[.296,.017],[.3,.021],[.334,.023],[.342,.018],[.344,0]],m:2,n:12}])};
+function potGeo(k){if(!POTM[k])POTM[k]=potLathe(POTSHAPE[k]());return POTM[k]}
+/* the palette: liquid colours from the potion type, the glass tinted toward it */
+const PLQ={hp:['#ff8a8a','#e0303a','#7a0e18'],mp:['#9ac8ff','#3a6ae0','#0e2a7a'],sp:['#ffe88a','#e8b818','#7a5a08'],ar:['#c8d4de','#7a8a9a','#3a4450'],fu:['#ffb070','#ff5a1a','#7a1a04'],rg:['#a0f0a0','#3ac85a','#0e5a1a']};
+function potPal(t,q,t_){const K=CHM.K,c=PLQ[t]||PLQ.hp,mix=(a,b,k)=>[a[0]+(b[0]-a[0])*k,a[1]+(b[1]-a[1])*k,a[2]+(b[2]-a[2])*k],L=(a,e)=>[a[0],a[1],a[2],e];
+ const liq=K(c[1]),glass=mix(K(c[0]),K('#e8f2f6'),.55),pulse=.08*Math.sin((t_||0)*2.6);
+ return[L(mix(glass,liq,.18),-.3),L(mix(liq,K(c[0]),.12+.04*q),0),L(K('#8a5a34'),0),L(K('#d8a840'),-.82),L(K('#a01c18'),0),L(K('#ece0c4'),0),L(K('#4a4e56'),-.8),L(mix(liq,K(c[0]),.35),.32+pulse+q*.03),L(K('#b89a68'),0),L(K('#e4dcc6'),0),L(K('#c4ccd6'),-.88)]}
+function potDraw(shape,t,q){const g=potGeo(shape);CHM.wmx(g,[0,0,0],[1,0,0],[0,1,0],[0,0,1],potPal(t,q,performance.now()/1000),0,null);return true}
+{const _p2=potMesh2;potMesh2=function(t,q,Q,K){try{if(CHM.wmx&&POTSHAPE[q|0])return potDraw(q|0,t,q|0)}catch(e){console.warn('pot',e)}return _p2.apply(this,arguments)}}
+{const _p3=potMesh3;potMesh3=function(k,Q,K){try{if(CHM.wmx&&POTSHAPE[k]&&isNaN(+k))return potDraw(k,k,1)}catch(e){console.warn('pot',e)}return _p3.apply(this,arguments)}}
+/* ================= PARTY SHOPS: party members inside the same shop share the room ================= */
+/* each player's presence carries the shop they are in (sh) and their spot in the room (sx,sy); in town they still
+   stand at the shop's door. Inside a shop only party members in that same shop are drawn, at their room spots;
+   the town's own props and passers-by stay outside. */
+function mpShopVis(d){const s=window.SHOPIN?SHOPIN.id:'';return!!s&&d.sh==s&&!!MP.party&&d.pc==MP.party.code}
+function mpShopEach(fn){for(const k in MP.av){const a=MP.av[k],d=a.d;if(!d||d.cp!=1||!mpShopVis(d))continue;
+ const tx=MPN(d.sx,0,SRW,SRW/2),ty=MPN(d.sy,0,SRH,SRH-70);if(!a.rm||a.rm.sh!==d.sh)a.rm={sh:d.sh,x:tx,y:ty,_yaw:0};a.rm.tx=tx;a.rm.ty=ty;fn(k,a,d,a.rm)}}
+function MPshopChars(){mpShopEach((k,a,d,r)=>{const dx=r.tx-r.x,dy=r.ty-r.y;r.x+=dx*.2;r.y+=dy*.2;if(Math.hypot(dx,dy)>.6)r._yaw=Math.atan2(dx,dy);
+ const lk=mpLookFor(k);if(!lk)return;const st=chSt(r,r.x,r.y,undefined,undefined,true);Object.assign(st,lk.st);st.bow=!!(st.wt&&st.wt.endsWith('bow'));
+ CHM.setF(r.x,0,r.y,54,r._yaw,0,0,null,lk.em);CHM.human(lk.o,st)})}
+function MPshopLabels(g){g.save();g.textAlign='center';mpShopEach((k,a,d,r)=>{const s=scr3(r.x,r.y,64);if(!s)return;const tx=(MPC(d.n)||'Wanderer')+' ★';g.font='700 12px system-ui';const w=g.measureText(tx).width+14;
+ g.fillStyle='rgba(12,14,24,.78)';g.strokeStyle='#ffd23a';g.lineWidth=1.2;g.beginPath();g.rect(s.x-w/2,s.y-11,w,16);g.fill();g.stroke();g.fillStyle='#f4f0e0';g.fillText(tx,s.x,s.y+1);
+ g.font='10px system-ui';g.fillStyle='#9fb8d8';g.fillText((String(d.cls||'').slice(0,12))+' '+MPN(d.lv,1,999,1),s.x,s.y+16)});g.restore()}
+if(typeof MPchars=='function'){const _mc=MPchars;MPchars=function(t){if(window.SHOPIN){try{MPshopChars()}catch(e){mpErr(e)}return}return _mc.apply(this,arguments)}}
+if(typeof MPlabels=='function'){const _ml=MPlabels;MPlabels=function(g){if(window.SHOPIN&&camp){try{MPshopLabels(g)}catch(e){mpErr(e)}return}return _ml.apply(this,arguments)}}
+/* a party member walking in gets noticed */
+setInterval(()=>{try{if(!window.SHOPIN||!MP.party)return;const here=new Set();mpShopEach(k=>here.add(k));
+ if(SHOPIN._pm)for(const k of here)if(!SHOPIN._pm.has(k)){const d=MP.av[k].d;toast((MPC(d.n)||'A party member')+' walked in.')}SHOPIN._pm=here}catch(e){}},700);
+/* ---- the bag, belt and shop show the same turned bottles as icons ---- */
+const POTCS={spd:'sp',arm:'ar',dmg:'fu',reg:'rg'};
+function potShapeOf(x){if(!x)return null;if(x.k=='pot')return{s:Math.max(0,Math.min(3,qOf(x))),t:x.t=='mp'?'mp':'hp',q:qOf(x)};if(x.k=='cons'&&POTCS[x.t])return{s:POTCS[x.t],t:POTCS[x.t],q:1};return null}
+{const _gi=window.GEARICON;window.GEARICON=GEARICON=function(x){if(x&&x.k=='pot3'){potDraw(x.s,x.t,x.q);return{view:{yaw:.5,pit:.16,roll:0}}}return _gi?_gi.apply(this,arguments):null}}
+{const _ic=ico;ico=function(x){try{const ps=potShapeOf(x);if(ps&&CHM.iconBuf&&typeof ICG!='undefined'){const k='p3|'+icoKey(x);if(IC[k])return IC[k];
+ const m=CHM.iconBuf({k:'pot3',s:ps.s,t:ps.t,q:ps.q});const gc=m&&ICG.draw(m);if(gc){const c=document.createElement('canvas');c.width=c.height=96;const q=c.getContext('2d');q.save();q.scale(3,3);try{icoPlate(q,x)}catch(e){}q.restore();
+  /* smaller grades draw smaller, standing on the same floor */const f=typeof ps.s=='number'?[.64,.76,.88,1][ps.s]:.86,sz=80*f,ox=(96-sz)/2,oy=88-sz,t=document.createElement('canvas');t.width=t.height=96;const tq=t.getContext('2d');tq.drawImage(gc,ox,oy,sz,sz);tq.globalCompositeOperation='source-in';tq.fillStyle='#07050a';tq.fillRect(0,0,96,96);
+  for(const[dx,dy]of[[-3,0],[3,0],[0,-3],[0,3],[-2.2,-2.2],[2.2,-2.2],[-2.2,2.2],[2.2,2.2]])q.drawImage(t,dx,dy+2);q.drawImage(gc,ox,oy,sz,sz);return IC[k]=c.toDataURL()}}}catch(e){console.warn('poticon',e)}return _ic.apply(this,arguments)}}
+/* ================= SHOP SHOWCASE: wares sit in lit display niches, bigger and easier to read ================= */
+(function(){const st=document.createElement('style');st.textContent=`
+.bg.shg{grid-template-columns:repeat(auto-fill,minmax(112px,1fr))!important;gap:10px!important}
+.bg.shg>.bt{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px 8px 8px!important;min-height:150px;
+ background:linear-gradient(#2a1d13,#130c07)!important;border-width:1.5px!important;border-radius:9px!important;overflow:hidden;box-shadow:inset 0 1px 0 #ffffff12,inset 0 -18px 24px #0008,0 3px 8px #0007}
+.bg.shg>.bt::before{content:'';position:absolute;left:10%;right:10%;top:16px;height:84px;border-radius:50% 50% 8px 8px/60% 60% 8px 8px;
+ background:radial-gradient(60% 70% at 50% 20%,color-mix(in srgb,var(--sc,#ffcf80) 34%,transparent),transparent 72%),linear-gradient(#0d0805,#1c130c);
+ box-shadow:inset 0 2px 6px #000c,inset 0 -1px 0 #ffffff14,0 0 0 1px #00000080;pointer-events:none}
+.bg.shg>.bt::after{content:'';position:absolute;left:22%;right:22%;top:90px;height:7px;border-radius:50%;
+ background:radial-gradient(closest-side,#c8a05a,#6a4a22 70%,transparent);opacity:.85;pointer-events:none}
+.bg.shg>.bt>.bs{position:absolute;top:4px;left:0;right:0;font-size:9.5px;letter-spacing:.12em;opacity:.8}
+.bg.shg>.bt>img.ic{position:relative;z-index:1;width:72px!important;height:72px!important;margin:2px auto 14px;image-rendering:auto;
+ filter:drop-shadow(0 4px 4px #000b) drop-shadow(0 0 8px color-mix(in srgb,var(--sc,#ffcf80) 30%,transparent));transition:transform .18s ease}
+.bg.shg>.bt:hover>img.ic{transform:translateY(-3px) scale(1.07)}
+.bg.shg>.bt>.bn{position:relative;z-index:1;font-size:12.5px;line-height:1.2;min-height:30px;display:flex;align-items:center;justify-content:center;margin-top:4px}
+.bg.shg>.bt>.bf,.bg.shg>.bt>small:last-child{position:relative;z-index:1;width:100%;display:flex;justify-content:space-between;align-items:center;
+ margin-top:auto;padding-top:5px;border-top:1px solid #ffffff14}
+.bg.shg>.bt .pr{background:linear-gradient(#3a2a12,#22180a);border:1px solid #8a6a30;border-radius:10px;padding:1px 7px;color:#ffd890}
+`;document.head.appendChild(st)})();
+/* tag the shop's ware grid, and give each card its own spotlight colour (its rarity border) */
+function shopShowcase(){try{for(const g of document.querySelectorAll('#ovc .bg')){if(!g.querySelector(':scope>.bt>img.ic'))continue;g.classList.add('shg');
+ for(const b of g.querySelectorAll(':scope>.bt')){const c=b.style.borderColor;if(c&&!/var\(/.test(c))b.style.setProperty('--sc',c)}}}catch(e){}}
+if(typeof showShop=='function'){const _s=showShop;showShop=function(){const r=_s.apply(this,arguments);shopShowcase();return r}}
 
 </script></body></html>
