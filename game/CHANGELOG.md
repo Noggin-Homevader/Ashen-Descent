@@ -2,6 +2,25 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.5.5
+
+Forest floors: the Overgrown Temple is now a real forest, and forest glades grow into other dungeons.
+
+- **The Overgrown Temple is a forest.** On floors 7 to 9 (and each time the zone comes round again) the halls are no
+  longer green-tinted brick. They are woods:
+  - Walls are deep forest, fronted by tree trunks with spreading roots, moss, bracket fungi, undergrowth and leafy
+    masses at every height. Vines hang from the canopy edge.
+  - The ceiling is a leaf canopy with hanging clumps and vines, and gaps where light comes through.
+  - The floor is grass and moss, dressed with grass tufts, ferns, wildflowers, red and pale mushrooms, glowing
+    blue-green and violet mushrooms, stumps, fallen mossy logs and roots creeping out from the trees.
+  - Pillars become great trees with buttress roots, branches and their own crowns.
+  - The temple the forest swallowed still shows through: broken columns, toppled column drums and mossy slabs.
+  - Reeds grow at the water's edge.
+  - Some rooms in the zone are still temple halls, so you move between ruins and woods.
+  - Forest floors are lit a little brighter, with a greener haze, so the woods read clearly.
+- **Forest glades elsewhere.** On any floor outside the forest and the Ember Forge, a room now and then has become a
+  forest glade, opening straight off the brick corridors.
+
 ## 2.5.4
 
 A capes-and-shawls fix and a rebuilt Ashbloom Apothecary.
