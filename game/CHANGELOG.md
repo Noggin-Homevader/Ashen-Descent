@@ -2,6 +2,26 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.5.8
+
+Monster spells are redrawn, and humanoid monsters get more distinct faces.
+
+- **Monster spells look like what they are:**
+  - **Wraiths** throw a wailing ghost-skull with glowing pupils and a swirling tail.
+  - **Cultists** throw a barbed blood orb that sheds drops.
+  - **Oozes** throw a quivering glob with bubbles inside.
+  - **Skeletons** throw a spinning bone wreathed in green grave-fire.
+  - **Golems** throw a cracked boulder that sheds grit.
+  - **Wolves** throw three glowing claw rakes.
+  - **Bats** shriek widening rings of sound.
+- **Humanoid monsters are easier to tell apart:**
+  - **Goblins** have a heavy brow, warts, a crooked nose ring, brass hoops down each ear, a scar and a necklace of
+    teeth and beads.
+  - **Orcs** have a heavy brow, black war paint and red chin stripes, chipped tusks, a bull nose ring, iron ear hoops,
+    a scar, a braided beard with bone beads and a necklace of claws.
+  - **Cultists** have a glowing brand on the brow inside the hood and a bone mask over the jaw.
+  - **Wraiths** have eye-light trailing back into the hood and a torn veil.
+
 ## 2.5.7
 
 Real mage hats.
