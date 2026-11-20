@@ -2,6 +2,22 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.5.7
+
+Real mage hats.
+
+- **Three new mage hats**, each modelled to fit the head:
+  - **Crooked Hat**: a tall crown that leans back and droops at the tip, with a wavy brim, a buckled band, a sewn-on
+    patch and a little bell-star hanging from the tip.
+  - **Magister Cap**: a stiff gold-trimmed band with a set gem at the front, under a soft crown that puffs out over it,
+    and a gold tassel on a cord.
+  - **Starcaller Hat**: a tall cone over an upturned, trimmed brim, with stars on the crown and a crescent moon at
+    the tip.
+- **Circlets are now rare for Mages.** Mage helms drop as the Wizard Hat, Wide Hat or one of the new hats most of the
+  time. The Circlet is about one helm in eleven.
+- **The smith can make all six Mage helm patterns**, including the new hats.
+- A Mage helm now always looks like what its name says.
+
 ## 2.5.6
 
 Monster elements, mutations and ailments are redrawn.
