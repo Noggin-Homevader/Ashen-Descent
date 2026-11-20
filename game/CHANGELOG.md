@@ -2,6 +2,27 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.5.4
+
+A capes-and-shawls fix and a rebuilt Ashbloom Apothecary.
+
+- **Capes no longer poke through shawls and mantles.** When you wear a mantle, shawl or spiked mantle with a cape, the
+  cape now tucks underneath it and hangs free below its edge. The cape's top band, shoulder straps and collar clasps
+  are tucked away under the shoulder piece too, so nothing shows through it.
+- **A real cauldron.** The middle of the apothecary now has a pot-bellied iron cauldron:
+  - It stands on three clawed feet, with a cast band of rivets, ring handles and a rolled lip.
+  - A green brew bubbles inside with froth at the rim, and a wooden ladle is propped in it.
+  - It sits over a crossed-log fire with glowing embers, inside a ring of hearth stones.
+  - A stool with a sack of herbs and a banded bucket stand beside it.
+- **An apothecary cabinet behind Mother Ashbloom.** A tall cabinet now fills the back wall:
+  - Below is a chest of labelled drawers with brass knobs.
+  - Above are shelves of books with gilt bands, specimen jars (some with something floating in them), bottles, skulls,
+    scrolls, mortars and candles.
+  - Big stoppered carboys and a stuffed raven sit on top, herb bundles hang from the carved cornice, and a library
+    ladder runs on a brass rail.
+- **A dressed counter.** The counter now holds brass scales, an open recipe book, a mortar and pestle, a jar of
+  powder, a small rack of vials and a candle at each end.
+
 ## 2.5.3
 
 Roomier shops, party members inside them, and new potion models.
