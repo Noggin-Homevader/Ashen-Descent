@@ -9798,13 +9798,8 @@ var WMZ=[];/* telegraphs and clouds: {k,x,y,t,r,e} */
 {const _w=WANDER;WANDER=function(){const n0=E.length;const r=_w.apply(this,arguments);try{const e=E[E.length-1];if(e&&e.wd&&!e.mu&&E.length>n0){const mu=pick(WMUT);e.mu=mu;const base=(e.nm||'').replace(/^Wandering /,'');e.nm=mu.nm+' '+base;e.r=Math.round(e.r*1.1);e.mh=Math.round(e.mh*1.2);e.hp=e.mh;
   if(mu.id=='crystal')e.ar=Math.min(.6,(e.ar||0)+.2);e.mt=R(3,5);setTimeout(()=>toast('Mutation: '+mu.nm+'. '+mu.d),1400)}}catch(x){}return r}}
 /* look: a colored aura, orbiting motes and mutation growths */
-{const _em=enemyMesh;enemyMesh=function(e,uh,dp){const r=_em.apply(this,arguments);try{if(e.mu&&dp===undefined){const mu=e.mu,c=CHM.K(mu.col),t=Date.now()/1000,PP=CHM.P;
-  for(let k=0;k<5;k++){const a=t*1.6+k*1.2566;PP(Math.cos(a)*.42,.55+Math.sin(t*2+k)*.12,Math.sin(a)*.42,.03,.03,.03,c,{em:1,lo:1})}
-  if(mu.id=='crystal')for(let k=0;k<6;k++){const a=k/6*6.2832;PP(Math.cos(a)*.16,.9+(k%2)*.04,Math.sin(a)*.12-.05,.025,.11,.025,c,{em:.5,n:2,ax:Math.sin(a)*.5,az:-Math.cos(a)*.5,lo:1})}
-  else if(mu.id=='blood')for(let k=0;k<5;k++)PP(Math.sin(k*1.7)*.14,.55+k*.08,.13,.012,.05,.008,c,{em:.9,lo:1,az:k%2?.6:-.6});
-  else if(mu.id=='void'){PP(0,.75,0,.3,.3,.3,mx3(c,[0,0,0],.6),{em:.3,lo:1,n:1})}
-  else if(mu.id=='plague')for(let k=0;k<7;k++){const a=k*.9;PP(Math.cos(a)*.18,.5+(k%3)*.12,Math.sin(a)*.13,.035,.035,.035,c,{em:.4,lo:1})}
-  else if(mu.id=='storm'){const a=t*9;for(let k=0;k<3;k++)PP(Math.cos(a+k*2)*.22,1.02+Math.sin(a*1.3+k)*.04,Math.sin(a+k*2)*.22,.01,.06,.01,c,{em:1,lo:1,az:a+k})}}}catch(x){}return r}}
+/* look: drawn by mobfx.js (mfMut) */
+{const _em=enemyMesh;enemyMesh=function(e,uh,dp){const r=_em.apply(this,arguments);try{if(e.mu&&dp===undefined&&window.mfMut)mfMut(e)}catch(x){}return r}}
 function mx3(a,b,t){return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t]}
 /* behaviour */
 {const _u=update;update=function(dt){_u.apply(this,arguments);try{if(!started||over||camp||!P||(!$('ov').hidden&&!MP.run))return;
@@ -13987,5 +13982,103 @@ function foDecor(m,jit,gv,thN){for(let j=1;j<DGH-1;j++)for(let i=1;i<DGW-1;i++){
    else if(q<.75){const a=foR(0,6.28);apStick(m,[bx-Math.cos(a)*12,7,bz-Math.sin(a)*12],[bx+Math.cos(a)*12,7,bz+Math.sin(a)*12],7,sc,0,8);m.blob(bx,13,bz,8,2,6,jit(foH(FOC.moss),.2),.2,6,3)}
    else{m.box(bx,0,bz,22,5,16,sc,0,foR(0,3));m.blob(bx,5,bz,9,1.5,7,jit(foH(FOC.moss),.2),.2,6,3);for(let k=0;k<3;k++)m.box(bx+foR(-8,8),5.2,bz+foR(-6,6),2,.2,.4,[.12,.1,.08],0,foR(0,3))}continue}
  }}
+/* ================= MONSTER ELEMENTS, MUTATIONS AND AILMENTS, REDRAWN ================= */
+/* Three layers drawn on top of a monster's body, in its own frame (height about 1):
+   - its element, for the elemental beasts (Cinderfang, Rimefang, Thunderpaw, Bogstalker, Duskhowler and their kin):
+     a flame mane with ember cracks; crystal spines and a frost coat; conductor nodes with arcs crawling between them;
+     swollen pustules and dripping venom; smoke rising off a shadowed back with ember-violet eyes.
+   - its mutation, for mutated wanderers: veins and orbiting blood, crystal clusters, void rings and a rift eye, boils
+     and a cloud of flies, a little thundercloud throwing bolts at its head.
+   - what your hits have done to it: flames licking up its body, frost and ice crusting it, arcs crackling round it
+     while stunned, bubbling poison, dripping wounds, violet cracks where its defence is broken. */
+const MFX={K:c=>CHM.K(c)};
+/* a rod between two points, built from one stretched ellipsoid */
+function mfSeg(a,b,r,col,o){const dx=b[0]-a[0],dy=b[1]-a[1],dz=b[2]-a[2],L=Math.hypot(dx,dy,dz)||1e-4;
+ CHM.P((a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2,r,L/2,r,col,Object.assign({lo:1,ax:Math.asin(Math.max(-1,Math.min(1,dz/L))),az:Math.atan2(-dx,dy)},o||{}))}
+/* a jagged arc of lightning between two points */
+function mfArc(a,b,col,t,seed,w){const n=5;let p=a;for(let i=1;i<=n;i++){const u=i/n,j=i<n?.035:0,h=Math.sin(t*37+seed*7.1+i*3.3),h2=Math.cos(t*41+seed*3.7+i*2.1);
+  const q=[a[0]+(b[0]-a[0])*u+h*j,a[1]+(b[1]-a[1])*u+h2*j,a[2]+(b[2]-a[2])*u+h*h2*j];mfSeg(p,q,w||.006,col,{em:1.4});p=q}}
+/* a flame tongue: three stacked blobs, deep orange to pale yellow, flickering */
+function mfFlame(x,y,z,s,t,seed,cols){const f=.75+.25*Math.sin(t*11+seed*2.3)+.12*Math.sin(t*23+seed),c=cols||MFX.fire;
+ CHM.P(x,y+s*.35*f,z,s*.42,s*.55*f,s*.42,c[0],{em:1,lo:1});CHM.P(x+Math.sin(t*7+seed)*s*.08,y+s*.85*f,z,s*.3,s*.5*f,s*.3,c[1],{em:1.1,lo:1});
+ CHM.P(x+Math.sin(t*9+seed)*s*.14,y+s*1.35*f,z,s*.16,s*.32*f,s*.16,c[2],{em:1.3,lo:1})}
+/* where the back runs on each elemental beast: spine height y, from the tail z0 to the shoulders z1, body half-width w */
+const MFAN={wolf:{y:.5,z0:-.44,z1:.3,w:.1,hy:.56,hz:.5,ey:.02},spider:{y:.36,z0:-.4,z1:.1,w:.17,hy:.3,hz:.24,ey:.03},bat:{y:.52,z0:-.12,z1:.1,w:.08,hy:.62,hz:.12,ey:.02},slime:{y:.42,z0:-.18,z1:.18,w:.22,hy:.5,hz:.2,ey:.03}};
+varFx=function(e,st){try{const v=e.vr;if(!v)return;const K=MFX.K,t=Date.now()/1000+(e.id||0)*.37,el=v.el,A=MFAN[e.race]||MFAN.wolf,c=K(v.col),sp=u=>A.z0+(A.z1-A.z0)*u,P=CHM.P;
+ if(!MFX.fire)MFX.fire=[K('#ff4a10'),K('#ff9a2a'),K('#ffe39a')];
+ if(el=='fire'){for(let i=0;i<9;i++){const u=i/8,s=.07+.06*Math.sin(u*Math.PI)+(u>.6?.02:0);mfFlame(Math.sin(i*2.1)*.02,A.y-.01,sp(u),s,t,i)}
+  mfFlame(0,A.y-.04,A.z0-.06,.07,t,11);/* the tail burns */
+  for(let i=0;i<8;i++){const sd=i%2?1:-1,u=(i>>1)/4+.1;P(sd*A.w*.98,A.y-.08-.06*(i%3)/2,sp(u),.006,.035,.022,K(i%3?'#ff7a1a':'#ffd060'),{em:1.2,lo:1,az:sd*.3})}
+  for(const sd of[-1,1])P(sd*.035,A.hy,A.hz,.014,.012,.01,K('#ffe08a'),{em:1.4,lo:1})}
+ else if(el=='ice'){const ic=K('#bff0ff'),ic2=K('#e8fbff'),dp=K('#5ab8e8');
+  for(let i=0;i<9;i++){const u=i/8,sd=i%2?1:-1,L=.07+.06*Math.sin(u*Math.PI)+.02*(i%3),z=sp(u),b=[sd*.02,A.y,z];mfSeg(b,[sd*(.05+L*.4),A.y+L,z-.02],.016,i%3?ic:dp,{em:.45,n:1})}
+  for(let i=0;i<5;i++)P(Math.sin(i*1.9)*A.w*.5,A.y+.005,sp(.15+i*.18),A.w*.6,.012,.05,ic2,{em:.2,lo:1});
+  for(let k=0;k<4;k++){const a=t*1.2+k*1.5708,R=A.w*2.6;P(Math.cos(a)*R,A.y+.06+Math.sin(t*2+k)*.04,(A.z0+A.z1)/2+Math.sin(a)*R,.018,.018,.004,ic2,{em:.9,lo:1,n:1,az:t*3+k})}
+  for(const sd of[-1,1])P(sd*.035,A.hy,A.hz,.013,.011,.009,K('#dffaff'),{em:1.3,lo:1})}
+ else if(el=='storm'){const y1=K('#fff6a0'),y2=K('#ffe85a'),nodes=[];for(let i=0;i<5;i++){const u=i/4,z=sp(u),q=[0,A.y+.035,z];nodes.push(q);P(q[0],q[1],q[2],.022,.022,.022,y1,{em:1.4,lo:1});mfSeg([0,A.y,z],q,.007,K('#5a5a70'),{})}
+  for(let i=0;i<4;i++)if(Math.sin(t*13+i*2.7)>-.3)mfArc(nodes[i],nodes[i+1],i%2?y1:y2,t,i);
+  if(Math.sin(t*5+(e.id||0))>.4){const n=nodes[Math.floor((t*3)%5)];mfArc(n,[n[0]+Math.sin(t*17)*.12,0,n[2]+Math.cos(t*13)*.12],y1,t,9,.005)}
+  for(let k=0;k<5;k++){const a=t*6+k*1.2566;P(Math.cos(a)*A.w*1.8,A.y+Math.sin(t*9+k)*.08,(A.z0+A.z1)/2+Math.sin(a)*A.w*2.4,.006,.006,.006,y1,{em:1.5,lo:1})}
+  for(const sd of[-1,1])P(sd*.035,A.hy,A.hz,.013,.011,.009,y1,{em:1.4,lo:1})}
+ else if(el=='venom'){const g=K('#9aff4a'),g2=K('#5aa02a'),g3=K('#e4ff9a');
+  for(let i=0;i<8;i++){const sd=i%2?1:-1,u=.08+i*.11,pu=1+.18*Math.sin(t*4+i*1.3),z=sp(u),x=sd*A.w*(.35+.4*(i%3)/2),y=A.y-.01-.04*(i%3)/2;P(x,y,z,.03*pu,.026*pu,.03*pu,g2,{lo:1});P(x,y+.01,z,.019*pu,.02*pu,.019*pu,g,{em:.8,lo:1});P(x+.006,y+.022*pu,z,.006,.005,.006,g3,{em:1,lo:1})}
+  for(let k=0;k<4;k++){const ph=(t*1.4+k*.27)%1,u=.2+k*.2;P(Math.sin(k*2.3)*A.w*.6,A.y-.16-ph*A.y*.85,sp(u),.011,.016+.01*ph,.011,g,{em:.8,lo:1})}
+  for(let k=0;k<4;k++){const u=.15+k*.22;P(Math.sin(k)*A.w*.5,A.y-.13,sp(u),.008,.03+.012*Math.sin(t*3+k),.008,g,{em:.7,lo:1})}
+  for(const sd of[-1,1])P(sd*.035,A.hy,A.hz,.013,.011,.009,g3,{em:1.2,lo:1})}
+ else{/* shadow */const d1=K('#2a1838'),d2=K('#6a3aa0'),d3=K('#c890ff');
+  for(let i=0;i<10;i++){const ph=(t*.55+i*.137)%1,u=(i*.37)%1,s=.03+.05*ph,z=sp(u)-ph*.08;P(Math.sin(t*1.7+i)*.03*ph,A.y+.02+ph*.26,z,s*(1-ph*.4),s*1.3,s*(1-ph*.4),ph<.5?d1:d2,{em:.25+ph*.45,lo:1})}
+  for(let k=0;k<3;k++){const sw=Math.sin(t*3+k)*.05;for(let j=1;j<=3;j++)P(sw*j*.5+(k-1)*.03,A.y-.06+j*.01,A.z0-.04-j*.05,.026-j*.005,.02-j*.004,.03,j<2?d2:d1,{em:.35,lo:1})}
+  for(const sd of[-1,1]){P(sd*.035,A.hy,A.hz,.016,.012,.01,d3,{em:1.6,lo:1});mfSeg([sd*.035,A.hy,A.hz],[sd*.06,A.hy+.01,A.hz-.09],.006,d2,{em:.8})}}
+}catch(x){}};
+/* ---- elemental bosses (an element given to a floor boss) wear a crown of that element ---- */
+const MFBOSS={Fire:'fire',Ice:'ice',Lightning:'storm',Nature:'venom',Shadow:'shadow',Death:'shadow',Holy:'holy',Earth:'earth',Water:'ice',Wind:'storm',Arcane:'shadow'};
+/* ---- ailments and mutations, drawn over every monster ---- */
+const MFH={wolf:.62,spider:.46,bat:.6,slime:.6,golem:1.15,gobtaur:1.2,dragon:1,goblin:.8,orc:1.05,skeleton:1,cultist:1,wraith:1};
+function mfBody(e){const h=MFH[e.race]||1,r=BEAST[e.race]?.22:e.race=='goblin'?.2:.26;return{h,r}}
+function mfAil(e){const K=MFX.K,t=Date.now()/1000+(e.id||0)*.37,P=CHM.P,{h,r}=mfBody(e),f=e.fxs||{};if(!MFX.fire)MFX.fire=[K('#ff4a10'),K('#ff9a2a'),K('#ffe39a')];
+ if(f.burn){for(let k=0;k<7;k++){const a=k/7*6.2832+t*.6,y=h*(.18+.5*((k*.37)%1));mfFlame(Math.cos(a)*r*.95,y,Math.sin(a)*r*.75,.09+.03*(k%3),t,k)}mfFlame(0,h*.85,0,.12,t,13)}
+ if(e.sl>0||f.chill){const ic=K('#cff4ff'),ic2=K('#8ad8ff');for(let k=0;k<8;k++){const a=k/8*6.2832+.3,y=h*(.15+.65*((k*.41)%1)),b=[Math.cos(a)*r*.85,y,Math.sin(a)*r*.7],L=.05+.03*(k%3);
+   mfSeg(b,[b[0]*1.5,y+L,b[2]*1.5],.014,k%2?ic:ic2,{em:.45,n:1})}
+  P(0,.01,0,r*1.9,.018,r*1.7,K('#bfe8ff'),{em:.25,lo:1});for(let k=0;k<5;k++){const a=k*1.2566;mfSeg([Math.cos(a)*r*1.5,0,Math.sin(a)*r*1.4],[Math.cos(a)*r*1.4,.07+.03*(k%2),Math.sin(a)*r*1.3],.012,ic,{em:.4,n:1})}}
+ if(e.st>0){const y1=K('#fff6a0'),y2=K('#9ae0ff');for(let k=0;k<4;k++){const a=t*7+k*1.5708,a2=a+1.6+Math.sin(t*19+k);if(Math.sin(t*29+k*1.7)<-.5)continue;
+   mfArc([Math.cos(a)*r*1.2,h*(.2+.15*k),Math.sin(a)*r*1.2],[Math.cos(a2)*r*1.2,h*(.35+.15*k),Math.sin(a2)*r*1.2],k%2?y1:y2,t,k)}
+  for(let k=0;k<3;k++){const a=t*4+k*2.1;P(Math.cos(a)*.12,h+.08+Math.sin(t*6+k)*.02,Math.sin(a)*.12,.022,.01,.022,y1,{em:1.2,lo:1,n:1})}}/* dazed stars */
+ if(e.ps>0){const g=K('#9aff4a'),g2=K('#e4ff9a');for(let k=0;k<7;k++){const ph=(t*.8+k*.143)%1,a=k*2.4;P(Math.cos(a)*r*(.6+.4*ph),h*(.2+.75*ph),Math.sin(a)*r*.6,.018*(1-ph*.5),.018*(1-ph*.5),.018*(1-ph*.5),k%3?g:g2,{em:.9,lo:1})}
+  for(let k=0;k<3;k++){const ph=(t*1.6+k*.33)%1;P(Math.sin(k*2)*r*.6,h*.5*(1-ph),Math.cos(k*2)*r*.5,.01,.015,.01,g,{em:.8,lo:1})}}
+ if(f.bleed&&(f.bleed.st||1)>0){const rd=K('#c0101a'),n=Math.min(6,(f.bleed.st||1)+1);for(let k=0;k<n;k++){const ph=(t*1.3+k*.29)%1,a=k*2.2+.5;P(Math.cos(a)*r*.8,h*(.55-.55*ph),Math.sin(a)*r*.7,.009,.016,.009,rd,{em:.35,lo:1})}}
+ if(f.sund){const vc=K('#c8a0ff');for(let k=0;k<5;k++){const a=k*1.25+.4,y=h*(.3+.12*k),b=[Math.cos(a)*r*1.02,y,Math.sin(a)*r*.82];mfSeg(b,[b[0]*1.02,y+.07,b[2]*1.02+.02],.005,vc,{em:1.1});mfSeg([b[0],y+.04,b[2]],[b[0]*1.03+.03,y+.06,b[2]*1.03],.004,vc,{em:1.1})}}}
+function mfMut(e){const mu=e.mu;if(!mu)return;const K=MFX.K,t=Date.now()/1000+(e.id||0)*.37,P=CHM.P,{h,r}=mfBody(e),c=K(mu.col);
+ if(mu.id=='blood'){const dk=K('#5a0610');for(let k=0;k<6;k++){const a=k/6*6.2832,y0=h*.35,y1=h*.8;mfSeg([Math.cos(a)*r*.98,y0,Math.sin(a)*r*.8],[Math.cos(a+.25)*r*.98,y1,Math.sin(a+.25)*r*.8],.007,c,{em:.6+.4*Math.sin(t*6+k)})}
+  for(let k=0;k<4;k++){const a=t*2.2+k*1.5708;P(Math.cos(a)*r*2.1,h*.6+Math.sin(t*3+k)*.08,Math.sin(a)*r*2.1,.022,.03,.022,c,{em:.9,lo:1});P(Math.cos(a-.25)*r*2.1,h*.6,Math.sin(a-.25)*r*2.1,.012,.014,.012,dk,{em:.4,lo:1})}
+  const pu=1+.12*Math.sin(t*5);for(let k=0;k<10;k++){const a=k/10*6.2832;P(Math.cos(a)*r*2*pu,.012,Math.sin(a)*r*2*pu,.03,.008,.03,k%2?c:dk,{em:.7,lo:1})}}
+ else if(mu.id=='crystal'){const c2=K('#e8fbff');for(const[sx,sy,sz]of[[1,.82,0],[-1,.82,0],[0,.7,-1]])for(let k=0;k<4;k++){const b=[sx*r*.8,h*sy,sz*r*.8],a=k*1.57+.4;mfSeg(b,[b[0]+sx*.06+Math.cos(a)*.04,b[1]+.09+.03*(k%2),b[2]+sz*.06+Math.sin(a)*.04],.02-.003*k,k%2?c:c2,{em:.55,n:1})}
+  for(let k=0;k<3;k++){const a=t*1.4+k*2.094;mfSeg([Math.cos(a)*r*2.3,h*.55,Math.sin(a)*r*2.3],[Math.cos(a)*r*2.3,h*.55+.08,Math.sin(a)*r*2.3],.018,c,{em:.8,n:1})}}
+ else if(mu.id=='void'){const d=K('#1a0c28');for(let ring=0;ring<2;ring++){const sp=ring?-1.3:1.7,R=r*(1.9+ring*.4),y=h*(.4+ring*.25);for(let k=0;k<14;k++){const a=t*sp+k/14*6.2832,a2=a+.42;if(k%4==3)continue;mfSeg([Math.cos(a)*R,y,Math.sin(a)*R],[Math.cos(a2)*R,y+.01,Math.sin(a2)*R],.008,ring?c:K('#e0b0ff'),{em:1.1})}}
+  const ey=h+.18+Math.sin(t*2)*.02;P(0,ey,0,.07,.045,.02,d,{lo:1});P(0,ey,.012,.03,.03,.012,c,{em:1.3,lo:1});P(Math.sin(t*1.3)*.01,ey,.022,.012,.02,.006,K('#000000'),{lo:1});
+  for(let k=0;k<4;k++){const ph=(t*.7+k*.25)%1;P(Math.sin(k*1.7)*r,h*(.2+ph*.8),Math.cos(k*1.7)*r*.8,.035*(1-ph),.05*(1-ph),.035*(1-ph),d,{em:.2,lo:1})}}
+ else if(mu.id=='plague'){const g=K('#a8ff4a'),g2=K('#4a6a1a'),fly=K('#141410');for(let k=0;k<6;k++){const a=k*1.9,y=h*(.3+.1*k),pu=1+.15*Math.sin(t*3.5+k);P(Math.cos(a)*r*.95,y,Math.sin(a)*r*.8,.03*pu,.028*pu,.03*pu,g2,{lo:1});P(Math.cos(a)*r*1.02,y+.008,Math.sin(a)*r*.86,.016*pu,.016*pu,.016*pu,g,{em:.9,lo:1})}
+  for(let k=0;k<9;k++){const a=t*(3+k%3)+k*.7,R=r*(1.6+.6*Math.sin(t*2.3+k));P(Math.cos(a)*R,h*(.5+.4*Math.sin(t*3.1+k*1.3)),Math.sin(a)*R,.009,.006,.009,fly,{lo:1})}
+  for(let k=0;k<4;k++){const ph=(t*.5+k*.25)%1;P(Math.cos(k*1.6)*r*(1+ph),.04+ph*.14,Math.sin(k*1.6)*r*(1+ph),.05+.06*ph,.03+.03*ph,.05+.06*ph,g,{em:.35*(1-ph),lo:1})}}
+ else if(mu.id=='storm'){const gy=K('#3a3a48'),gy2=K('#5a5a6a'),y1=K('#fff6a0'),cy=h+.3;
+  for(let k=0;k<5;k++){const a=k*1.2566+t*.4;P(Math.cos(a)*.08,cy+Math.sin(k*2)*.02,Math.sin(a)*.07,.07,.045,.06,k%2?gy:gy2,{lo:1})}
+  if(Math.sin(t*6+(e.id||0))>.2)mfArc([Math.sin(t*3)*.05,cy-.03,0],[0,h*.95,0],y1,t,3,.007);
+  for(let k=0;k<4;k++){const a=t*8+k*1.5708;if(Math.sin(t*23+k)>.3)mfArc([Math.cos(a)*r,h*.4,Math.sin(a)*r],[Math.cos(a+.9)*r,h*.65,Math.sin(a+.9)*r],c,t,k+5,.004)}}}
+/* elemental bosses: a burning, frozen, crackling, rotting, shadowed or radiant crown and mantle */
+function mfBossEl(e){const b=e.bv;if(!b)return;const K=MFX.K,t=Date.now()/1000,P=CHM.P,{h,r}=mfBody(e),k_=MFBOSS[b.el]||'shadow',c=K(b.col||'#ffffff');
+ for(let k=0;k<7;k++){const a=k/7*6.2832+t*.3,x=Math.cos(a)*.11,z=Math.sin(a)*.1,y=h+.06;
+  if(k_=='fire')mfFlame(x,y,z,.05,t,k);else if(k_=='ice')mfSeg([x,y,z],[x*1.3,y+.1+.03*(k%2),z*1.3],.016,k%2?K('#e8fbff'):c,{em:.6,n:1});
+  else if(k_=='storm'){P(x,y+.04,z,.016,.016,.016,c,{em:1.4,lo:1});if(k%2)mfArc([x,y+.04,z],[0,y+.16,0],c,t,k,.005)}
+  else if(k_=='holy')mfSeg([x*1.4,y+.05,z*1.4],[x*1.6,y+.14,z*1.6],.008,K('#fff4c0'),{em:1.3});
+  else if(k_=='earth')P(x*1.2,y+.03+Math.sin(t*2+k)*.02,z*1.2,.03,.025,.03,K('#8a7a5a'),{lo:1,n:.8});
+  else{const ph=(t*.6+k/7)%1;P(x*(1+ph),y+ph*.2,z*(1+ph),.03*(1-ph*.5),.04,.03*(1-ph*.5),c,{em:.5+.5*ph,lo:1})}}
+ for(let k=0;k<12;k++){const a=k/12*6.2832-t*.5,R=r*2.6;P(Math.cos(a)*R,.02+.01*Math.sin(t*3+k),Math.sin(a)*R,.03,.006,.016,c,{em:1,lo:1,n:1})}}
+{const _em=enemyMesh;enemyMesh=function(e,uh,dp){const r=_em.apply(this,arguments);if(dp===undefined)try{mfAil(e);if(e.bv)mfBossEl(e)}catch(x){}return r}}
+/* drifting particles in the world, matching the beast's element */
+{const _u=update;update=function(dt){_u.apply(this,arguments);try{if(!started||camp&&!window.MFTEST)return;for(const e of E){if(e.dead||!e.vr||Math.random()>dt*7)continue;if(Math.hypot(P.x-e.x,P.y-e.y)>520)continue;const el=e.vr.el,r=e.r*.6,x=e.x+R(-r,r),y=e.y+R(-r*.4,r*.4),z=G3.on?10+R(0,e.r):0;
+ if(el=='fire')pz(x,y,z,Math.random()<.5?'#ff8a2a':'#ffd23a',2.4,.7,R(-6,6),0,R(30,55),0,1);
+ else if(el=='ice')pz(x,y,z+10,'#e8fbff',2,.9,R(-8,8),0,R(-14,-4),0,1);
+ else if(el=='storm')pz(x,y,z,'#fff6a0',1.6,.25,R(-40,40),R(-20,20),R(-10,30),0,1);
+ else if(el=='venom')pz(x,y,z,'#9aff4a',2.2,.6,R(-4,4),0,R(-30,-12),0,1);
+ else pz(x,y,z,Math.random()<.6?'#3a2050':'#a070e0',3,1,R(-6,6),0,R(10,22),0,0)}}catch(x){}}}
 
 </script></body></html>

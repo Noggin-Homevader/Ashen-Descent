@@ -2,6 +2,36 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.5.6
+
+Monster elements, mutations and ailments are redrawn.
+
+- **Elemental beasts wear their element.** The fire, ice, storm, venom and shadow variants of wolves, spiders, bats
+  and oozes now show their element clearly:
+  - **Fire** (Cinderfang and kin): a flickering flame mane down the back, a burning tail, glowing ember cracks along
+    the flanks and burning eyes. Embers drift up off them.
+  - **Ice** (Rimefang and kin): crystal spines down the back, a frost coat, snowflakes circling the body and icy eyes.
+    Snow sifts off them.
+  - **Storm** (Thunderpaw and kin): glowing conductor nodes along the spine with arcs crackling between them, the odd
+    bolt to the ground, and sparks circling.
+  - **Venom** (Bogstalker and kin): pulsing pustules, venom dripping from the belly and glowing eyes.
+  - **Shadow** (Duskhowler and kin): smoke rising off the back, shadow trailing from the tail and violet eyes.
+- **Mutated wanderers look mutated:**
+  - **Bloodsurge**: glowing veins, orbiting blood drops and a pulsing pool at the feet.
+  - **Crystal-Grown**: crystal clusters on the shoulders and back, with shards orbiting.
+  - **Voidtouched**: two counter-rotating void rings and a rift eye watching over the head.
+  - **Plague-Ridden**: boils, a cloud of flies and gas puffing at the feet.
+  - **Stormborn**: a little thundercloud overhead throwing bolts down, and arcs on the body.
+- **Elemental floor bosses** wear a crown of their element (flames, ice spikes, crackling nodes, radiant rays,
+  floating stones or rising smoke) and a ring of it at their feet.
+- **What your hits do now shows on the monster:**
+  - **Burning**: flames lick up the body.
+  - **Chilled**: ice crystals grow on it and the ground under it freezes.
+  - **Stunned or shocked**: arcs crackle round it and stars circle its head.
+  - **Poisoned**: green bubbles rise off it.
+  - **Bleeding**: blood drips, more with each stack.
+  - **Lowered defence**: violet cracks show on its body.
+
 ## 2.5.5
 
 Forest floors: the Overgrown Temple is now a real forest, and forest glades grow into other dungeons.
