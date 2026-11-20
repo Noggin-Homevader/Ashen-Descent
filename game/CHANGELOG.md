@@ -2,6 +2,24 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.5.9
+
+The Ember Forge is now volcanic.
+
+- **The Ember Forge floors (19 to 21, and each time the zone comes round again) are the inside of a volcano.** Before,
+  they were dark brick tinted red:
+  - **Walls** are hexagonal basalt columns of different heights, with lava glowing in the seams and now and then
+    dribbling down the face into a glowing pool. Obsidian spikes stand at their feet.
+  - **The ceiling** is black rock split by glowing fissures, hung with spires that drip lava.
+  - **The floor** is cracked basalt with lava veins running across it, smoking vents with glowing mouths, obsidian
+    shards, slag heaps and drifts of ash.
+  - **The old forge** is still there in ruins: broken furnace mouths in the walls still glowing, and toppled anvils
+    with lengths of rusted chain.
+  - **Pillars** become clusters of basalt columns around a core of lava.
+  - **Lighting:** the lava, vents and furnaces now cast warm light, and the zone's light is brighter and redder, so
+    you can see where you're going.
+- **Ember rooms elsewhere**, such as the last room of other floors, get the same volcanic look.
+
 ## 2.5.8
 
 Monster spells are redrawn, and humanoid monsters get more distinct faces.

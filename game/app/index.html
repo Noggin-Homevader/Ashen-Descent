@@ -2585,7 +2585,7 @@ const sh=(t,s)=>{const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShade
 const mk=(v,f,at)=>{const p=gl.createProgram();gl.attachShader(p,sh(gl.VERTEX_SHADER,v));gl.attachShader(p,sh(gl.FRAGMENT_SHADER,'#ifdef GL_FRAGMENT_PRECISION_HIGH\nprecision highp float;\n#else\nprecision mediump float;\n#endif\n'+f));at.forEach((a,i)=>gl.bindAttribLocation(p,i,a));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));p.u={};const n=gl.getProgramParameter(p,gl.ACTIVE_UNIFORMS);for(let i=0;i<n;i++){const nm=gl.getActiveUniform(p,i).name;p.u[nm]=gl.getUniformLocation(p,nm)}return p};
 function tex(src,mip){const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,src);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
 if(mip){gl.generateMipmap(gl.TEXTURE_2D);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);const ex=gl.getExtension('EXT_texture_filter_anisotropic');if(ex)gl.texParameterf(gl.TEXTURE_2D,ex.TEXTURE_MAX_ANISOTROPY_EXT,Math.min(8,gl.getParameter(ex.MAX_TEXTURE_MAX_ANISOTROPY_EXT)))}else gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);return t}
-const ENV={gal:{fog:'#15101a',fr:[900,2200],amb:[.4,.38,.46],sun:[1.05,.9,.74],ou:'#15101a'},grass:{fog:'#1f3a1a',fr:[380,980],amb:[.62,.66,.6],sun:[.55,.5,.38],ou:'#243f1c'},cave:{fog:'#0b0a0d',fr:[230,700],amb:[.36,.38,.5],sun:[.34,.32,.4],ou:'#14110f'},forest:{fog:'#162c1c',fr:[300,860],amb:[.58,.66,.52],sun:[.66,.64,.44],ou:'#14301c'},water:{fog:'#0b1c26',fr:[300,820],amb:[.5,.58,.66],sun:[.34,.4,.5],ou:'#0f2a38'},camp:{fog:'#120d09',fr:[520,1300],amb:[.42,.37,.33],sun:[.42,.34,.26],ou:'#1a1410'},mount:{fog:'#1a2230',fr:[300,900],amb:[.62,.68,.78],sun:[.6,.65,.78],ou:'#161d28'},crypt:{fog:'#120c1a',fr:[240,720],amb:[.4,.36,.5],sun:[.36,.3,.44],ou:'#100a16'},ember:{fog:'#1f0d08',fr:[240,700],amb:[.56,.38,.3],sun:[.8,.4,.2],ou:'#1a0a06'}};
+const ENV={gal:{fog:'#15101a',fr:[900,2200],amb:[.4,.38,.46],sun:[1.05,.9,.74],ou:'#15101a'},grass:{fog:'#1f3a1a',fr:[380,980],amb:[.62,.66,.6],sun:[.55,.5,.38],ou:'#243f1c'},cave:{fog:'#0b0a0d',fr:[230,700],amb:[.36,.38,.5],sun:[.34,.32,.4],ou:'#14110f'},forest:{fog:'#162c1c',fr:[300,860],amb:[.58,.66,.52],sun:[.66,.64,.44],ou:'#14301c'},water:{fog:'#0b1c26',fr:[300,820],amb:[.5,.58,.66],sun:[.34,.4,.5],ou:'#0f2a38'},camp:{fog:'#120d09',fr:[520,1300],amb:[.42,.37,.33],sun:[.42,.34,.26],ou:'#1a1410'},mount:{fog:'#1a2230',fr:[300,900],amb:[.62,.68,.78],sun:[.6,.65,.78],ou:'#161d28'},crypt:{fog:'#120c1a',fr:[240,720],amb:[.4,.36,.5],sun:[.36,.3,.44],ou:'#100a16'},ember:{fog:'#2a1209',fr:[280,820],amb:[.7,.5,.4],sun:[.95,.55,.3],ou:'#22100a'}};
 function init(){try{c3=document.getElementById('c3');const d=Math.min(window.devicePixelRatio||1,2);c3.width=Math.round(VW*d);c3.height=Math.round(VH*d);gl=c3.getContext('webgl',{antialias:true,alpha:false,powerPreference:'high-performance'});if(!gl)return false;
 PM=mk(SHD.mv,SHD.mf,['aP','aN','aC','aE']);PQ=mk(SHD.qv,SHD.qf,['aQ']);PP=mk(SHD.pv,SHD.pf,['aP','aC','aS']);PC=mk(SHD.cv,SHD.cf,['aP','aN','aC','aE']);try{try{PS=mk(SHD.sv,SHD.sf,['aP','aN','aC','aE'])}catch(e){PS=null;console.warn('shadow off',e)}try{PAO=mk(SHD.fv,SHD.ao,['aQ'])}catch(e){PAO=null;console.warn('ssao off',e)}PBX=mk(SHD.fv,SHD.bx,['aQ']);PBL=mk(SHD.fv,SHD.bl,['aQ']);PCP=mk(SHD.fv,SHD.cp,['aQ']);postOK=true}catch(e){postOK=false;console.warn('post fx off',e)}bC=gl.createBuffer();
 bQ=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,bQ);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-.5,-.5,.5,-.5,.5,.5,-.5,-.5,.5,.5,-.5,.5]),gl.STATIC_DRAW);bP=gl.createBuffer();
@@ -2622,6 +2622,7 @@ for(let j=0;j<DGH;j++)for(let i=0;i<DGW;i++){const k=j*DGW+i;if(DGG[k]==1)contin
 dgRid=rid;return CH}
 function tallPillar(m,bk,o){const CH=window.DGCH,i=Math.floor(o.x/CSZ),j=Math.floor(o.y/CSZ),cc=(CH&&CH[j*DGW+i])||160,x=o.x,z=o.y,p=DGP[bk]||DGP.grass,jit=m.jit,tq=hc(p.wt),r=o.r*.8;
 if(bk=='forest'&&window.foGiantTree){foGiantTree(m,jit,x,z,r,cc);return}
+if(bk=='ember'&&window.voPillar){voPillar(m,jit,x,z,r,cc);return}
 if(NATR[bk]){m.cyl(x,0,z,r*.95,cc,7,jit(scl(tq,.85),.2));m.cone(x,0,z,r*1.7,cc*.55,7,jit(tq,.2));m.cone(x,cc,z,r*1.5,-cc*.5,7,jit(tq,.2));m.blob(x,8,z,r*1.6,9,r*1.5,jit(scl(tq,.8),.2),.4,7,4);if(bk=='ember')m.cone(x+r*.5,cc*.2,z,r*.35,cc*.35,4,[1,.45,.12],1);else if(bk=='mount')m.cone(x,cc*.55-2,z,r*.9,10,6,[.9,.94,.98]);return}
 const st=jit(scl(tq,1.15),.05),dk=scl(tq,.8);
 m.box(x,0,z,r*3,7,r*3,dk,DGM.BR);m.box(x,7,z,r*2.6,5,r*2.6,st);m.cyl(x,12,z,r*1.18,4,12,st);m.cyl(x,16,z,r,cc-16-34,12,st);m.cyl(x,cc-34,z,r*1.18,4,12,st);
@@ -2647,6 +2648,8 @@ for(let j=2;j<DGH-2;j++)for(let i=2;i<DGW-2;i++){if(gv(i,j)!=1)continue;let f=nu
 for(let j=0;j<DGH;j++)for(let i=0;i<DGW;i++){if(gv(i,j)!=1)continue;let a=0,mh=0;for(let dj=-1;dj<=1;dj++)for(let di=-1;di<=1;di++)if(gv(i+di,j+dj)!=1){a=1;mh=Math.max(mh,ch(i+di,j+dj))}
  if(!a)for(let dj=-2;dj<=2;dj++)for(let di=-2;di<=2;di++)if(gv(i+di,j+dj)!=1){a=2;mh=Math.max(mh,ch(i+di,j+dj))}
  if(!a)continue;const k=j*DGW+i,h=mh+14,x=i*CSZ+20,z=j*CSZ+20,tb=thN(i,j),tq=stoneOf(tb),bc=brickOf(tb),nat=NATR[tb];hts[k]=h;
+ if(tb=='ember'&&window.voWallFace){/* volcanic: basalt behind hexagonal columns with lava in the seams */m.box(x,-14,z,CSZ+1,h+14,CSZ+1,jit(hc(VOC.bas[2]),.08),0);if(a==2)continue;
+  for(const[di,dj]of[[0,-1],[0,1],[-1,0],[1,0]]){const v=gv(i+di,j+dj);if(v==1)continue;voWallFace(m,jit,i,j,di,dj,x,z,ch(i+di,j+dj))}continue}
  if(tb=='forest'&&window.foWallFace){/* the woods: a dark mass fronted by trunks and undergrowth */m.box(x,-14,z,CSZ+1,h+14,CSZ+1,jit(hc(FOC.wood),.12),0);if(a==2)continue;
   for(const[di,dj]of[[0,-1],[0,1],[-1,0],[1,0]]){const v=gv(i+di,j+dj);if(v==1)continue;foWallFace(m,jit,i,j,di,dj,x,z,ch(i+di,j+dj))}continue}
  if(niche.has(k)){const[di,dj]=niche.get(k),px=-dj,pz=di,fx=x+di*20,fz=z+dj*20,sc_=jit(scl(tq,1.05),.05);
@@ -2672,12 +2675,12 @@ for(let j=0;j<DGH;j++)for(let i=0;i<DGW;i++){if(gv(i,j)!=1)continue;let a=0,mh=0
 /* ---- floor, pools and ceiling ---- */
 const lc=hc(p.pg),pitT=[],isP=(i,j)=>gv(i,j)==2,WY=-10;
 for(let j=0;j<DGH;j++)for(let i=0;i<DGW;i++){const v=gv(i,j);if(v==1)continue;const k=j*DGW+i,x0=i*CSZ,z0=j*CSZ,x1=x0+CSZ,z1=z0+CSZ,cc=CH[k],tb=thN(i,j),pq=DGP[tb]||p,tq=stoneOf(tb),nat=NATR[tb];
- const fo=tb=='forest'&&window.foCanopy;if(fo)foCanopy(mc,jit,Q,x0,z0,cc);else Q(mc,[x0,cc,z0],[x1,cc,z0],[x1,cc,z1],[x0,cc,z1],jit(scl(tq,nat?.8:.72),.08),nat?0:CE,[0,-1,0]);
+ const fo=tb=='forest'&&window.foCanopy;if(fo)foCanopy(mc,jit,Q,x0,z0,cc);else if(tb=='ember'&&window.voCeil)voCeil(mc,jit,Q,x0,z0,cc);else Q(mc,[x0,cc,z0],[x1,cc,z0],[x1,cc,z1],[x0,cc,z1],jit(scl(tq,nat?.8:.72),.08),nat?0:CE,[0,-1,0]);
  if(nat&&Math.random()<.22)mc.cone(x0+R(8,32),cc,z0+R(8,32),R(4,9),-R(14,44),5,jit(tq,.25));
  for(const[di,dj]of[[1,0],[0,1]]){if(gv(i+di,j+dj)==1)continue;const c2=ch(i+di,j+dj);if(c2==cc)continue;const lo=Math.min(cc,c2),hi=Math.max(cc,c2),sg=cc<c2?-1:1,bc=fo?hc(FOC.canopy):brickOf(tb);
   if(di){Q(mc,[x1,lo,z0],[x1,lo,z1],[x1,hi,z1],[x1,hi,z0],jit(bc,.08),BR,[sg,0,0]);mc.box(x1+sg*3,lo-6,z0+20,6,6,CSZ+1,jit(tq,.05))}
   else{Q(mc,[x0,lo,z1],[x1,lo,z1],[x1,hi,z1],[x0,hi,z1],jit(bc,.08),BR,[0,0,sg]);mc.box(x0+20,lo-6,z1+sg*3,CSZ+1,6,6,jit(tq,.05))}}
- if(v==0){Q(m,[x0,0,z0],[x0,0,z1],[x1,0,z1],[x1,0,z0],fo?jit(hc(FOC.grass[(i*7+j*3)%3]),.07):jit(scl(hc(pq.f[(i*7+j*3)%3]),.82),.05),fo?0:FL,[0,1,0]);continue}
+ if(v==0){Q(m,[x0,0,z0],[x0,0,z1],[x1,0,z1],[x1,0,z0],fo?jit(hc(FOC.grass[(i*7+j*3)%3]),.07):tb=='ember'&&window.VOC?jit(hc(VOC.bas[(i*7+j*3)%3]),.06):jit(scl(hc(pq.f[(i*7+j*3)%3]),.82),.05),fo?0:FL,[0,1,0]);continue}
  /* pool */
  let d=3;for(let r=1;r<=2&&d==3;r++)for(let dj=-r;dj<=r&&d==3;dj++)for(let di=-r;di<=r;di++)if(!isP(i+di,j+dj)){d=r;break}
  const lava=tb=='cave'||tb=='ember',wc=lava?[1,.38,.08]:hc(WATC[tb]||'#1d3e48'),em=lava?(d==1?.3:d==2?.36:.42):(d==1?.13:.15);
@@ -2706,7 +2709,7 @@ for(const t of DGX.tor){const wh=hts[Math.floor((t.x-t.nx*5)/CSZ)+Math.floor((t.
 m.box(t.x,y-4,t.y,7,16,2,fe);m.box(t.x+t.nx*1.5,y-8,t.y+t.ny*1.5,3,3,3,fe2);m.box(t.x+t.nx*3,y-5,t.y+t.ny*3,3,12,3,[.36,.24,.12]);m.box(t.x+t.nx*3,y-1,t.y+t.ny*3,4.2,2.2,4.2,[.62,.56,.4]);m.box(t.x+t.nx*3,y+2,t.y+t.ny*3,4.2,2.2,4.2,[.5,.15,.1]);
 m.box(fx,y+4,fz,9,2.4,9,fe);m.box(fx+3.5,y+8,fz,1.6,6,9,fe2);m.box(fx-3.5,y+8,fz,1.6,6,9,fe2);m.box(fx,y+8,fz+3.5,9,6,1.6,fe2);m.box(fx,y+8,fz-3.5,9,6,1.6,fe2);m.blob(fx,y+7,fz,3.6,2.6,3.6,[1,.45,.12],0,6,3,1)}
 for(const b of DGX.ban){const wh=hts[Math.floor(b.x/CSZ)+Math.floor((b.y-4)/CSZ)*DGW]||90,y=Math.min(wh-26,132);m.box(b.x,y-58,b.y,15,62,1.6,jit(p.bn,.15));m.box(b.x,y+5,b.y,20,2.5,3,[.7,.55,.2]);m.box(b.x,y-62,b.y,6,5,1.8,[.9,.75,.3]);m.box(b.x,y-30,b.y+.9,15,3,.4,[.75,.6,.25])}
-dgDecor(m,bk,p,gv,hts,jit,tc);if(window.foDecor)try{foDecor(m,jit,gv,thN)}catch(e){console.warn('forest',e)}dgSet(m,bk,p,gv,jit,tc);
+dgDecor(m,bk,p,gv,hts,jit,tc);if(window.foDecor)try{foDecor(m,jit,gv,thN)}catch(e){console.warn('forest',e)}if(window.voDecor)try{voDecor(m,jit,gv,thN)}catch(e){console.warn('volcano',e)}dgSet(m,bk,p,gv,jit,tc);
 }
 /* ===== themed town builder ===== */
 function buildTown(m,mc){const T=townTh(),H_=hc,J=(c,a)=>m.jit(H_(c),a||.07),BR=DGM.BR,FL=DGM.FL,R=R_,EX=T.ex;
@@ -14134,5 +14137,41 @@ HELN.Mage.push('Crooked Hat','Magister Cap','Starcaller Hat');
 var HELW={Mage:[0,0,2,2,3,3,4,4,5,5,1]};
 /* the look follows the helm's own name, whatever style number an older item carries */
 {const _l=lookOf;lookOf=function(cls,eq,sn){try{const H=eq&&eq.Helm;if(cls=='Mage'&&H){const nm=String(H.n||''),i=HELN.Mage.findIndex(b=>nm.endsWith(b));if(i>=0&&H.sty!==i)H.sty=i}}catch(e){}return _l.apply(this,arguments)}}
+/* ================= THE EMBER FORGE, VOLCANIC: basalt, lava and the ruins of a dwarven forge ================= */
+/* ember cells are built as the inside of a volcano: walls of hexagonal basalt columns with lava glowing in the seams,
+   a ceiling of black rock split by glowing fissures and hung with dripping spires, floors of cracked obsidian with
+   lava veins, smoking vents and obsidian shards, and the wreck of the old forge: toppled anvils, chain, broken
+   furnace mouths still glowing, slag heaps. Pillars become clusters of basalt columns around a lava core. */
+const VOC={bas:['#4a3e38','#56463e','#3e3430'],bas2:'#6e5a4e',obs:'#140f14',lava:[1,.42,.08],lava2:[1,.72,.25],ash:'#5a524c',iron:'#3a3436',rust:'#6a3a22'};
+const voR=(a,b)=>a+Math.random()*(b-a),voP=a=>a[Math.floor(Math.random()*a.length)],voH=h=>{const n=parseInt(h.slice(1,7),16);return[(n>>16&255)/255,(n>>8&255)/255,(n&255)/255]};
+/* the floor-facing side of a basalt wall cell */
+function voWallFace(m,jit,i,j,di,dj,x,z,cn){const fx=x+di*20,fz=z+dj*20,px=-dj,pz=di;
+ /* three or four hexagonal columns standing against the wall, different heights, capped flat */
+ const nc=3+((i*3+j)&1);for(let q=0;q<nc;q++){const o=-15+q*(30/(nc-1))+voR(-2,2),r=voR(5,7.5),h=voR(cn*.35,cn*.95),cx=fx-di*(r*.4)+px*o,cz=fz-dj*(r*.4)+pz*o,c=jit(voH(voP(VOC.bas)),.06);
+  m.cyl(cx,0,cz,r,h,6,c,0,r*.96);m.cyl(cx,h,cz,r*.96,1.2,6,jit(voH(VOC.bas2),.05))}
+ /* lava glowing in the seams between them, and a dribble down the face now and then */
+ if(Math.random()<.55){const o=voR(-12,12);m.box(fx+di*.6+px*o,0,fz+dj*.6+pz*o,di?1:1.6,voR(20,cn*.6),dj?1:1.6,VOC.lava,1)}
+ if(Math.random()<.18){const o=voR(-10,10);m.box(fx+di*1.4+px*o,0,fz+dj*1.4+pz*o,di?1.2:3,voR(30,70),dj?1.2:3,VOC.lava2,1);m.blob(fx+di*4+px*o,.5,fz+dj*4+pz*o,6,.8,6,VOC.lava,0,7,3,1)}
+ /* obsidian at the foot */
+ if(Math.random()<.4){const o=voR(-14,14);m.cone(fx-di*1+px*o,0,fz-dj*1+pz*o,voR(2.5,4),voR(8,18),4,jit(voH(VOC.obs),.1),.08)}}
+/* ceiling: black rock, glowing fissures, dripping spires */
+function voCeil(mc,jit,Q,x0,z0,cc){Q(mc,[x0,cc,z0],[x0+40,cc,z0],[x0+40,cc,z0+40],[x0,cc,z0+40],jit(voH(VOC.bas[0]),.1),0,[0,-1,0]);
+ if(Math.random()<.18){const cx=x0+voR(5,35),cz=z0+voR(5,35),a=voR(0,3.14);mc.box(cx,cc-1.2,cz,voR(14,30),1,1.4,VOC.lava,1,a)}
+ if(Math.random()<.22){const cx=x0+voR(8,32),cz=z0+voR(8,32),h=voR(14,40);mc.cone(cx,cc,cz,voR(4,8),-h,6,jit(voH(VOC.bas2),.08));if(Math.random()<.4)mc.blob(cx,cc-h-2,cz,1.2,2,1.2,VOC.lava2,0,5,3,1)}}
+/* pillars: a cluster of basalt columns around a lava core */
+function voPillar(m,jit,x,z,r,cc){m.cyl(x,0,z,r*.6,cc,8,VOC.lava,.9);for(let k=0;k<6;k++){const a=k/6*6.2832+voR(-.2,.2),d=r*.85,h=cc*voR(.55,1);m.cyl(x+Math.cos(a)*d,0,z+Math.sin(a)*d,r*.55,h,6,jit(voH(voP(VOC.bas)),.06),0,r*.52);m.cyl(x+Math.cos(a)*d,h,z+Math.sin(a)*d,r*.52,1.4,6,jit(voH(VOC.bas2),.05))}
+ m.blob(x,1,z,r*1.9,2,r*1.9,jit(voH(VOC.obs),.08),.1,8,3)}
+/* the floor: obsidian cracks with lava veins, vents, shards, and the wrecked forge */
+function voDecor(m,jit,gv,thN){const lit=(x,z,h)=>{try{if(DGX&&DGX.chd&&!DGX.chd.some(q=>Math.abs(q.x-x)+Math.abs(q.y-z)<150))DGX.chd.push({x,y:z,h:h||16})}catch(e){}};for(let j=1;j<DGH-1;j++)for(let i=1;i<DGW-1;i++){if(gv(i,j)!=0||thN(i,j)!='ember')continue;const x=i*CSZ+20,z=j*CSZ+20,r=Math.random();
+  let wn=null;for(const[di,dj]of[[0,-1],[0,1],[-1,0],[1,0]])if(gv(i+di,j+dj)==1)wn=[di,dj];
+  if(r<.22){/* a lava vein crossing the floor */let cx=x+voR(-15,15),cz=z+voR(-15,15),a=voR(0,6.28);lit(cx,cz,10);for(let k=0;k<4;k++){const L=voR(6,11);m.box(cx+Math.cos(a)*L/2,.25,cz+Math.sin(a)*L/2,L,.3,1.4,k%2?VOC.lava:VOC.lava2,1,-a);cx+=Math.cos(a)*L;cz+=Math.sin(a)*L;a+=voR(-.8,.8)}continue}
+  if(r<.27){/* a smoking vent: a cracked mound with a glowing mouth */const cx=x+voR(-10,10),cz=z+voR(-10,10);m.cone(cx,0,cz,9,6,7,jit(voH(VOC.bas2),.08));m.cyl(cx,5.5,cz,2.6,.5,7,VOC.lava2,1);lit(cx,cz,14);continue}
+  if(r<.34){/* obsidian shards */const cx=x+voR(-12,12),cz=z+voR(-12,12),n=Math.floor(voR(2,5));for(let k=0;k<n;k++)m.cone(cx+voR(-5,5),0,cz+voR(-5,5),voR(1.5,3),voR(5,14),4,jit(voH(VOC.obs),.12),.1);continue}
+  if(r<.38){/* a slag heap */const cx=x+voR(-8,8),cz=z+voR(-8,8);for(let k=0;k<4;k++)m.blob(cx+voR(-6,6),2,cz+voR(-6,6),voR(4,8),voR(2,5),voR(4,8),jit(voH(k%2?VOC.rust:'#2a2420'),.1),.3,6,3);m.blob(cx,3,cz,2,1.2,2,VOC.lava,0,5,3,.8);continue}
+  if(r<.41&&wn){/* a broken furnace mouth in the wall, still glowing */const[di,dj]=wn,px=-dj,pz=di,cx=x+di*12,cz=z+dj*12,st=jit(voH('#4a3e38'),.06);
+   m.box(cx,0,cz,px?28:12,30,pz?28:12,st);m.box(cx-di*6.2,6,cz-dj*6.2,px?14:1,14,pz?14:1,[.08,.04,.03]);m.box(cx-di*5.8,6,cz-dj*5.8,px?10:1,6,pz?10:1,VOC.lava,1);m.box(cx,30,cz,px?32:14,4,pz?32:14,jit(voH(VOC.iron),.05));lit(cx-di*10,cz-dj*10,12);continue}
+  if(r<.44){/* a toppled anvil and a length of chain */const cx=x+voR(-8,8),cz=z+voR(-8,8),ir=jit(voH(VOC.iron),.06),a=voR(0,3.14);m.box(cx,0,cz,10,6,6,ir,0,a);m.box(cx,6,cz,16,4,7,ir,0,a);m.cone(cx+Math.cos(a)*10,6,cz+Math.sin(a)*10,3,0,4,ir,0);
+   for(let k=0;k<6;k++)m.box(cx+voR(-12,12)+k*2,.6,cz+12-k*2.5,3,1.2,1.6,jit(voH(VOC.rust),.1),0,k%2?.6:-.6);continue}
+  if(r<.5){/* ash drifts */m.blob(x+voR(-10,10),.3,z+voR(-10,10),voR(6,12),.5,voR(5,10),jit(voH(VOC.ash),.08),0,7,3)}}}
 
 </script></body></html>
