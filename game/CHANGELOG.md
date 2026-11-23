@@ -2,6 +2,29 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.6.1
+
+Salvage straight from your bag, and better materials make better gear.
+
+- **A salvage bar in the Satchel.** You no longer have to walk to the salvage wheel to break gear down:
+  - **Select to salvage**: click gear to tick it, or use the quick picks to tick every Common, Magic or Rare piece (and
+    Legendary+ in town), then press **Salvage selected**.
+  - **Salvage all**: breaks down everything that matches the rarities you tick underneath it. These are the same rules
+    the salvage wheel uses.
+  - Locked and equipped gear is never included. Outside town, Legendary and better pieces are greyed out and left
+    alone, as before.
+  - Salvaging anything Legendary or better asks you to press again to confirm.
+  - A message lists what the salvage gave you.
+- **Material quality now matters, in cost and in power.** Every craft now has a material quality, worked out from the
+  tiers of all its materials, with the main part counting most:
+  - **Base stats** scale with quality, from −18% for tier I materials to +48% for tier V. Before, only the main
+    material counted, over a smaller range.
+  - **Each material's own bonuses** (the extra stats it adds) are up to 72% stronger at tier V.
+  - **Each material's own effects** (Burn, Chill, Shock and so on) are up to 60% stronger at tier V. The usual caps
+    still apply.
+  - **The forging fee** rises with quality, from ×0.75 for tier I to ×1.47 for tier V.
+  - The workbench preview shows the quality tier, the stat change and the fee multiplier before you forge.
+
 ## 2.6.0
 
 Fixes for gifts at benches, the skill card and subclass hats.
