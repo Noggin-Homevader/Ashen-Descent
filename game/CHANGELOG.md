@@ -2,6 +2,15 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.8.0
+
+A new zone: the Wildwood.
+
+- The Wildwood is the ninth zone in the descent, floors 25 to 27 of each round. It is deep forest with no masonry at all: every cell is woods, glade or forest pool, built from the new Blender-modelled trees, trunks, stumps, ferns and mushrooms.
+- No temple ruins under these trees. Instead the canopy breaks open more often in shafts of light, fairy rings of glowing mushrooms grow in the open clearings, and about a third of the great trees are elders, half again as big, ringed with glowing fungus round their roots.
+- Its creatures are beasts of the wood: bears, wolves and spiders, with orcs, stone golems and wraiths deeper in.
+- The zone rotation is now nine zones long, so from floor 28 onward each round's zones come one step later than before.
+
 ## 2.7.1
 
 Blender remodel, part 6: scenery and the apothecary cauldron.
