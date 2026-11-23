@@ -2,6 +2,13 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.6.8
+
+Blender remodel, part 4: bows and crossbows. Every weapon in the game is now a Blender model.
+
+- Shortbows, longbows and warbows rebuilt with flat, tapering limbs: the Recurve, Elven and Dragonhorn bows curl forward at the tips, the Horn bow is banded horn, the Bone bow is strung with vertebrae, the Lacquered bow is cloth-wrapped dark wood and the Ironshod warbow is banded in iron with runes down the limbs. Every bow has a ridged grip and bone or metal nocks.
+- Crossbows rebuilt with a shaped stock, steel prod, rail, nut and trigger: the Arbalest adds a windlass and stirrup, the Repeater a magazine on top.
+
 ## 2.6.7
 
 Blender remodel, part 3: staves, skull staves, wands and scythes.
