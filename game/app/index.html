@@ -14262,6 +14262,131 @@ function dwEq(i){const x=P.inv[i];if(!dwIs(x))return;if(!dwOK())return toast('Yo
 function dwDraw(o,hx,hy,hz){try{if(!window.WPKM||!window.wpkKey)return false;const k=wpkKey(o.dwt,o.dwb);if(!k||!WPKM[k])return false;const K=CHM.K,tr=o.tr||0,acH=o.gc||'#9ad0ff';
  const sc=['#6a707e','#7c8496','#939cb0','#a6b0c6','#bcc8de'][Math.min(4,tr)],c={steel:K(mx(sc,acH,.06)),edge:K(mx(mx(sc,acH,.06),'#ffffff',.35)),iron:K(tr==0?'#3a3836':'#4e4a58'),gold:K(tr>=2?'#d8a838':tr>=1?'#9a8a5a':'#5a5048'),wrap:K(tr==0?'#3a2618':'#2a1a12'),wood:K('#5a3c22'),bone:K('#d6cdb4'),gem:K(acH)};
  const wax=-.3,ca=Math.cos(wax),sa=Math.sin(wax);CHM.wmx(WPKM[k],[hx,hy,hz],[1,0,0],[0,ca,sa],[0,-sa,ca],wpkPal(c,tr,0,Date.now()/1000),tr,null);return true}catch(e){return false}}
+/* ================= SKILL ICONS, ONE PER SKILL =================
+   Every skill used to share one icon per element and kind, so a dozen skills could look identical. Now each icon is
+   built from the skill itself:
+   - a central glyph chosen from the skill's own name (a sword for Slash, a shield for Aegis, a skull for Requiem, an eye
+     for Mark, chains for Shackle, a horn for Bellow...), drawn in the element's colours;
+   - an overlay for what the skill does (three copies for a Barrage, rays for a Nova, a ground ring for an aura or zone,
+     speed lines for a dash, a drip for a curse, a base wall for barriers);
+   - a frame shape by family (round for strikes, hexagon for areas, diamond for control, shield-crest for guards,
+     petal for heals, star for buffs, square for summons) and a background pattern and pip count taken from the name,
+     so even two skills with the same glyph and element differ.
+   Hand-made emblems that already exist for a skill are kept. */
+const SKGW=[
+ [/sword|blade|slash|cut\b|cuts\b|edge|strike|sabre|saber|riposte|cleave/i,'sword'],[/dagger|knife|knives|dart|shiv|stiletto|stab/i,'dagger'],
+ [/\baxe|rend|hew/i,'axe'],[/hammer|mace|smash|crush|slam|stomp|maul|pound|quake/i,'hammer'],[/spear|lance|pierce|impale|thrust|javelin|pike/i,'spear'],
+ [/arrow|shot\b|volley|snipe|bow\b|quiver|marksman/i,'arrow'],[/aegis|shield|barrier|ward\b|guard|bulwark|bastion|bulwark/i,'shield'],
+ [/heal|mend|renew|recovery|rejuven|life|vital|restor|cure|bless/i,'heart'],[/skull|death|doom|requiem|dirge|grave|bone|corpse|reap|lich|necro/i,'skull'],
+ [/eye|sight|mark|reveal|gaze|watch|hunt/i,'eye'],[/chain|shackle|bind|grasp|grip|snare|tether|fetter/i,'chain'],
+ [/wind|gale|gust|tempest|cyclone|whirl|zephyr|breeze/i,'swirl'],[/nova|burst|explo|blast|detonat|erupt/i,'burst'],
+ [/moon|shadow|umbral|dusk|night|veil|shroud|gloom|shade|dark/i,'moon'],[/sun|radiant|holy|light|dawn|sanct|divine|halo|smite/i,'sun'],
+ [/flame|fire|burn|blaze|inferno|ember|cinder|scorch|sear|ignite|pyre|brand/i,'flame'],[/ice|frost|froz|glacier|rime|blizzard|snow|chill|cold/i,'snow'],
+ [/bolt|lightning|thunder|storm|shock|spark|arc\b|static|volt/i,'bolt'],[/rock|stone|earth|boulder|granite|crag|terra/i,'rock'],
+ [/leaf|thorn|vine|root|bloom|wild|briar|grove|spore|seed|bramble/i,'leaf'],[/wave|water|tide|torrent|mist|rain|flood|surge|current/i,'wave'],
+ [/blood|sanguine|bleed|hemo|exsanguin|vein|leech|drain/i,'drop'],[/rune|arcane|sigil|glyph|mana|spell|missile|aether/i,'rune'],
+ [/totem|idol|ward stone|effigy/i,'totem'],[/wolf|beast|claw|fang|feral|bear|primal|savage|rabid/i,'claw'],
+ [/bellow|shout|roar|cry|taunt|challenge|horn|howl|bell/i,'horn'],[/dash|step|blink|charge|leap|rush|lunge|sprint|vault|flash/i,'boot'],
+ [/haste|quick|swift|speed|hurry|time|tempo/i,'hourglass'],[/crown|command|king|regal|rally|banner|lead/i,'crown'],
+ [/fist|punch|palm|jab|strike of|knuckle/i,'fist'],[/card|toss|deck|gambit/i,'card'],[/scythe|harvest|sickle/i,'scythe'],
+ [/book|tome|scroll|lore|tome/i,'book'],[/potion|elixir|brew|tonic|draught/i,'flask'],[/web|net|trap|snare/i,'web'],
+ [/curse|hex|weaken|wither|afflict|plague|rot|blight|venom|poison|toxic/i,'curse'],[/bomb|grenade|powder|keg/i,'bomb'],
+ [/song|hymn|chant|drum|ballad|anthem|melody|verse/i,'note'],[/vortex|maelstrom|spiral|whirlpool|singular/i,'spiral'],
+ [/ring|circle|sanctum|sanctuary|halo|aura|field/i,'ring'],[/summon|call|spirit|wraith|ghost|imp|familiar/i,'ghost'],[/star|astral|comet|meteor|celestial/i,'star']];
+const SKKD={strike:'sword',proj:'arrow',chain:'bolt',nova:'burst',storm:'burst',blast:'burst',zone:'ring',wall:'shield',bar:'shield',ward:'shield',
+ buff:'crown',haste:'hourglass',lust:'horn',regen:'heart',mana:'rune',heal:'heart',mark:'eye',fear:'skull',dash:'boot',summon:'ghost',arc:'sword',taunt:'horn',totem:'totem',revive:'heart'};
+function skHash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+/* the glyphs, drawn in a 32x32 box centred on 16,16 */
+const SKGD={
+ sword:(q,c,L,D,ln,po,ci)=>{po([[16,4],[18.5,8],[18,21],[14,21],[13.5,8]],L,D,.8);ln(16,7,16,20,.8,D);po([[10,21],[22,21],[22,23.2],[10,23.2]],c,D,.6);po([[14.8,23.2],[17.2,23.2],[17.2,28],[14.8,28]],D);ci(16,29,1.6,c)},
+ dagger:(q,c,L,D,ln,po,ci)=>{po([[16,7],[18.4,12],[17.6,19],[14.4,19],[13.6,12]],L,D,.8);po([[11.5,19],[20.5,19],[20.5,21],[11.5,21]],c);po([[15,21],[17,21],[17,26],[15,26]],D);ci(16,27,1.4,c);ln(22,9,25,6,1,c);ln(24,10,27,8,1,c)},
+ axe:(q,c,L,D,ln,po,ci)=>{ln(12,27,20,6,2.2,D);po([[18,6],[26,8],[27,15],[22,17],[19,13]],L,D,.8);ln(21,9,25,15,.8,c)},
+ hammer:(q,c,L,D,ln,po,ci)=>{ln(16,13,16,28,2.4,D);po([[8,6],[24,6],[24,13],[8,13]],L,D,1);po([[8,8],[11,8],[11,11],[8,11]],c);po([[21,8],[24,8],[24,11],[21,11]],c)},
+ spear:(q,c,L,D,ln,po,ci)=>{ln(9,27,21,10,1.8,D);po([[25,5],[23,13],[19.5,10.5]],L,D,.8);po([[19,10],[22,13],[21,14],[18,11]],c)},
+ arrow:(q,c,L,D,ln,po,ci)=>{ln(8,24,22,10,1.6,L);po([[25,7],[24,13],[19,8]],L,D,.6);po([[8,24],[6,21],[9,20],[11,22]],c);po([[8,24],[11,26],[12,23],[10,21.5]],c)},
+ shield:(q,c,L,D,ln,po,ci)=>{po([[16,5],[25,8],[24,17],[16,27],[8,17],[7,8]],c,L,1);po([[16,9],[21,11],[20.4,17],[16,23],[11.6,17],[11,11]],D);ln(16,10,16,22,1,L)},
+ heart:(q,c,L,D,ln,po,ci)=>{q.beginPath();q.moveTo(16,26);q.bezierCurveTo(4,18,6,7,12,7);q.bezierCurveTo(14.5,7,16,9,16,11);q.bezierCurveTo(16,9,17.5,7,20,7);q.bezierCurveTo(26,7,28,18,16,26);q.fillStyle=c;q.fill();q.strokeStyle=L;q.lineWidth=1;q.stroke();ln(16,12,16,20,2,L);ln(12,16,20,16,2,L)},
+ skull:(q,c,L,D,ln,po,ci)=>{ci(16,14,8,L,D,.8);po([[12,19],[20,19],[19,25],[13,25]],L,D,.8);ci(13,14,2.3,D);ci(19,14,2.3,D);po([[16,17],[17,19],[15,19]],D);for(let i=0;i<3;i++)ln(14+i*2,21,14+i*2,24,.7,D);ci(13,14,.8,c);ci(19,14,.8,c)},
+ eye:(q,c,L,D,ln,po,ci)=>{q.beginPath();q.moveTo(5,16);q.quadraticCurveTo(16,5,27,16);q.quadraticCurveTo(16,27,5,16);q.fillStyle=L;q.fill();q.strokeStyle=D;q.lineWidth=1;q.stroke();ci(16,16,5,c);ci(16,16,2.2,D);ci(14.5,14.5,1,'#ffffff')},
+ chain:(q,c,L,D,ln,po,ci)=>{for(let i=0;i<3;i++){q.save();q.translate(9+i*7,9+i*7);q.rotate(.785);q.beginPath();q.ellipse(0,0,5,2.6,0,0,7);q.strokeStyle=i%2?L:c;q.lineWidth=2;q.stroke();q.restore()}},
+ swirl:(q,c,L,D,ln,po,ci)=>{for(let k=0;k<3;k++){q.beginPath();for(let a=0;a<4.6;a+=.2){const r=2+a*2.2,x=16+Math.cos(a+k*2.09)*r,y=16+Math.sin(a+k*2.09)*r*.8;a?q.lineTo(x,y):q.moveTo(x,y)}q.strokeStyle=k?c:L;q.lineWidth=1.6;q.lineCap='round';q.stroke()}},
+ burst:(q,c,L,D,ln,po,ci)=>{const P_=[];for(let i=0;i<16;i++){const a=i/16*6.283,r=i%2?5:12;P_.push([16+Math.cos(a)*r,16+Math.sin(a)*r])}po(P_,c,L,.8);ci(16,16,4,L)},
+ moon:(q,c,L,D,ln,po,ci)=>{q.beginPath();q.arc(16,16,10,0,7);q.fillStyle=c;q.fill();q.globalCompositeOperation='destination-out';q.beginPath();q.arc(20,13,8.5,0,7);q.fill();q.globalCompositeOperation='source-over';q.beginPath();q.arc(16,16,10,1.1,4.3);q.strokeStyle=L;q.lineWidth=.8;q.stroke();ci(23,21,1,L);ci(25,9,.8,L)},
+ sun:(q,c,L,D,ln,po,ci)=>{for(let i=0;i<12;i++){const a=i/12*6.283;ln(16+Math.cos(a)*7.5,16+Math.sin(a)*7.5,16+Math.cos(a)*(i%2?10.5:12.5),16+Math.sin(a)*(i%2?10.5:12.5),1.4,i%2?c:L)}ci(16,16,6,L,c,1)},
+ flame:(q,c,L,D,ln,po,ci)=>{po([[16,4],[22,12],[23.5,19],[19.5,26],[12.5,26],[8.5,19],[10.5,12],[13.5,15],[13.5,9]],c,L,.8);po([[16,13],[19.5,19],[17.5,25],[14.5,25],[12.5,19]],L)},
+ snow:(q,c,L,D,ln,po,ci)=>{for(let i=0;i<3;i++){const a=i*1.047;const dx=Math.cos(a)*11,dy=Math.sin(a)*11;ln(16-dx,16-dy,16+dx,16+dy,1.6,L);for(const s of[-1,1]){const px=16+s*dx*.6,py=16+s*dy*.6;ln(px,py,px+Math.cos(a+s*0+.8)*3,py+Math.sin(a+.8)*3,1,c);ln(px,py,px+Math.cos(a-.8)*3,py+Math.sin(a-.8)*3,1,c)}}ci(16,16,2,c)},
+ bolt:(q,c,L,D,ln,po,ci)=>{po([[19,4],[10,17],[15.5,17],[12,28],[23,13],[17,13],[21,4]],L,c,1)},
+ rock:(q,c,L,D,ln,po,ci)=>{po([[8,22],[10,12],[17,7],[24,11],[25,21],[17,26]],c,L,1);ln(17,7,16,17,.8,D);ln(16,17,8,22,.8,D);ln(16,17,25,21,.8,D);po([[10,12],[17,7],[16,17]],L)},
+ leaf:(q,c,L,D,ln,po,ci)=>{q.beginPath();q.moveTo(7,25);q.quadraticCurveTo(7,8,25,6);q.quadraticCurveTo(24,24,7,25);q.fillStyle=c;q.fill();q.strokeStyle=L;q.lineWidth=.8;q.stroke();ln(7,25,21,11,1,L);for(let i=0;i<3;i++)ln(11+i*3.5,21-i*3.5,15+i*3.5,22-i*3.5,.7,L)},
+ wave:(q,c,L,D,ln,po,ci)=>{for(let k=0;k<3;k++){q.beginPath();for(let x=5;x<=27;x+=1){const y=10+k*6+Math.sin(x*.5+k)*2.4;x>5?q.lineTo(x,y):q.moveTo(x,y)}q.strokeStyle=k==1?L:c;q.lineWidth=2;q.lineCap='round';q.stroke()}},
+ drop:(q,c,L,D,ln,po,ci)=>{q.beginPath();q.moveTo(16,4);q.bezierCurveTo(22,13,24,17,24,20);q.arc(16,20,8,0,Math.PI);q.bezierCurveTo(8,17,10,13,16,4);q.fillStyle=c;q.fill();q.strokeStyle=L;q.lineWidth=.8;q.stroke();ci(13,20,2,L)},
+ rune:(q,c,L,D,ln,po,ci)=>{ci(16,16,10,null,c,1.4);ci(16,16,6.5,null,L,.8);po([[16,7],[23,20],[9,20]],null,L,1.1);ci(16,16,1.6,L)},
+ totem:(q,c,L,D,ln,po,ci)=>{po([[11,6],[21,6],[21,27],[11,27]],c,L,.8);ci(14,11,1.4,D);ci(18,11,1.4,D);ln(13,15,19,15,1,D);ln(11,19,21,19,.8,L);po([[7,8],[11,7],[11,11]],L);po([[25,8],[21,7],[21,11]],L)},
+ claw:(q,c,L,D,ln,po,ci)=>{for(let i=0;i<3;i++){q.beginPath();q.moveTo(9+i*5,5);q.quadraticCurveTo(13+i*5,15,10+i*5,27);q.strokeStyle=i==1?L:c;q.lineWidth=2.4;q.lineCap='round';q.stroke()}},
+ horn:(q,c,L,D,ln,po,ci)=>{po([[6,19],[17,13],[17,23]],c,L,.8);po([[6,17],[8,17],[8,21],[6,21]],D);for(let k=0;k<3;k++){q.beginPath();q.arc(17,18,4+k*3.5,-.8,.8);q.strokeStyle=k%2?c:L;q.lineWidth=1.3;q.stroke()}},
+ boot:(q,c,L,D,ln,po,ci)=>{po([[12,6],[18,6],[18,18],[25,22],[25,26],[10,26],[11,18]],c,L,.8);for(let i=0;i<3;i++)ln(3,12+i*5,8,12+i*5,1.2,L)},
+ hourglass:(q,c,L,D,ln,po,ci)=>{ln(9,5,23,5,2,L);ln(9,27,23,27,2,L);po([[10,6],[22,6],[16,16]],c);po([[16,16],[22,26],[10,26]],c,L,.6);po([[16,18],[20,26],[12,26]],L)},
+ crown:(q,c,L,D,ln,po,ci)=>{po([[6,22],[7,9],[12,15],[16,7],[20,15],[25,9],[26,22]],c,L,1);po([[6,22],[26,22],[26,25],[6,25]],L);ci(16,7,1.4,L);ci(7,9,1.2,L);ci(25,9,1.2,L)},
+ fist:(q,c,L,D,ln,po,ci)=>{po([[8,12],[22,12],[24,16],[23,25],[10,25],[8,20]],c,L,1);for(let i=0;i<3;i++)ln(12+i*4,12,12+i*4,17,.8,D);po([[6,14],[9,13],[10,19],[7,20]],L)},
+ card:(q,c,L,D,ln,po,ci)=>{q.save();q.translate(16,16);q.rotate(-.25);po([[-6,-9],[6,-9],[6,9],[-6,9]],L,D,.8);po([[-3,-4],[0,-6.5],[3,-4],[0,2]],c);q.restore();q.save();q.translate(18,17);q.rotate(.3);po([[-6,-9],[6,-9],[6,9],[-6,9]],null,c,1);q.restore()},
+ scythe:(q,c,L,D,ln,po,ci)=>{ln(20,5,13,28,1.8,D);q.beginPath();q.moveTo(20,6);q.quadraticCurveTo(10,4,5,12);q.quadraticCurveTo(12,8,19,10);q.closePath();q.fillStyle=L;q.fill();q.strokeStyle=c;q.lineWidth=.8;q.stroke()},
+ book:(q,c,L,D,ln,po,ci)=>{po([[5,9],[16,11],[16,26],[5,24]],L,D,.8);po([[27,9],[16,11],[16,26],[27,24]],L,D,.8);for(let i=0;i<3;i++){ln(7,13+i*3,14,14+i*3,.6,c);ln(18,14+i*3,25,13+i*3,.6,c)}},
+ flask:(q,c,L,D,ln,po,ci)=>{po([[13,5],[19,5],[19,11],[25,24],[23,27],[9,27],[7,24],[13,11]],L,D,.8);po([[10.5,18],[21.5,18],[24,24],[22.5,26],[9.5,26],[8,24]],c);ci(14,22,1.2,L);ci(18,20,.8,L)},
+ web:(q,c,L,D,ln,po,ci)=>{for(let i=0;i<8;i++){const a=i/8*6.283;ln(16,16,16+Math.cos(a)*12,16+Math.sin(a)*12,.8,L)}for(let r=4;r<13;r+=4){const P_=[];for(let i=0;i<8;i++){const a=i/8*6.283;P_.push([16+Math.cos(a)*r,16+Math.sin(a)*r])}po(P_,null,c,.9)}},
+ curse:(q,c,L,D,ln,po,ci)=>{ci(16,13,8,c,L,.8);ci(13,12,2,D);ci(19,12,2,D);q.beginPath();q.arc(16,18,3,3.6,5.8);q.strokeStyle=D;q.lineWidth=1;q.stroke();for(let i=0;i<3;i++)po([[11+i*5,20],[13+i*5,20],[12+i*5,26]],c)},
+ bomb:(q,c,L,D,ln,po,ci)=>{ci(15,18,8,D,c,1.2);ci(12.5,15.5,2,L);ln(20,11,23,7,1.6,c);burstSm(q,24,6,L)},
+ note:(q,c,L,D,ln,po,ci)=>{ln(13,8,13,22,1.6,L);ln(23,6,23,20,1.6,L);po([[13,8],[23,6],[23,9],[13,11]],L);q.beginPath();q.ellipse(10.5,22.5,3.4,2.5,-.4,0,7);q.fillStyle=c;q.fill();q.beginPath();q.ellipse(20.5,20.5,3.4,2.5,-.4,0,7);q.fill()},
+ spiral:(q,c,L,D,ln,po,ci)=>{q.beginPath();for(let a=0;a<14;a+=.15){const r=.9*a,x=16+Math.cos(a)*r,y=16+Math.sin(a)*r;a?q.lineTo(x,y):q.moveTo(x,y)}q.strokeStyle=c;q.lineWidth=1.8;q.stroke();ci(16,16,1.8,L)},
+ ring:(q,c,L,D,ln,po,ci)=>{q.beginPath();q.ellipse(16,20,11,5,0,0,7);q.strokeStyle=c;q.lineWidth=2;q.stroke();q.beginPath();q.ellipse(16,20,7,3,0,0,7);q.strokeStyle=L;q.lineWidth=1;q.stroke();for(let i=0;i<5;i++)ln(8+i*4,19,8+i*4,8+((i*7)%5),1,i%2?c:L)},
+ ghost:(q,c,L,D,ln,po,ci)=>{q.beginPath();q.moveTo(8,27);q.lineTo(8,14);q.arc(16,14,8,Math.PI,0);q.lineTo(24,27);for(let i=0;i<4;i++){q.lineTo(22-i*4,24);q.lineTo(20-i*4,27)}q.closePath();q.fillStyle=L;q.fill();q.strokeStyle=c;q.lineWidth=1;q.stroke();ci(13,14,1.6,D);ci(19,14,1.6,D)},
+ star:(q,c,L,D,ln,po,ci)=>{const P_=[];for(let i=0;i<10;i++){const a=i/10*6.283-1.571,r=i%2?5:12;P_.push([16+Math.cos(a)*r,16+Math.sin(a)*r])}po(P_,c,L,1);ln(4,28,10,22,1,L);ln(2,24,7,20,.8,c)}};
+function burstSm(q,x,y,col){q.strokeStyle=col;q.lineWidth=.9;for(let i=0;i<6;i++){const a=i/6*6.283;q.beginPath();q.moveTo(x+Math.cos(a)*1,y+Math.sin(a)*1);q.lineTo(x+Math.cos(a)*3,y+Math.sin(a)*3);q.stroke()}}
+/* frames by family and background patterns by name */
+function skFrame(q,fam,col,lt){q.beginPath();const P_=(n,r,rot)=>{for(let i=0;i<n;i++){const a=i/n*6.283+rot;const x=16+Math.cos(a)*r,y=16+Math.sin(a)*r;i?q.lineTo(x,y):q.moveTo(x,y)}q.closePath()};
+ if(fam=='area')P_(6,15,0);else if(fam=='ctrl')P_(4,15.5,0);else if(fam=='sum')P_(4,15.5,.785);else if(fam=='guard'){q.moveTo(16,1.5);q.lineTo(29,5.5);q.lineTo(28,18);q.lineTo(16,30.5);q.lineTo(4,18);q.lineTo(3,5.5);q.closePath()}
+ else if(fam=='mend'){for(let i=0;i<=64;i++){const a=i/64*6.283,r=13.5+1.6*Math.cos(a*6);const x=16+Math.cos(a)*r,y=16+Math.sin(a)*r;i?q.lineTo(x,y):q.moveTo(x,y)}q.closePath()}
+ else if(fam=='buff'){for(let i=0;i<16;i++){const a=i/16*6.283-1.571,r=i%2?13.6:15.4;const x=16+Math.cos(a)*r,y=16+Math.sin(a)*r;i?q.lineTo(x,y):q.moveTo(x,y)}q.closePath()}
+ else q.arc(16,16,15,0,7)}
+function skPattern(q,h,col){q.save();q.globalAlpha=.16;q.strokeStyle=col;q.fillStyle=col;q.lineWidth=.6;const p=h%6;
+ if(p==0)for(let i=0;i<10;i++){q.beginPath();q.arc(4+((h>>i)%24),4+((h>>(i+3))%24),.8,0,7);q.fill()}
+ else if(p==1)for(let i=0;i<12;i++){const a=i/12*6.283;q.beginPath();q.moveTo(16,16);q.lineTo(16+Math.cos(a)*16,16+Math.sin(a)*16);q.stroke()}
+ else if(p==2)for(let r=4;r<16;r+=3.5){q.beginPath();q.arc(16,16,r,0,7);q.stroke()}
+ else if(p==3)for(let x=-16;x<32;x+=4){q.beginPath();q.moveTo(x,32);q.lineTo(x+32,0);q.stroke()}
+ else if(p==4)for(let x=2;x<32;x+=5)for(let y=2;y<32;y+=5){q.beginPath();q.rect(x,y,1,1);q.fill()}
+ else{for(let x=-16;x<32;x+=5){q.beginPath();q.moveTo(x,0);q.lineTo(x+32,32);q.stroke()}}
+ q.restore()}
+function skGlyphOf(s,id){const n=s.n||id;for(const[re,g]of SKGW)if(re.test(n))return g;return SKKD[s.k]||'rune'}
+/* two glyph-words in one name: the second becomes a small badge, so "Frost Lance" and "Frost Nova" differ beyond their main glyph */
+function skSecondOf(s,g){const n=s.n||'';for(const[re,g2]of SKGW)if(g2!=g&&re.test(n))return g2;return null}
+const SKMOD=(s)=>{const n=s.n||'',k=s.k;if(/barrage|volley|thousand|fan|flurry|multi|knives|cards|rain/i.test(n))return'triple';if(k=='nova'||/nova|ring|circle/i.test(n))return'rays';
+ if(k=='zone'||k=='storm'||/aura|field|zone|ground/i.test(n))return'ground';if(k=='dash'||/dash|charge|leap|blink|step/i.test(n))return'speed';if(/curse|hex|wither|rot|poison|venom|blight/i.test(n))return'drip';if(k=='wall'||/wall/i.test(n))return'wall';if(k=='chain')return'chainm';return null};
+{const _d=drawSk;drawSk=function(q,s,id){if(window.EMB&&EMB[id]&&EMD[EMB[id]])return _d.apply(this,arguments);
+ try{const col=TC[s.t]||'#ddd',lt=mx(col,'#ffffff',.55),dk=mx(col,'#000000',.6),h=skHash((s.n||'')+'|'+id),fam=typeof famOf=='function'?famOf(id):'strike';
+  const ln=(a,b,c,d,w,cc)=>{q.strokeStyle=cc;q.lineWidth=w;q.lineCap='round';q.beginPath();q.moveTo(a,b);q.lineTo(c,d);q.stroke()},
+   po=(pts,f,sk,w)=>{q.beginPath();pts.forEach((p,i)=>i?q.lineTo(p[0],p[1]):q.moveTo(p[0],p[1]));q.closePath();if(f){q.fillStyle=f;q.fill()}if(sk){q.strokeStyle=sk;q.lineWidth=w||1;q.lineJoin='round';q.stroke()}},
+   ci=(a,b,r,f,sk,w)=>{q.beginPath();q.arc(a,b,r,0,7);if(f){q.fillStyle=f;q.fill()}if(sk){q.strokeStyle=sk;q.lineWidth=w||1;q.stroke()}};
+  /* frame and background */
+  const g=q.createRadialGradient(16,12,2,16,16,17);g.addColorStop(0,mx(col,'#1c1812',.5));g.addColorStop(1,'#120e0a');skFrame(q,fam,col,lt);q.fillStyle=g;q.fill();
+  q.save();skFrame(q,fam,col,lt);q.clip();skPattern(q,h,lt);q.restore();skFrame(q,fam,col,lt);q.strokeStyle=col;q.lineWidth=1.6;q.stroke();
+  /* the glyph, with a small tilt from the name */
+  const gl=skGlyphOf(s,id),mod=SKMOD(s),f=SKGD[gl]||SKGD.rune,rot=((h>>8)%7-3)*.05;
+  const one=(dx,dy,sc)=>{q.save();q.translate(16+dx,16+dy);q.rotate(rot);q.scale(sc,sc);q.translate(-16,-16);f(q,col,lt,dk,ln,po,ci);q.restore()};
+  if(mod=='triple'){q.globalAlpha=.55;one(-5,2,.58);one(5,2,.58);q.globalAlpha=1;one(0,-2,.66)}
+  else{const sc=mod=='ground'||mod=='wall'?.66:.74;one(0,mod=='ground'||mod=='wall'?-2.5:0,sc)}
+  /* the overlay for what it does */
+  q.save();if(mod=='rays'){for(let i=0;i<8;i++){const a=i/8*6.283;ln(16+Math.cos(a)*10.5,16+Math.sin(a)*10.5,16+Math.cos(a)*13,16+Math.sin(a)*13,1.2,lt)}}
+  else if(mod=='ground'){q.beginPath();q.ellipse(16,24.5,10,2.6,0,0,7);q.strokeStyle=lt;q.lineWidth=1.1;q.stroke()}
+  else if(mod=='speed'){for(let i=0;i<3;i++)ln(3.5,12+i*4,7.5,12+i*4,1.1,lt)}
+  else if(mod=='drip'){for(let i=0;i<3;i++){po([[11+i*5,24],[13+i*5,24],[12+i*5,28]],col)}}
+  else if(mod=='wall'){po([[7,24],[25,24],[25,27],[7,27]],dk,lt,.6);for(let i=0;i<4;i++)ln(10+i*4,24,10+i*4,27,.5,lt)}
+  else if(mod=='chainm'){for(let i=0;i<3;i++){q.beginPath();q.ellipse(9+i*7,26,2.6,1.4,0,0,7);q.strokeStyle=lt;q.lineWidth=.8;q.stroke()}}
+  q.restore();
+  /* a second glyph-word becomes a small badge at the upper right */
+  const g2=skSecondOf(s,gl);if(g2&&SKGD[g2]){ci(25.5,7,5,'#120e0a',col,.9);q.save();q.translate(25.5,7);q.scale(.26,.26);q.translate(-16,-16);SKGD[g2](q,col,lt,dk,ln,po,ci);q.restore()}
+  /* pips from the name, upper left, so look-alikes still differ */
+  const np=1+(h>>16)%3;for(let i=0;i<np;i++)ci(5+i*2.6,5.5,.9,lt)}catch(e){return _d.apply(this,arguments)}}}
+/* clear any icons already drawn so the new ones are used */
+try{for(const k in SKI)delete SKI[k]}catch(e){}
 
 function ovIsBook(){try{const f=$('ovc').firstElementChild;return!!(f&&f.classList.contains('tome2'))}catch(e){return false}}
 

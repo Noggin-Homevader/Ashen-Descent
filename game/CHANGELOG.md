@@ -2,6 +2,32 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.6.4
+
+Every skill gets its own icon.
+
+- **Skill icons are redesigned so skills no longer look alike.** Before, every skill of the same element and kind
+  shared one icon, so most of the 1,165 skills had a twin. Each icon is now built from the skill itself:
+  - **A central symbol taken from the skill's name**, in its element's colours. There are about 45 symbols, for
+    example:
+    - a sword for slashes and strikes, a dagger for knives and darts, an axe, a hammer, a spear, an arrow;
+    - a shield for wards and aegises, a heart for heals, a skull for death and dirges;
+    - an eye for marks, chains for shackles, a swirl for wind, a burst for novas, a moon for shadow, a sun for holy;
+    - a flame, a snowflake, a lightning bolt, a rock, a leaf, waves, a blood drop, a rune circle, a totem;
+    - claws, a horn for bellows and challenges, a winged boot for dashes, an hourglass for haste, a crown for rallies,
+      a ghost for summons, a music note for chants, and more.
+  - **An overlay for what the skill does**: three copies for barrages and volleys, rays for novas, a ground ring for
+    auras and zones, speed lines for dashes, drips for curses and poisons, a wall base for barriers, chain links for
+    chains.
+  - **A frame shape for its family**: round for strikes, a hexagon for areas, a diamond for control, a shield crest
+    for guards, a petal ring for heals, a star for buffs and a square for summons.
+  - **A small second badge** when the name has two ideas in it, so Frost Lance and Frost Nova differ beyond their
+    main symbol.
+  - **A background pattern and a pip count taken from the name**, so even two skills with the same symbol and element
+    look different.
+- Skills that already had a hand-made emblem keep it.
+- The new icons appear everywhere: the skill tree, the action bar, tomes and tooltips.
+
 ## 2.6.3
 
 Dual wielding.
