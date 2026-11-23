@@ -3602,7 +3602,7 @@ if(wt=='wand'||wt=='crossbow')wLegacy(wt,wc,h,sw,wa,side,tr,wb,gc)}
 function offhand(o,hd,sd,mtc,gc){const tr0=o.tr||0,ob0=o.ob||'',ot0=o.ot;{let k=null,hy0=hd[1],hz0=hd[2],hx0=hd[0],wx=0;const tt=Date.now()/600;
 if(ot0=='shield'){k=window.SHKEY?SHKEY(ob0,o):'sh_round';if(window.SHPLOAD)SHPLOAD()}
 else if(ot0=='orb'){if(/Grimoire/.test(ob0)){k='tome';wx=-.5;hy0+=-.02}else if(/Skull/.test(ob0)){k='orb_skull';hy0+=Math.sin(tt)*.01-.02}else{k=/Crystal/.test(ob0)?'orb_crystal':'orb_plain';hy0+=Math.sin(tt)*.02-.02}}
-else if(ot0=='dagger'){k='dagger';wx=-.3}
+else if(ot0=='dagger'){if(o.dwt&&window.dwDraw&&dwDraw(o,hx0,hy0,hz0))return;k='dagger';wx=-.3}
 else if(ot0=='quiver'){if(/Trap/.test(ob0)){k='traps';hy0=.22;hz0=-.03}else{k='quiver';hx0=-.1*Math.sign(hd[0]||1);hy0=.46;hz0=-.19;wx=.25}}
 if(k){let pl_=wmPal(tr0,gc,null,null,typeof mtc=='string'&&mtc[0]=='#'?mtc:null);if(window.SHPAL)pl_=SHPAL(pl_,k,gc,mtc);wmesh(k,hx0,hy0,hz0,wx,0,tr0,pl_,Date.now()/1000);return}}
 const tr=o.tr||0,ob=o.ob||'',ac=K(gc||'#ffffff'),mt=K(typeof mtc=='string'&&mtc[0]=='#'?mx(mtc,'#0d0b12',.45):mtc),gd=K(tr>=2?'#e0b030':'#8a7a5a'),dk=K('#6a4a24'),x=hd[0],y=hd[1],z=hd[2],Q=(a,b,c,rx,ry,rz,col,op)=>P(x+a,y+b,z+c,rx,ry,rz,col,Object.assign({lo:1},op));
@@ -14241,6 +14241,27 @@ function bsRule(r){cmInit();P.salvF[r]=P.salvF[r]?0:1;BSCONF=0;showOv()}
 .bg>.bt.bsno{opacity:.38;filter:grayscale(.6)}
 .bt .bsck{position:absolute;top:3px;right:4px;width:16px;height:16px;border-radius:50%;background:#e8a040;color:#1a1208;font:900 11px/16px system-ui;text-align:center;font-style:normal;z-index:2}
 `;document.head.appendChild(st)})();
+/* ================= DUAL WIELDING: a one-handed weapon in the off hand ================= */
+/* Rogues, Warriors and Spellblades can carry a second one-handed sword, dagger, axe or mace in the off hand. The off-hand
+   weapon adds 60% of its damage and all of its other stats, and fighting with two blades is 8% faster. A two-handed main
+   weapon, or any shield or orb put in the off hand, sends it back to the bag. The off-hand blade is drawn in the left hand. */
+const DW1H=['sword','dagger','axe','mace'];
+function dwOK(){try{return P.cls=='Rogue'||P.cls=='Warrior'||(P.cls=='Mage'&&P.sub&&P.sub.n=='Spellblade')}catch(e){return false}}
+function dwIs(x){return!!(x&&x.k=='gear'&&x.slot=='Weapon'&&!TH(x)&&DW1H.includes(x.wt))}
+function dwApply(x){if(x.st0)return;x.st0=JSON.parse(JSON.stringify(x.st||{}));x.st=Object.assign({},x.st0);if(x.st.dmg)x.st.dmg=Math.max(1,Math.round(x.st.dmg*.6));x.st.spd=(x.st.spd||0)+8;x.dw=1}
+function dwRestore(x){if(x&&x.st0){x.st=x.st0;delete x.st0;delete x.dw}}
+/* anything that left the off hand gets its own stats back */
+function dwSweep(){try{if(!P)return;for(const x of P.inv)if(x&&x.st0)dwRestore(x);const O=P.eq.Offhand;if(O&&O.slot=='Weapon'){if(!dwOK()||TH(P.eq.Weapon)){dwRestore(O);if(P.inv.length<CAP()){P.inv.push(O);delete P.eq.Offhand;toast('Off-hand weapon returned to your bag')}}else dwApply(O)}}catch(e){}}
+setInterval(dwSweep,800);
+function dwEq(i){const x=P.inv[i];if(!dwIs(x))return;if(!dwOK())return toast('Your class cannot dual wield');if(!canEq(x))return toast('Only usable by '+x.cl);if(!lvOk(x))return toast('Requires level '+lrq(x));
+ if(TH(P.eq.Weapon))return toast('Your main weapon is two-handed');if(!P.eq.Weapon)return toast('Equip a main-hand weapon first');
+ const o=P.eq.Offhand;P.inv.splice(i,1);if(o){dwRestore(o);P.inv.push(o)}P.eq.Offhand=x;dwApply(x);try{burst(P.x,P.y,16,RC[x.r],130,.5,2.5)}catch(e){}toast('Off hand: '+x.n);BSEL=-1;showOv()}
+{const _d=detailHtml;detailHtml=function(){let h=_d.apply(this,arguments);try{const i=BSEL,x=P.inv[i];if(dwIs(x)&&dwOK()&&canEq(x)&&lvOk(x)&&P.eq.Weapon&&!TH(P.eq.Weapon)){const b=`onclick="buse(${i})">Equip</button>`;if(h.includes(b))h=h.replace(b,b+`<button onclick="dwEq(${i})" title="Carry it in the off hand: 60% of its damage, all its other stats, +8% attack speed">Off hand</button>`)}}catch(e){}return h}}
+/* the look: an off-hand weapon is held like a parrying blade, drawn with its own moulded model */
+{const _l=lookOf;lookOf=function(cls,eq){const L=_l.apply(this,arguments);try{const O=eq&&eq.Offhand;if(O&&O.slot=='Weapon'&&L&&L.st){L.st.off={ot:'dagger',dwt:O.wt,dwb:(typeof wbOf=='function'?wbOf(O):O.wb)+'|S:'+(typeof wStyleOf=='function'?wStyleOf(O):0),tr:O.r,gc:RC[O.r],mc:tMetal(O.r)}}}catch(e){}return L}}
+function dwDraw(o,hx,hy,hz){try{if(!window.WPKM||!window.wpkKey)return false;const k=wpkKey(o.dwt,o.dwb);if(!k||!WPKM[k])return false;const K=CHM.K,tr=o.tr||0,acH=o.gc||'#9ad0ff';
+ const sc=['#6a707e','#7c8496','#939cb0','#a6b0c6','#bcc8de'][Math.min(4,tr)],c={steel:K(mx(sc,acH,.06)),edge:K(mx(mx(sc,acH,.06),'#ffffff',.35)),iron:K(tr==0?'#3a3836':'#4e4a58'),gold:K(tr>=2?'#d8a838':tr>=1?'#9a8a5a':'#5a5048'),wrap:K(tr==0?'#3a2618':'#2a1a12'),wood:K('#5a3c22'),bone:K('#d6cdb4'),gem:K(acH)};
+ const wax=-.3,ca=Math.cos(wax),sa=Math.sin(wax);CHM.wmx(WPKM[k],[hx,hy,hz],[1,0,0],[0,ca,sa],[0,-sa,ca],wpkPal(c,tr,0,Date.now()/1000),tr,null);return true}catch(e){return false}}
 
 function ovIsBook(){try{const f=$('ovc').firstElementChild;return!!(f&&f.classList.contains('tome2'))}catch(e){return false}}
 

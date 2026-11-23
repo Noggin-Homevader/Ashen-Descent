@@ -2,6 +2,19 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.6.3
+
+Dual wielding.
+
+- **Rogues, Warriors and Spellblades can carry two one-handed weapons.** Select a one-handed sword, dagger, axe or
+  mace in your bag and press **Off hand** (next to Equip) to carry it in your left hand. Your main weapon must also
+  be one-handed.
+  - The off-hand weapon adds **60% of its damage** and **all of its other stats**.
+  - Fighting with two weapons is **8% faster**.
+  - The off-hand weapon is drawn in your left hand with its own full model.
+  - Equipping a two-handed main weapon, or a shield, orb or other off-hand item, sends the off-hand weapon back to
+    your bag with its normal stats. So does changing to a class that can't dual wield.
+
 ## 2.6.2
 
 Each heal-over-time shows its element.
