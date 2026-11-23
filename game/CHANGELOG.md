@@ -2,6 +2,15 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.7.1
+
+Blender remodel, part 6: scenery and the apothecary cauldron.
+
+- Forest floors (Overgrown Temple) are dressed with Blender-modelled scenery: great trees with buttress roots, branches and leafy crowns stand in for pillars, trunks with spreading roots and bracket fungus line the woods, and the floor gets modelled stumps, mossy fallen logs, mushroom clusters (some glowing) and ferns.
+- The Ember Forge gets modelled basalt: column clusters round a lava core for pillars, banks of hexagonal columns with lava in the seams along the walls, obsidian shards, smoking vents and toppled anvils with their chains.
+- The apothecary's cauldron is a Blender model too: pot-bellied with a rolled lip, clawed feet and ring handles.
+- Each piece is lightly reduced so whole floors stay smooth to render, and the old hand-built shapes remain as a fallback while the model pack loads.
+
 ## 2.7.0
 
 Sheaths are one piece and hang from something.
