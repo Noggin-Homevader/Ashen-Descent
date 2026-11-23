@@ -2,6 +2,14 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.8.1
+
+Blender remodel, part 7: potions and the apothecary.
+
+- Every potion is a Blender model, in the hand, on the belt, in the bag and on the shop shelves: corks with grain ridges and twine binding on the Minor and Lesser bottles, a wrapped paper label and a red wax seal with drips on the Greater, gilt ribs down every facet of the Grand decanter, little silver wings on the Swiftness collar, riveted bands and a lid loop on Ironskin, a fang stopper on Fury and a leaf tucked under the twine on Renewal. The liquid shows a surface through the glass.
+- The apothecary's shelves and counter are dressed with Blender models: specimen jars with labels and something floating inside, skulls, a raven on its perch, candles with wax drips, stone mortars and pestles, wicker-wrapped carboys, brass balance scales with chains and pans, and an open recipe book with a ribbon.
+- The cauldron's iron is darker, so the fire under it no longer washes it out.
+
 ## 2.8.0
 
 A new zone: the Wildwood.
