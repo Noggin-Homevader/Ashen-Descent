@@ -2,6 +2,26 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.6.2
+
+Each heal-over-time shows its element.
+
+- **Elemental recovery effects.** Fire Recovery, Storm Recovery, Frost Recovery and every other element's
+  heal-over-time keep the turning spiral of healing light around you, now tinted to the element, with that element's
+  own particles rising through it:
+  - **Fire**: embers rise.
+  - **Ice / Frost**: snowflakes drift down.
+  - **Water**: droplets swirl.
+  - **Lightning / Storm**: sparks crackle.
+  - **Earth**: grit and green shoots kick up.
+  - **Wind**: gusts whip round.
+  - **Arcane**: blue and violet motes.
+  - **Shadow**: violet smoke.
+  - **Holy**: white-gold light rises.
+  - **Death**: violet and green wisps.
+  - **Nature**: leaves drift down.
+- A regen you put on a party member still shows the healing spiral on them, in the default green.
+
 ## 2.6.1
 
 Salvage straight from your bag, and better materials make better gear.
