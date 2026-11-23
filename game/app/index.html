@@ -6183,11 +6183,11 @@ var HERO3D=(()=>{
    if(isW)handW=Hd;else if(st.off)handO=[Hd[0],Hd[1],Hd[2],sd];else if(o.shield&&!(st.wt&&st.bow))SHLD(o,offAway?U([0,.7,-.12]):Hd,sd)}
   if(wOn=='away'||(wt&&shd>=.5))handW=ANW;
   /* scabbards and carrying straps stay on the body whether the weapon is out or not */
-  if(AN&&dead===undefined){const ax_=WAXIS(AN.ax,AN.az),XA_=(()=>{const cA=Math.cos(AN.ax),sA=Math.sin(AN.ax),cZ=Math.cos(AN.az),sZ=Math.sin(AN.az),tw=AN.tw||0,px=Math.cos(tw),pz=-Math.sin(tw),y1=-pz*sA,z1=pz*cA;return[px*cZ-y1*sZ,px*sZ+y1*cZ,z1]})(),SH_=st.shth&&window.SHLOOK?SHLOOK(st.shth):null,lc=SH_?SH_.bc:dk(lth,.85),mt=SH_?SH_.tc:wt&&st.wtr>=2?kc('#c8a040'):kc('#5a5650'),TO_=SH_?{seg:8,mt:SH_.tm}:{seg:8};
+  if(AN&&dead===undefined){const ax_=WAXIS(AN.ax,AN.az),XA_=(()=>{const cA=Math.cos(AN.ax),sA=Math.sin(AN.ax),cZ=Math.cos(AN.az),sZ=Math.sin(AN.az),tw=AN.tw||0,px=Math.cos(tw),pz=-Math.sin(tw),y1=-pz*sA,z1=pz*cA;return[px*cZ-y1*sZ,px*sZ+y1*cZ,z1]})(),SH_=st.shth&&window.SHLOOK?SHLOOK(st.shth):null,lc=SH_?SH_.bc:dk(lth,.85),mt=SH_?SH_.tc:wt&&st.wtr>=2?kc('#c8a040'):kc('#5a5650'),TO_=SH_?{seg:8,mt:SH_.tm}:{seg:8};let SHC=null;
    if((wt=='sword'||wt=='dagger'||wt=='greatsword')&&!(wt=='greatsword'&&/Greataxe|Maul/.test(st.wb||''))){const BX=window.SHBX?SHBX(wt,st.wb):null,gk=wt=='greatsword'?1.3:1;
     let s0=0,len=(wt=='dagger'?.2:wt=='greatsword'?.78:/Short/.test(st.wb||'')?.37:.51)*SK_,hw=.024*SK_*(wt=='dagger'?.8:gk),ht=.011*SK_*(gk>1?1.2:1);
     if(BX){s0=Math.max(0,BX.y0*SK_-.008);len=(BX.y1-BX.y0)*SK_+.035;hw=Math.max(.012*SK_,BX.w*SK_*1.12+.005);ht=Math.max(.008*SK_,BX.t*SK_*1.6+.006)}
-    const A0=add(ANW,mul(ax_,s0)),kk=hw/.024;
+    const A0=add(ANW,mul(ax_,s0)),kk=hw/.024;SHC={A0,len,hw,ht};
     if(BX&&BX.prof&&window.SHBODY){/* cut to the blade: rings follow its centre line and width, so curved and flared blades stay inside */
      const BD=SHBODY(LF,A0,ax_,XA_,len,BX,SK_,lc,SH_?SH_.bo:{seg:8},add,mul),pt=u=>add(add(A0,mul(ax_,u*len)),mul(XA_,BD.cof(u))),R0=BD.R[0],Rn=BD.R[BD.R.length-2];
      if(SH_&&window.SHDECO)SHDECO(LF,PP,A0,ax_,XA_,len,kk,SH_,add,mul,BD);
@@ -6203,9 +6203,15 @@ var HERO3D=(()=>{
      strap(bF,rA);strap(bR,rB);
      LF([{c:add(rB,mul(ax_,-.008)),rx:hw*1.1,rz:ht*1.28,x:XA_},{c:add(rB,mul(ax_,.008)),rx:hw*1.1,rz:ht*1.28,x:XA_}],mt,TO_);
      for(const q of[bF,bR])PP(q[0],q[1],q[2],.009,.009,.006,mt,{lo:1,ax:lean})}
-    else{const bl=U([ws*(wt=='sword'?-.09:.1)*B,.6,.06]);PP(bl[0],bl[1],bl[2],.012,.03,.008,lc,{lo:1,ax:lean})}}
+    else{/* a frog: a loop round the belt, a strap down to a collar round the throat */const fb=U([AN.p[0]*B,.612,AN.p[2]*B]),th_=add(A0,mul(ax_,.02*SK_));
+     LF([{c:fb,rx:.0055,rz:.0055,x:[1,0,0]},{c:th_,rx:.0055,rz:.0055,x:[1,0,0]}],lc,{seg:6});PP(fb[0],fb[1],fb[2],.013,.016,.009,lc,{lo:1,ax:lean});PP(fb[0],fb[1],fb[2],.006,.007,.011,mt,{lo:1,ax:lean});
+     LF([{c:add(th_,mul(ax_,-.009)),rx:hw*1.14,rz:ht*1.32,x:XA_},{c:add(th_,mul(ax_,.009)),rx:hw*1.14,rz:ht*1.32,x:XA_}],lc,{seg:8})}}
    if(!AN.hip){const s=ws,PTS=[[-s*.105,.585,-.1,0,0,-1],[-s*.05,.65,-.112,0,0,-1],[0,.71,-.114,0,0,-1],[s*.06,.78,-.106,0,0,-1],[s*.11,.84,-.07,0,.6,-.8],[s*.125,.872,0,0,1,0],[s*.11,.84,.07,0,.6,.8],[s*.06,.78,.104,0,0,1],[0,.71,.114,0,0,1],[-s*.05,.65,.11,0,0,1],[-s*.105,.585,.097,0,0,1]];
     const sR=PTS.map(q=>{const c=U([q[0]*B,q[1],q[2]*B]),c2=U([q[0]*B+q[3],q[1]+q[4],q[2]*B+q[5]]);return{c,rx:.0055,rz:.017*B,x:[c2[0]-c[0],c2[1]-c[1],c2[2]-c[2]]}});LF(sR,lc,{seg:6,open:0});
+    /* the slung weapon hangs from the baldric: short straps from the nearest point of the strap to rings round the scabbard (or the haft) */
+    {const near=p=>{let b=sR[0].c,d=1e9;for(const r of sR){const dd=(r.c[0]-p[0])**2+(r.c[1]-p[1])**2+(r.c[2]-p[2])**2;if(dd<d){d=dd;b=r.c}}return b},hook=(p,rx,rz)=>{const q=near(p);LF([{c:q,rx:.0045,rz:.0045,x:[1,0,0]},{c:p,rx:.0045,rz:.0045,x:[1,0,0]}],lc,{seg:5});PP(q[0],q[1],q[2],.008,.008,.006,mt,{lo:1});LF([{c:add(p,mul(ax_,-.008)),rx,rz,x:XA_},{c:add(p,mul(ax_,.008)),rx,rz,x:XA_}],mt,TO_)};
+     if(SHC){hook(add(SHC.A0,mul(ax_,.05*SK_)),SHC.hw*1.12,SHC.ht*1.3);hook(add(SHC.A0,mul(ax_,SHC.len*.36)),SHC.hw*1.1,SHC.ht*1.28)}
+     else if(wt&&ANW){hook(add(ANW,mul(ax_,.04*SK_)),.022*SK_,.022*SK_);hook(add(ANW,mul(ax_,.2*SK_)),.02*SK_,.02*SK_)}}
     for(const k of[1,3,7,9]){const q=PTS[k];UP(q[0]*B+q[5]*.004,q[1],q[2]*B+q[5]*.006,.004,.004,.003,mt,{lo:1})}const bq=PTS[8];UP(bq[0]*B,bq[1],bq[2]*B+.008,.014,.016,.004,mt,{lo:1,n:.5});UP(bq[0]*B,bq[1],bq[2]*B+.011,.008,.01,.003,lc,{lo:1,n:.5})}}
   /* pauldrons */
   const GS=G.Shoulder;
@@ -10512,9 +10518,9 @@ var SHSTY={plain:{n:'Plain',d:'A clean scabbard, nothing added.',g:0},
  fur:{n:'Fur-trimmed',d:'A collar of fur at the throat and a tail hanging from the locket.',g:80},
  bone:{n:'Bone-plated',d:'Carved bone plates riveted down the face.',g:100}};
 /* decorations along the scabbard: they follow its centre line (F.cof) and width (F.wof) when the blade is curved or flared */
-function SHDECO(LF,PP,A,ax,XA,len,k,S,add,mul,F){const cof=F&&F.cof||(()=>0),wof=F&&F.wof||(()=>.024*k),fz=[ax[1]*XA[2]-ax[2]*XA[1],ax[2]*XA[0]-ax[0]*XA[2],ax[0]*XA[1]-ax[1]*XA[0]];
+function SHDECO(LF,PP,A,ax,XA,len,k,S,add,mul,F){const cof=F&&F.cof||(()=>0),wof=F&&F.wof||(()=>.024*k),fz=[ax[1]*XA[2]-ax[2]*XA[1],ax[2]*XA[0]-ax[0]*XA[2],ax[0]*XA[1]-ax[1]*XA[0]].map(v=>v*(window.SHSIDE||1));
  const at=u=>add(add(A,mul(ax,u*len)),mul(XA,cof(u))),face=(u,o,x)=>add(add(at(u),mul(fz,(o||.0125)*k)),mul(XA,x||0)),sty=S.st||'plain';
- const ring=(u,w,c,o)=>{const hw=wof(u)*1.07,ht=.0135*k;LF([{c:at(u-w),rx:hw,rz:ht,x:XA},{c:at(u+w),rx:hw,rz:ht,x:XA}],c,Object.assign({seg:8},o||{}))};
+ const ring=(u,w,c,o)=>{if(window.SHBACK)return;const hw=wof(u)*1.07,ht=.0135*k;LF([{c:at(u-w),rx:hw,rz:ht,x:XA},{c:at(u+w),rx:hw,rz:ht,x:XA}],c,Object.assign({seg:8},o||{}))};
  const bandsAt=sty=='banded'?[.22,.42,.62,.8]:S.bands?[.32,.62]:[];for(const u of bandsAt)ring(u,.016,S.tc,{mt:S.tm});
  if(S.ty=='leather'||sty=='stitched'){const n=sty=='stitched'?16:9,o=sty=='stitched'?.0135:.0118;for(let i=0;i<n;i++){const q=face(.1+i*(.8/n),o);PP(q[0],q[1],q[2],.0024*k,.0052*k,.0016,sty=='stitched'?S.tc:S.bc.map(v=>Math.min(1,v*1.5+.1)),{lo:1,mt:sty=='stitched'?S.tm:0})}}
  if(S.scale||sty=='scaled')for(let i=0;i<9;i++)for(const sd of[-1,1]){const u=.12+i*.085,q=face(u,.0115,sd*wof(u)*.45);PP(q[0],q[1],q[2],.009*k,.008*k,.003*k,S.bc.map(v=>Math.min(1,v*1.3+.03)),{lo:1})}
@@ -10524,7 +10530,7 @@ function SHDECO(LF,PP,A,ax,XA,len,k,S,add,mul,F){const cof=F&&F.cof||(()=>0),wof
   ring(.06,.03,S.tc,{mt:S.tm});const g=face(.08,.0145);PP(g[0],g[1],g[2],.006*k,.006*k,.004*k,S.glow||S.tc.map(v=>Math.min(1,v*1.4)),{lo:1,em:S.glow?1:.3})}
  if(sty=='runed'){const gc=S.glow||S.tc.map(v=>Math.min(1,v*1.3+.15));for(let i=0;i<6;i++){const u=.18+i*.11,q=face(u,.0134);PP(q[0],q[1],q[2],.0022*k,.011*k,.0015,gc,{em:1,lo:1});const q2=face(u+.025,.0134,wof(u)*.25*(i%2?1:-1));PP(q2[0],q2[1],q2[2],.0065*k,.0018*k,.0015,gc,{em:1,lo:1,az:.5*(i%2?1:-1)})}}
  if(sty=='bone')for(let i=0;i<6;i++){const u=.16+i*.12,q=face(u,.0128);PP(q[0],q[1],q[2],wof(u)*.75,.026*k,.0035*k,[.86,.82,.7],{lo:1,n:.7});const r_=face(u,.0165);PP(r_[0],r_[1],r_[2],.0035*k,.0035*k,.003*k,S.tc,{lo:1,mt:S.tm})}
- if(sty=='fur'){const fc=[.42,.34,.26];for(let i=0;i<10;i++){const a=i/10*6.2832,q=add(at(.03),add(mul(XA,Math.cos(a)*wof(.03)*1.25),mul(fz,Math.sin(a)*.02*k)));PP(q[0],q[1],q[2],.011*k,.012*k,.011*k,fc,{lo:1,n:.6})}
+ if(sty=='fur'&&!window.SHBACK){const fc=[.42,.34,.26];for(let i=0;i<10;i++){const a=i/10*6.2832,q=add(at(.03),add(mul(XA,Math.cos(a)*wof(.03)*1.25),mul(fz,Math.sin(a)*.02*k)));PP(q[0],q[1],q[2],.011*k,.012*k,.011*k,fc,{lo:1,n:.6})}
   for(let i=0;i<5;i++){const q=add(face(.07,.016,wof(.07)*1.1),mul(ax,i*.022*k));PP(q[0],q[1],q[2],.009*k*(1-i*.12),.014*k,.009*k*(1-i*.12),fc.map(v=>v*(1-i*.06)),{lo:1,n:.6})}}
  if(S.glow&&sty!='runed')for(const u of[.25,.45,.65]){const q=face(u,.0125);PP(q[0],q[1],q[2],.006*k,.012*k,.002,S.glow,{em:1,lo:1})}
  if(S.wc&&sty!='crosswrap'){ring(.15,.03,S.wc,{});const q=face(.19,.012);PP(q[0],q[1],q[2],.004*k,.03*k,.004*k,S.wc,{lo:1});PP(q[0]+ax[0]*.03*k,q[1]+ax[1]*.03*k-.02*k,q[2]+ax[2]*.03*k,.007*k,.012*k,.007*k,S.wc,{lo:1})}}
@@ -10604,20 +10610,20 @@ function SHBODY(LF,A0,ax,XA,len,BX,SK,lc,bo,add,mul){const pr=BX.prof,N=pr.lengt
    a hanging ring and strap to the belt, a chape with a ball finial, and a polished highlight down metal bodies.
    Glowing materials and runes pulse slowly, and filigree and runed finishes get more detail. */
 {const _sd=window.SHDECO;window.SHDECO=SHDECO=function(LF,PP,A,ax,XA,len,k,S,add,mul,F){_sd.apply(this,arguments);try{
- const cof=F&&F.cof||(()=>0),wof=F&&F.wof||(()=>.024*k),fz=[ax[1]*XA[2]-ax[2]*XA[1],ax[2]*XA[0]-ax[0]*XA[2],ax[0]*XA[1]-ax[1]*XA[0]],sty=S.st||'plain',T=Date.now()/1000;
+ const cof=F&&F.cof||(()=>0),wof=F&&F.wof||(()=>.024*k),fz=[ax[1]*XA[2]-ax[2]*XA[1],ax[2]*XA[0]-ax[0]*XA[2],ax[0]*XA[1]-ax[1]*XA[0]].map(v=>v*(window.SHSIDE||1)),sty=S.st||'plain',T=Date.now()/1000;
  const at=u=>add(add(A,mul(ax,u*len)),mul(XA,cof(u))),face=(u,o,x)=>add(add(at(u),mul(fz,(o||.0125)*k)),mul(XA,x||0));
  const lite=c=>c.map(v=>Math.min(1,v*1.35+.08)),pulse=.72+.28*Math.sin(T*2.2),glow=S.glow?S.glow.map(v=>Math.min(1,v*pulse+.05)):null;
  /* edge rails: thin metal rods following both edges of the body */
- if(sty!='plain'&&sty!='fur'||S.ty!='leather'){for(const sd of[-1,1]){const R=[];for(let i=0;i<=8;i++){const u=.06+i*(.84/8);R.push({c:add(at(u),mul(XA,sd*wof(u)*1.02)),rx:.0028*k,rz:.0028*k,x:fz})}LF(R,S.tc,{seg:5,mt:S.tm})}}
+ if(sty!='plain'&&sty!='fur'||S.ty!='leather'){if(!window.SHBACK)for(const sd of[-1,1]){const R=[];for(let i=0;i<=8;i++){const u=.06+i*(.84/8);R.push({c:add(at(u),mul(XA,sd*wof(u)*1.02)),rx:.0028*k,rz:.0028*k,x:fz})}LF(R,S.tc,{seg:5,mt:S.tm})}}
  /* throat: a raised collar with a set stone on the face */
- {const hw=wof(.02)*1.18;LF([{c:at(-.005),rx:hw,rz:.017*k,x:XA},{c:at(.012),rx:hw*1.04,rz:.018*k,x:XA}],lite(S.tc),{seg:10,mt:S.tm});
+ if(!window.SHBACK){const hw=wof(.02)*1.18;LF([{c:at(-.005),rx:hw,rz:.017*k,x:XA},{c:at(.012),rx:hw*1.04,rz:.018*k,x:XA}],lite(S.tc),{seg:10,mt:S.tm});
   const g=face(.055,.0175);PP(g[0],g[1],g[2],.0085*k,.0085*k,.0035*k,S.tc,{lo:1,mt:S.tm,n:1.1});
   PP(g[0]+fz[0]*.002,g[1]+fz[1]*.002,g[2]+fz[2]*.002,.0055*k,.0055*k,.003*k,glow||S.wc||[.75,.12,.12],{lo:1,em:glow?1:.35,n:1.2})}
  /* hanging ring on the edge and a strap up to the belt */
- {const e=add(at(.11),mul(XA,-wof(.11)*1.15));PP(e[0],e[1],e[2],.0065*k,.0065*k,.0022*k,S.tc,{lo:1,mt:S.tm,n:1.4});
+ if(!window.SHBACK){const e=add(at(.11),mul(XA,-wof(.11)*1.15));PP(e[0],e[1],e[2],.0065*k,.0065*k,.0022*k,S.tc,{lo:1,mt:S.tm,n:1.4});
   const top=add(e,[0,.05*k,0]);LF([{c:e,rx:.0035*k,rz:.0012*k,x:fz},{c:top,rx:.0035*k,rz:.0012*k,x:fz}],S.ty=='leather'?S.bc.map(v=>v*.8):[.24,.17,.11],{seg:4})}
  /* chape finial: a ball at the very tip */
- {const tip=at(1.035);PP(tip[0],tip[1],tip[2],.0075*k,.0075*k,.0075*k,lite(S.tc),{lo:1,mt:S.tm,n:1.3})}
+ if(!window.SHBACK){const tip=at(1.035);PP(tip[0],tip[1],tip[2],.0075*k,.0075*k,.0075*k,lite(S.tc),{lo:1,mt:S.tm,n:1.3})}
  /* polished highlight down metal and wood bodies */
  if(S.ty=='metal'||S.ty=='wood'){for(let i=0;i<5;i++){const u=.16+i*.15,q=face(u,.0128,-wof(u)*.35);PP(q[0],q[1],q[2],.0016*k,.045*k,.0008,S.bc.map(v=>Math.min(1,v*1.6+.18)),{lo:1,mt:S.ty=='metal'?.9:0})}}
  /* richer finishes */
@@ -10625,6 +10631,9 @@ function SHBODY(LF,A0,ax,XA,len,BX,SK,lc,bo,add,mul){const pr=BX.prof,N=pr.lengt
  if(sty=='runed'){for(let i=0;i<6;i++){const u=.18+i*.11,q=face(u,.0137);PP(q[0],q[1],q[2],.0042*k,.0042*k,.0012,glow||lite(S.tc),{em:pulse,lo:1,n:1})}}
  if(S.glow&&sty!='runed'){for(let i=0;i<4;i++){const u=.2+i*.17+Math.sin(T*1.3+i)*.01,q=face(u,.0131,Math.sin(T*1.7+i*2)*wof(u)*.3);PP(q[0],q[1],q[2],.0028*k,.0028*k,.0012,glow,{em:1,lo:1})}}
 }catch(e){}}}
+
+/* both faces of the scabbard are worked: the face decorations are laid down again, mirrored, on the back face */
+{const _sd2=window.SHDECO;window.SHDECO=SHDECO=function(){try{window.SHSIDE=1;window.SHBACK=0;_sd2.apply(this,arguments);window.SHSIDE=-1;window.SHBACK=1;_sd2.apply(this,arguments)}finally{window.SHSIDE=1;window.SHBACK=0}}}
 
 /* ================= GEAR ICONS: armour is shown as it is actually worn =================
    The hero model is posed on a dark mannequin wearing only that piece, then everything outside the slot's region is clipped away,
