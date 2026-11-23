@@ -2,6 +2,15 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.6.6
+
+Blender remodel, part 2: every hafted weapon rebuilt in Blender.
+
+- All 30 axes, greataxes, maces, warhammers, mauls, spears and polearms are now Blender models: forged axe heads that flare from a narrow neck to a curved, polished edge, bearded and crescent profiles, iron sockets and butt caps, wrapped grips with raised ridges, and iron bands on the longer hafts.
+- Maces get real flanges, ribs and studs; the Morningstar and Spiked maul are covered in forged spikes; the Sceptre has a gilded crown holding a gem.
+- Warhammers: the Lucerne has its pronged face, back spike and top spike, the War Pick a curved beak, the Crowned hammer gilded toothed faces. The Stonebound maul is a rope-bound boulder with a glowing stone set in it.
+- Spears and polearms: leaf, winged, partisan and pike heads; the Halberd with hook and spike, the curved Glaive, the long-bladed Bardiche and the Poleaxe with hammer and spike.
+
 ## 2.6.5
 
 Blender remodel, part 1: every blade weapon rebuilt in Blender.
