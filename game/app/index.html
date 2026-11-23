@@ -1291,7 +1291,8 @@ const ZON=[{n:'Ruined Halls',bk:'grass',r:'goblin',p:['wolf','bat','cultist'],ac
 {n:'Frostpeak Pass',bk:'mount',r:'orc',p:['wolf','golem','bat','cultist'],acc:['mount','cave','grass']},
 {n:'Bone Crypts',bk:'crypt',r:'skeleton',p:['bat','cultist','spider','golem'],acc:['crypt','cave','water']},
 {n:'Ember Forge',bk:'ember',r:'goblin',p:['golem','slime','cultist','bat'],acc:['ember','cave','crypt']},
-{n:'Hollow Depths',bk:'crypt',r:'wraith',p:['spider','bat','golem','cultist'],acc:['crypt','ember','mount']}];let ZNC=null;
+{n:'Hollow Depths',bk:'crypt',r:'wraith',p:['spider','bat','golem','cultist'],acc:['crypt','ember','mount']},
+{n:'The Wildwood',bk:'forest',r:'orc',p:['wolf','spider','bat','slime'],acc:['forest','forest','water']}];let ZNC=null;
 function mkBg(k,ob){const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
 const col={grass:['#3f6b2c','#4d7d36','#2f5a22'],cave:['#2c2824','#38332d','#1d1a17'],forest:['#1e3a24','#27472c','#152a19'],water:['#1a3a4a','#22495c','#122c39'],camp:['#4a3b27','#57452e','#382c1c']}[k]||['#3f6b2c','#4d7d36','#2f5a22'];
 x.fillStyle=col[0];x.fillRect(0,0,W,H);for(let i=0;i<2200;i++){x.fillStyle=col[RI(1,2)];x.fillRect(R(0,W),R(0,H),RI(2,6),RI(2,4))}
@@ -1475,7 +1476,7 @@ if(d>240){e.x+=dx*sp*.6*dt;e.y+=dy*sp*.6*dt;return true}return false}
 function CMDK(e,g){toast('The '+e.nm+' has fallen! His guard is enraged.');if(!g)E.filter(o=>o.grd&&o.pk==e.pk).forEach(o=>{o.dm*=1.25;o.sp*=1.15;o.rage=1;FT.push({x:o.x,y:o.y-o.r-12,t:1,s:'Enraged',c:'#ff6a4a'})});FX.push({x:e.x,y:e.y,r:180,t:.7,T:.7,c:CMC[e.race],k:'nova',ty:'Primal',sc:1.5});shake(8)}
 const ZP=[['wolf','bat','cultist'],['spider','slime','cultist','bat'],['golem','wolf','spider','cultist'],['cultist','golem','bat','slime']],RMIN={wolf:1,bat:1,spider:2,slime:2,cultist:3,golem:5};
 let ROS=[];
-function mkRoster(zi,z){const pool=ZON[zi%8].p.filter(r=>RMIN[r]<=fl).sort(()=>Math.random()-.5);ROS=[z,z,...pool.slice(0,fl<3?2:3)]}
+function mkRoster(zi,z){const pool=ZON[zi%ZON.length].p.filter(r=>RMIN[r]<=fl).sort(()=>Math.random()-.5);ROS=[z,z,...pool.slice(0,fl<3?2:3)]}
 const pickR=()=>ROS.length?pick(ROS):'goblin';
 function fixT(r,t){if(r=='wolf')return t=='archer'||t=='mage'||t=='cleric'?'grunt':t;if(r=='gobtaur')return t=='brute'?'brute':'grunt';if(r=='spider')return t=='mage'||t=='cleric'?'archer':t;if(r=='bat')return 'grunt';if(r=='slime')return t=='brute'||t=='grunt'?t:'grunt';return t}
 const CHT=[{n:'Bronze',c:'#b07a44',c2:'#5a3a1c',m:'#e0a860'},{n:'Silver',c:'#b8c2ce',c2:'#4a5460',m:'#eaf2fa'},{n:'Gold',c:'#f0c030',c2:'#7a5a10',m:'#fff0a0'},{n:'Obsidian',c:'#8a5ae0',c2:'#1a1228',m:'#d8a8ff'}];
@@ -1526,7 +1527,7 @@ Q(0,.27,.215,.05,.06,.015,gl,{em:.7,n:.5});if(c.tier==3)for(const sd of[-1,1])Q(
 function drawChest2(c){const T=CHT[c.tier],o=c.open;g.save();g.translate(c.x,c.y);if(c.alt){g.fillStyle='#5a5650';g.fillRect(-22,-10,44,26);g.fillStyle='#6e6a62';g.fillRect(-18,-8,36,20);g.strokeStyle=T.m;g.globalAlpha=.6;g.lineWidth=1.5;g.strokeRect(-22,-10,44,26);g.globalAlpha=1;g.fillStyle='#ffb347';g.fillRect(-24,-14,4,5);g.fillRect(20,-14,4,5)}g.shadowColor=T.m;g.shadowBlur=o?4:14;g.fillStyle=T.c2;g.fillRect(-13,-8,26,16);g.fillStyle=T.c;g.fillRect(-13,-3,26,3);g.fillRect(-2,-8,4,16);if(o){g.fillStyle=T.m;g.fillRect(-11,-13,22,5)}else{g.fillStyle=T.c2;g.fillRect(-13,-15,26,8);g.fillStyle=T.c;g.fillRect(-13,-11,26,2);g.fillStyle=T.m;g.fillRect(-3,-9,6,5)}g.restore()}
 function SPLIT(e){for(let i=0;i<2;i++){add('grunt',1,1,'slime','');const c=E[E.length-1],a=i*3.14+Math.random();Object.assign(c,{sm:1,hp:e.mh*.35,mh:e.mh*.35,dm:e.dm*.6,r:e.r*.65,x:e.x+Math.cos(a)*14,y:e.y+Math.sin(a)*14,ag:1,pk:e.pk,xp:e.xp*.3,nm:'Slimeling',mut:false});push(c,c.r)}}
 function pack(z,zi,n,cx,cy,hm,dm){const pid=++PKN,sp=pick([40,75,120]),arch=pick(ARCH);for(let i=0;i<n;i++){const r=ROS.length&&Math.random()<.2?pickR():z;if(!seen.includes(r))seen.push(r);add(fixT(r,pick(arch)),hm,dm,r,Math.random()<Math.min(.25,.07+.012*fl)?'mut':'');const e=E[E.length-1];e.pk=pid;e.ang=i/n*6.28;const sp_=spot(cx,cy,sp,e.rng);e.x=sp_.x;e.y=sp_.y;push(e,e.r)}}
-function wave(){const zi=Math.floor((fl-1)/3),z=ZON[zi%8].r;for(let k=0;k<2;k++){const a=R(0,6.28);pack(pickR(),zi,4,Math.max(60,Math.min(W-60,P.x+Math.cos(a)*260)),Math.max(100,Math.min(H-60,P.y+Math.sin(a)*260)),HMf(),DMf())}E.forEach(e=>e.ag=1);toast('Another wave attacks!')}
+function wave(){const zi=Math.floor((fl-1)/3),z=ZON[zi%ZON.length].r;for(let k=0;k<2;k++){const a=R(0,6.28);pack(pickR(),zi,4,Math.max(60,Math.min(W-60,P.x+Math.cos(a)*260)),Math.max(100,Math.min(H-60,P.y+Math.sin(a)*260)),HMf(),DMf())}E.forEach(e=>e.ag=1);toast('Another wave attacks!')}
 const THR={cave:['bat','spider'],forest:['wolf','spider'],mount:['wolf','orc'],crypt:['skeleton','wraith'],ember:['orc','golem','goblin'],water:['slime','bat']};
 const PTL={ember:{a:'#ff7a2a',b:'#ffd890',c:'#d83a14',rgb:'255,110,40',lc:[1,.52,.2],nm:'Ember Gate'},grass:{a:'#9be86a',b:'#f4ffd0',c:'#3a9a3a',rgb:'140,230,100',lc:[.6,.95,.45],nm:'Meadow Gate'},cave:{a:'#8a6aff',b:'#d8ccff',c:'#4a2ad0',rgb:'140,106,255',lc:[.55,.42,1],nm:'Crystal Gate'},forest:{a:'#5be0a0',b:'#e0ffd0',c:'#1a8a5a',rgb:'90,224,160',lc:[.36,.9,.62],nm:'Wildwood Gate'},water:{a:'#5ad0ff',b:'#e0f8ff',c:'#1a7ac8',rgb:'90,208,255',lc:[.35,.82,1],nm:'Tidal Gate'},crypt:{a:'#6af0b0',b:'#e0fff0',c:'#1aa070',rgb:'106,240,176',lc:[.42,.95,.7],nm:'Grave Gate'},boss:{a:'#ff3a3a',b:'#ffd890',c:'#a01020',rgb:'255,58,58',lc:[1,.25,.2],nm:'Boss Gate'}};
 const ptlType=()=>fl%10==9?'boss':(PTL[BK]&&BK!='ember'?BK:'ember'),ptl=()=>PTL[ptlType()];
@@ -1548,8 +1549,8 @@ function ptlDraw(x,t,ty){const pl=PTL[ty]||PTL.ember,W_=120,cx=60;x.setTransform
  x.restore();
  x.lineJoin='round';arch(25,14,110);x.strokeStyle='rgba(0,0,0,.55)';x.lineWidth=5;x.stroke();x.shadowColor=pl.a;x.shadowBlur=10;x.strokeStyle=pl.b;x.lineWidth=2;x.stroke();x.shadowBlur=0;
  x.fillStyle='rgba(255,255,255,.5)';x.beginPath();x.ellipse(cx,111,24,4,0,0,7);x.fill()}
-function spawn(){PADS=[];camp=false;CMDR=null;CMDS=0;SCH=[];ZD=[];E=[];PR=[];ZN=[];WZ=[];GR=[];CH=[];EVT=null;FX=[];portal=null;P.tgt=P.mv=null;CP=[];DY=[];const zi=Math.floor((fl-1)/3),z=(window.FLRACE?FLRACE(fl)[0]:ZON[zi%8].r),b=fl%10==0,hm=HMf(),dm=DMf();
-ZNC=ZON[zi%8];BK=ZNC.bk;genDG(b);BG=mkDG(BK);P.x=DGX.start.x;P.y=DGX.start.y;MIN.forEach(m=>{m.x=P.x+R(-40,40);m.y=P.y+R(-40,40)});if(!seen.includes(z))seen.push(z);mkRoster(zi,z);
+function spawn(){PADS=[];camp=false;CMDR=null;CMDS=0;SCH=[];ZD=[];E=[];PR=[];ZN=[];WZ=[];GR=[];CH=[];EVT=null;FX=[];portal=null;P.tgt=P.mv=null;CP=[];DY=[];const zi=Math.floor((fl-1)/3),z=(window.FLRACE?FLRACE(fl)[0]:ZON[zi%ZON.length].r),b=fl%10==0,hm=HMf(),dm=DMf();
+ZNC=ZON[zi%ZON.length];BK=ZNC.bk;genDG(b);BG=mkDG(BK);P.x=DGX.start.x;P.y=DGX.start.y;MIN.forEach(m=>{m.x=P.x+R(-40,40);m.y=P.y+R(-40,40)});if(!seen.includes(z))seen.push(z);mkRoster(zi,z);
 if(!b){const rs=DGR.slice(1);let cr=null;if(fl>=2&&Math.random()<Math.min(.34,.1+.02*fl)){const pool=rs.slice(Math.floor(rs.length/2),-1);cr=pick(pool.length?pool:rs);DGX.cmdRoom=cr}
  rs.forEach(r=>{if(r===cr)return;{const tl=THR[r.th]&&THR[r.th].filter(q=>RD[q]&&ROS.includes(q)),pr=tl&&tl.length&&Math.random()<.55?pick(tl):pickR();pack(pr,zi,Math.max(2,Math.min(9,RI(3,6)+(fl>8?1:0)+(pr=='bat'||pr=='spider'?2:0)-(r.sm?1:0))),r.px,r.py,hm,dm)}if(r.huge){for(let q=0;q<3;q++)pack(pickR(),zi,RI(3,5),r.px+R(-r.w*13,r.w*13),r.py+R(-r.h*10,r.h*10),hm,dm)}else if(r.w*r.h>=110&&Math.random()<.5)pack(pickR(),zi,RI(2,4),r.px+R(-60,60),r.py+R(-40,40),hm,dm)});
  for(let k=0;k<Math.min(3,1+Math.floor(fl/4));k++){const c=pick(DGX.cor.filter(q=>dist(q,DGX.start)>700));if(c)pack(pickR(),zi,RI(2,3),c.x,c.y,hm,dm)}
@@ -1559,7 +1560,7 @@ if(!b){const rs=DGR.slice(1);let cr=null;if(fl>=2&&Math.random()<Math.min(.34,.1
  {const n=1+(fl>=3?1:0)+(Math.random()<.35?1:0),cand=rs.filter(r=>r!==cr&&r!==rs[rs.length-1]).sort(()=>Math.random()-.5);for(let i=0;i<Math.min(n,cand.length);i++){const q=cand[i],p=altar(q);mkChest(p.x,p.y,chTier(0),{alt:1})}
  if(cr){const p=altar(cr);mkChest(p.x,p.y,chTier(2),{lk:CMDR,tr:false,alt:1})}mkEvent(rs,b)}}
 WV=0;
-if(b){const r=(fl>=10&&Math.random()<.3)?'dragon':pick(seen.filter(q=>!BEAST[q]||q=='gobtaur'));add('brute',hm*9,dm*1.5,r,'boss');const e=E[E.length-1];e.x=DGX.boss.x;e.y=DGX.boss.y;e.ag=0;bossVar(e);DRBOSSNAME(e);toast('Floor '+fl+': '+e.nm+' awaits beyond the great hall ('+e.bv.el+' \u00b7 '+e.bv.sk.length+' skills \u00b7 3 phases)')}else toast('Floor '+fl+': '+ZON[zi%8].n+'. '+({rooms:'Find and clear the packs.',corridor:'Long winding halls stretch ahead.',hall:'Vast halls echo in the dark.',cavern:'A twisting cavern.',hub:'A great crossroads.',catacomb:'A labyrinth of crypts.'}[LKN]||'Find and clear the packs.'));
+if(b){const r=(fl>=10&&Math.random()<.3)?'dragon':pick(seen.filter(q=>!BEAST[q]||q=='gobtaur'));add('brute',hm*9,dm*1.5,r,'boss');const e=E[E.length-1];e.x=DGX.boss.x;e.y=DGX.boss.y;e.ag=0;bossVar(e);DRBOSSNAME(e);toast('Floor '+fl+': '+e.nm+' awaits beyond the great hall ('+e.bv.el+' \u00b7 '+e.bv.sk.length+' skills \u00b7 3 phases)')}else toast('Floor '+fl+': '+ZON[zi%ZON.length].n+'. '+({rooms:'Find and clear the packs.',corridor:'Long winding halls stretch ahead.',hall:'Vast halls echo in the dark.',cavern:'A twisting cavern.',hub:'A great crossroads.',catacomb:'A labyrinth of crypts.'}[LKN]||'Find and clear the packs.'));
 if(!b)mkPads();if(DGX.sec)spawnHB();ETO=E.length;reveal();mmRebuild()}
 const FP={x:380,y:470};
 const CNP=[
@@ -1590,7 +1591,7 @@ h+=`<h2>Mystery caches <small>always gear for your class. Prices climb as you bu
 const bets=[25,100,250,500].map(v=>v*Math.max(1,Math.ceil(fl/4)));
 h+=`<h2>Ember dice <small>beat Vesper's roll. Ties push.${attrOf('lck')>0?' Luck helps.':''}</small></h2><div class="it">`+bets.map(b=>`<button style="flex:1" class="${P.gold>=b?'pri':''}" onclick="gamDice(${b})">Bet ${b}c</button>`).join('')+`</div>`;
 const fp=40+fl*6;h+=`<h2>Fortune <small>peer at what waits on floor ${fl}</small></h2>`;
-if(GM.fort){const zi=Math.floor((fl-1)/3),nb=Math.ceil(fl/10)*10;h+=`<div class="gres"><b>${ZON[zi%8].n}.</b><small>The ${RD[ZON[zi%8].r].nm[0].toLowerCase()} clans hold this place. You will find ${FHT[GM.fl]||'twisting halls'}. The next great boss waits on floor ${nb}.</small></div>`}
+if(GM.fort){const zi=Math.floor((fl-1)/3),nb=Math.ceil(fl/10)*10;h+=`<div class="gres"><b>${ZON[zi%ZON.length].n}.</b><small>The ${RD[ZON[zi%ZON.length].r].nm[0].toLowerCase()} clans hold this place. You will find ${FHT[GM.fl]||'twisting halls'}. The next great boss waits on floor ${nb}.</small></div>`}
 else h+=`<div class="it"><button class="${P.gold>=fp?'pri':''}" onclick="gamFort()">Read my fortune (${fp}c)</button></div>`;
 return h}
 function enterCamp(first){setTimeout(()=>{try{if(ACC.cur>=0)saveGame(1)}catch(e){}},400);{const il=Math.max(1,P.lv);P.sg=[];const SGS=['Weapon','Offhand','Helm','Armor','Shoulder','Hands','Legs','Feet','Ring','Amulet','Cape'];const mkg=(sl,ilv,tr,mx)=>{let it;for(let t=0;t<70;t++){it=gear(ilv,tr,P.cls,sl);if((!sl||it.slot==sl)&&(tr?it.r==tr:it.r<=mx))break}return it};if(Math.random()<.5){const it=mkg(null,il+RI(1,2),2,2);it.ft=1;P.sg.push(it)}if(P.lv>=5&&Math.random()<.2){const it=mkg(null,il+RI(2,4),3,3);it.ft=1;P.sg.push(it)}SGS.forEach(sl=>P.sg.push(mkg(sl,il,0,fl<4?1:2)));for(let k=0;k<4;k++)P.sg.push(mkg(pick(SGS),il,0,fl<4?1:2));if(Math.random()<.25){const it=mkg(pick(SGS),il+3,2,2);it.ft=2;P.sg.push(it)}}W=2100;H=1950;DGG=null;DGW=DGH=0;DGR=[];EXP=null;FLD=FLDF=null;DGX={};camp=true;SCH=[];ZD=[];E=[];PR=[];ZN=[];WZ=[];GR=[];CH=[];EVT=null;FX=[];P.x=FP.x;P.y=H-150;P.tgt=P.mv=null;CP=[];MIN.forEach(m=>{m.x=P.x+R(-40,40);m.y=P.y+R(-40,40)});P.hp=mxh();P.mp=mxm();OB=[];CH=[];VC.vault=1;CH.push(VC);CPO=[{x:FP.x,y:FP.y,r:30}];for(const n of CNP){CPO.push({x:n.x-24,y:n.y+8,r:22},{x:n.x,y:n.y+8,r:22},{x:n.x+24,y:n.y+8,r:22},{x:n.x,y:n.y-14,r:24})}P.fs=1;P.stk={...SK0};P.tm=Math.random()<.35?mkTome():null;BG=mkBg(BK='camp',[]);portal={x:FP.x,y:110};toast(first?'Welcome to Ashen Hollow. Tap a stall to shop, or take the gate north':fl%10==0?'Camp before the boss: prepare!':fl%10==5?'Checkpoint camp: rest, resupply, and prepare for the deeper floors':'Camp after the boss: rest up');GM={c:{},last:null,dice:null,str:0,fort:0};P.sdl=pick(['hp0','mp0','hp','mp','hp2','mp2','sp','ar','fu','rg']);SHN='tra';NXL=null}
@@ -8069,7 +8070,7 @@ const GITEM={'':[['ashbloom','Ashbloom Petals','herb','#ff6a3a'],['emberore','Em
 const QGIV=['the miners\u2019 union','a worried farmer','the town watch','the alchemist','a travelling scholar','the guild master','a grieving widow','the temple','a noble\u2019s steward','the smith'];
 const RSC=['a lost squire','a cartographer','a young cleric','a merchant\u2019s son','a scout of the watch','an apprentice mage'];
 function plural(n){return/s$/.test(n)?n:/f$/.test(n)?n.slice(0,-1)+'ves':/y$/.test(n)?n.slice(0,-1)+'ies':/sh$|ch$/.test(n)?n+'es':n+'s'}
-function upRaces(){const out=new Set();for(let f=Math.max(1,fl+1);f<=fl+6;f++){const z=ZON[Math.floor((f-1)/3)%8];out.add(z.r);for(const r of z.p)if(!RMIN||RMIN[r]<=f)out.add(r)}return[...out].filter(r=>RD[r])}
+function upRaces(){const out=new Set();for(let f=Math.max(1,fl+1);f<=fl+6;f++){const z=ZON[Math.floor((f-1)/3)%ZON.length];out.add(z.r);for(const r of z.p)if(!RMIN||RMIN[r]<=f)out.add(r)}return[...out].filter(r=>RD[r])}
 function qGen(diff,ty){const T=townTh(),gi=GITEM[T.ex||'']||GITEM[''],rk=gRankOf(P.grep||0),q={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),ty,d:diff,p:0,f0:fl,giver:pick(QGIV)};
  if(ty=='kill'){const r=pick(upRaces());q.race=r;q.n=8+diff*6+RI(0,4);q.t='Cull the '+plural(RD[r].nm[0]);q.ds=`${q.giver[0].toUpperCase()+q.giver.slice(1)} reports ${plural(RD[r].nm[0]).toLowerCase()} swarming the halls below. Thin them out.`;q.o=`Slay ${q.n} ${plural(RD[r].nm[0]).toLowerCase()}`}
  else if(ty=='elite'){q.n=1+diff;q.t='Champions of the Deep';q.ds='The guild pays well for every commander, unique beast or mutant brought down. Bring proof.';q.o=`Defeat ${q.n} elite foe${q.n>1?'s':''} (commanders, uniques, mutants)`}
@@ -14039,7 +14040,7 @@ function foDecor(m,jit,gv,thN){for(let j=1;j<DGH-1;j++)for(let i=1;i<DGW-1;i++){
   if(r<.32){/* a fern */if(window.PRS&&PRS(m,'pr_fern',x+foR(-12,12),0,z+foR(-12,12),foR(24,32),foR(22,34),foR(24,32),Math.random()*6.28,prForestPal(),PRFEM))continue;const bx=x+foR(-12,12),bz=z+foR(-12,12),fc=jit(foH(foP(['#3a7a30','#4a8a38','#2e6a2a'])),.12);for(let k=0;k<7;k++){const a=k/7*6.2832+foR(-.2,.2),L=foR(9,14);apStick(m,[bx,1,bz],[bx+Math.cos(a)*L,foR(5,8),bz+Math.sin(a)*L],.5,fc,0,3);m.blob(bx+Math.cos(a)*L*.6,foR(5,7),bz+Math.sin(a)*L*.6,L*.35,.6,1.8,fc,.1,5,3)}continue}
   if(r<.38){/* wildflowers */const bx=x+foR(-12,12),bz=z+foR(-12,12),fc=foH(foP(['#f0e060','#f08ab0','#ffffff','#b08aff','#ff9a4a']));const nf=Math.floor(foR(4,8));for(let k=0;k<nf;k++){const cx=bx+foR(-6,6),cz=bz+foR(-6,6),h=foR(3,7);m.box(cx,0,cz,.5,h,.5,jit(foH('#4a7a34'),.15));m.blob(cx,h,cz,1.3,.9,1.3,jit(fc,.05),0,5,3,.25)}continue}
   if(r<.40){/* a stump */if(window.PRS&&PRS(m,'pr_stump',x+foR(-10,10),0,z+foR(-10,10),foR(20,27),foR(28,40),foR(20,27),Math.random()*6.28,prForestPal(),PRFEM))continue;const bx=x+foR(-10,10),bz=z+foR(-10,10),rr_=foR(6,9),bark=jit(foH(foP(FOC.bark)),.08);m.cyl(bx,0,bz,rr_*1.15,foR(6,12),8,bark,0,rr_);m.cyl(bx,foR(6,12),bz,rr_*.9,.6,8,jit(foH('#b89a6a'),.06));continue}
-  if(r<.43&&thN(i,j)=='forest'){/* the temple under the trees: a broken column, a toppled drum, a mossy slab */const bx=x+foR(-8,8),bz=z+foR(-8,8),sc=jit(foH(FOC.stone),.08),q=Math.random();
+  if(r<.43&&thN(i,j)=='forest'&&!(window.WILDW&&WILDW())){/* the temple under the trees: a broken column, a toppled drum, a mossy slab */const bx=x+foR(-8,8),bz=z+foR(-8,8),sc=jit(foH(FOC.stone),.08),q=Math.random();
    if(q<.4){const h=foR(14,34);m.cyl(bx,0,bz,9,4,8,sc,0,9);m.cyl(bx,4,bz,7,h,8,sc,0,6.6);m.blob(bx,h+4,bz,7,3,7,jit(foH(FOC.moss),.2),.2,6,3)}
    else if(q<.75){const a=foR(0,6.28);apStick(m,[bx-Math.cos(a)*12,7,bz-Math.sin(a)*12],[bx+Math.cos(a)*12,7,bz+Math.sin(a)*12],7,sc,0,8);m.blob(bx,13,bz,8,2,6,jit(foH(FOC.moss),.2),.2,6,3)}
    else{m.box(bx,0,bz,22,5,16,sc,0,foR(0,3));m.blob(bx,5,bz,9,1.5,7,jit(foH(FOC.moss),.2),.2,6,3);for(let k=0;k<3;k++)m.box(bx+foR(-8,8),5.2,bz+foR(-6,6),2,.2,.4,[.12,.1,.08],0,foR(0,3))}continue}
@@ -14238,6 +14239,26 @@ const PRVEM=[0,0,1,0,0,0,0,1];
 {const _vw=window.voWallFace;if(_vw)voWallFace=function(m,jit,i,j,di,dj,x,z,cn){const fx=x+di*20,fz=z+dj*20;
   if(PRS(m,'pr_bwall'+((i+j)&1),fx-di*4,0,fz-dj*4,40,cn,26,Math.atan2(di,-dj),prVolcPal(),PRVEM)){if(Math.random()<.35)PRS(m,'pr_shards',fx-di*7,0,fz-dj*7,18,18,18,Math.random()*6.28,prVolcPal(),PRVEM);return}
   return _vw.apply(this,arguments)}}
+/* ================= THE WILDWOOD: a ninth zone, deep forest with no masonry at all ================= */
+/* Floors 25-27 of each round are the Wildwood: every cell is woods, glade or pool. No temple ruins under the trees here;
+   instead the canopy breaks open more often in shafts of light, fairy rings of glowing mushrooms grow in the clearings,
+   and some of the great trees are elders, half again as big, with glowing fungus round their roots. Its creatures are
+   beasts of the wood: bears, wolves and spiders, with the old dead and the stone-men deeper in. */
+function WILDW(){try{return!!(ZNC&&ZNC.n=='The Wildwood')}catch(e){return false}}
+try{FLT[25]=['bear','wolf','orc'];FLT[26]=['spider','bear','golem'];FLT[27]=['wraith','wolf','bear']}catch(e){}
+{const _fc=window.foCanopy;if(_fc)foCanopy=function(mc,jit,Q,x0,z0,cc){_fc.apply(this,arguments);if(!WILDW()||Math.random()>.2)return;
+  const s=foR(6,12),cx=x0+foR(10,30),cz=z0+foR(10,30);Q(mc,[cx-s,cc-1.2,cz-s],[cx+s,cc-1.2,cz-s],[cx+s,cc-1.2,cz+s],[cx-s,cc-1.2,cz+s],[.9,.97,.66],.95,[0,-1,0])}}
+{const _gt=window.foGiantTree;if(_gt)foGiantTree=function(m,jit,x,z,r,cc){if(!WILDW()||Math.random()>.35)return _gt.apply(this,arguments);
+  /* an elder tree: bigger, with a ring of glowing fungus round its roots */
+  if(!(window.PRS&&PRS(m,'pr_tree'+Math.floor(Math.random()*3),x,0,z,r*1.8/.1,cc*.95,r*1.8/.1,Math.random()*6.28,prForestPal(),PRFEM)))return _gt.apply(this,arguments);
+  const gc=foH(foP(['#6ae0d0','#8ab0ff','#b0ff9a']));for(let k=0;k<10;k++){const a=k/10*6.2832+foR(-.2,.2),d=r*2.3+foR(-2,3),px=x+Math.cos(a)*d,pz=z+Math.sin(a)*d;m.cyl(px,0,pz,.5,foR(2,4),5,jit(foH('#d8c8a0'),.06));m.blob(px,foR(3,4.5),pz,foR(1.4,2.2),.8,foR(1.4,2.2),gc,0,6,3,1)}}}
+{const _fd=window.foDecor;if(_fd)foDecor=function(m,jit,gv,thN){_fd.apply(this,arguments);if(!WILDW())return;
+  /* fairy rings in open clearings: a cell with open floor all round it */
+  let n=0;for(let t=0;t<400&&n<7;t++){const i=2+Math.floor(Math.random()*(DGW-4)),j=2+Math.floor(Math.random()*(DGH-4));let ok=true;
+   for(let a=-1;a<=1&&ok;a++)for(let b=-1;b<=1&&ok;b++)if(gv(i+a,j+b)!=0||thN(i+a,j+b)!='forest')ok=false;if(!ok)continue;n++;
+   const x=i*CSZ+20,z=j*CSZ+20,R=foR(13,18),gc=foH(foP(['#6ae0d0','#8ab0ff','#b08aff','#b0ff9a']));
+   for(let k=0;k<12;k++){const a=k/12*6.2832+foR(-.1,.1),px=x+Math.cos(a)*R,pz=z+Math.sin(a)*R,h=foR(1.8,3.6);m.cyl(px,0,pz,.45,h,5,jit(foH('#e0d4b0'),.05));m.blob(px,h,pz,foR(1.2,2),.7,foR(1.2,2),gc,0,6,3,1)}
+   m.blob(x,.15,z,R*.8,.2,R*.8,jit(foH('#5a9a40'),.1),0,8,3);try{if(DGX&&DGX.chd)DGX.chd.push({x,y:z,h:10})}catch(e){}}}}
 /* ================= SALVAGE FROM THE BAG: select several pieces, or salvage everything that matches your rules ================= */
 /* The Satchel gets a salvage bar. "Select to salvage" turns clicks on gear into ticks; quick picks tick every unlocked
    Common, Magic or Rare piece; "Salvage selected" breaks the ticked pieces down. "Salvage all" breaks down everything
