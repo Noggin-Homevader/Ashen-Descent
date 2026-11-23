@@ -2,6 +2,15 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.6.7
+
+Blender remodel, part 3: staves, skull staves, wands and scythes.
+
+- All 9 staves rebuilt in Blender: roots climbing the Rootbound staff to cradle a glowing seed, a curled Crook, a gilded Crescent moon cupping its gem, a gold Arcane Cage around an orb, a carved Totem with feathers, a Flame brazier, a cluster of Frost crystals, a rayed Sunburst ring and meshed Clockwork gears.
+- Skull staves now carry modelled skulls with sockets, teeth and glowing eyes: a vertebra column on the Spine staff, curling horns on the Horned staff, and a lantern hanging from the Lantern staff's hooked arm.
+- Wands: tapered, bone-jointed, twin-spiral and thorned, each with its own tip.
+- Scythes: curved snaths with both hand grips, slimmer curved blades with polished edges; the Twin scythe has blades both ways, the War scythe a forged upright blade, the Bone snath is ringed with vertebrae, and the Winged, Grave and Halo scythes have their wings, skull and halo.
+
 ## 2.6.6
 
 Blender remodel, part 2: every hafted weapon rebuilt in Blender.
