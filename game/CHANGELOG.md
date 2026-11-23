@@ -2,6 +2,12 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.6.9
+
+Blender remodel, part 5: mage hats.
+
+- The Wizard Hat, Wide Hat, Crooked Hat, Magister Cap and Starcaller Hat are rebuilt in Blender: soft folded crowns whose tips flop backwards, wavy brims with gilt edging, banded hatbands with buckles, stitched patches on the Crooked Hat, a feather in the Wide Hat, gold orphreys, a jewel and hanging lappets on the Magister Cap, and stars sewn over the Starcaller Hat with a star at its tip.
+
 ## 2.6.8
 
 Blender remodel, part 4: bows and crossbows. Every weapon in the game is now a Blender model.
