@@ -2,6 +2,14 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.7.0
+
+Sheaths are one piece and hang from something.
+
+- Scabbards are worked on both faces: studs, scales, stitching, filigree, runes, bone plates, cross-wrapping and glowing inlays now run down the back face as well as the front, so a greatsword on your back no longer shows a bare side.
+- A greatsword's scabbard hangs from the baldric: short straps run from the strap to metal rings round the scabbard at the locket and a third of the way down. Axes, hammers, staves and bows carried on the back are held the same way, with straps and rings round the haft.
+- Daggers and other belt-carried blades hang from a frog: a loop round the belt with a strap down to a collar round the scabbard's throat, instead of a loose block.
+
 ## 2.6.9
 
 Blender remodel, part 5: mage hats.
