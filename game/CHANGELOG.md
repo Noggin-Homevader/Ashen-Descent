@@ -2,6 +2,22 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.6.0
+
+Fixes for gifts at benches, the skill card and subclass hats.
+
+- **Receiving a gift no longer closes your bench or shop.** A gift arriving while you were at a workbench, the forge or
+  a shop window used to swap that window for your bag, throwing away a craft in progress. Now the gift goes quietly
+  into your bag with its message, and only the Folio, if that's what you have open, refreshes. The same fix covers
+  returned gifts and belt changes.
+- **The skill card stays inside the book.** Clicking a skill near the right edge of the tree put its card half off
+  the page, over the other panel. The card now opens beside the skill on whichever side has room, never past an
+  edge. If it's taller than the page, it scrolls inside itself, and its close button no longer sits on the title.
+- **Your helm shows the helm you wear.** Subclasses with their own signature headwear (Spellblade, Red, Green and Black
+  Mage and others) replaced any equipped hat or circlet with that signature piece. A Magister Cap could show up as a
+  laurel or a pointed hat. Now the subclass headwear appears only when you wear no helm, and an equipped helm always
+  shows its own model. Hair and eye colours from the subclass still apply.
+
 ## 2.5.9
 
 The Ember Forge is now volcanic.

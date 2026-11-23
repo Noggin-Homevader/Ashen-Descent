@@ -1963,7 +1963,7 @@ Soulbinder:{o:{float:1,robe:1,cape:'#5a4a8a',rune:'#ffe9a0',ey:'#ffe9a0',crownb:
 Plaguebearer:{o:{tw:1.22,cloak:'#3a501a',ey:'#ff8a3a',sash:'#7a4a24',coat:1},mx:.5},
 Spiritcaller:{o:{cape:'#2a6a58',hem:'#9be39b',stole:'#bff0d6',mant:'#3fa388',book:'#4a7a2a',bell:'#2a6a58',gem:'#9be39b',ps:0},h:{hd:'hoodface',hv:'antler',hcl:'#3fa388',trim:'#9be39b',beard:0},mx:.85},
 Warchanter:{o:{cape:'#6a2a1a',hem:'#ffb347',stole:'#c8603a',mant:'#8a3a22',book:'#6a2a1a',bell:'#6a2a1a',gem:'#ffee55',ps:0},h:{hd:'hoodface',hv:'antler',hcl:'#8a3a22',trim:'#ffb347',beard:0},mx:.85},'Earthshaker':{o:{cape:'#6a2a1a',hem:'#ffb347',stole:'#c8603a',mant:'#8a3a22',book:'#6a2a1a',bell:'#6a2a1a',gem:'#ffee55',ps:0},h:{hd:'hoodface',hv:'antler',hcl:'#8a3a22',trim:'#ffb347',beard:0},mx:.85}};
-function subLook(o,cls,sn,eq){if(cls=='Mage'||cls=='Shaman'){o.mg=1;if(!o.hem)o.hem=o.tr||'#e0b030';if(!o.book)o.book='#7a2a2a'}if(sn===undefined)sn=(typeof P!='undefined'&&P&&P.cls==cls&&P.sub)?P.sub.n:null;const u=sn&&(SUB[cls]||[]).find(q=>q.n==sn),d=u&&SBX[sn];if(!d)return;if(d.h){if(eq&&!eq.Helm){const q={};if(d.h.hr)q.hr=d.h.hr;if(d.h.ey)q.ey=d.h.ey;Object.assign(o,q)}else if(!eq||o.hd=='hat'||o.hd=='circ')Object.assign(o,d.h)}const p=u.pal||{};
+function subLook(o,cls,sn,eq){if(cls=='Mage'||cls=='Shaman'){o.mg=1;if(!o.hem)o.hem=o.tr||'#e0b030';if(!o.book)o.book='#7a2a2a'}if(sn===undefined)sn=(typeof P!='undefined'&&P&&P.cls==cls&&P.sub)?P.sub.n:null;const u=sn&&(SUB[cls]||[]).find(q=>q.n==sn),d=u&&SBX[sn];if(!d)return;if(d.h){if(eq){const q={};if(d.h.hr)q.hr=d.h.hr;if(d.h.ey)q.ey=d.h.ey;if(d.h.beard!==undefined&&!eq.Helm){q.beard=d.h.beard;if(d.h.bdc)q.bdc=d.h.bdc}Object.assign(o,q)}else Object.assign(o,d.h)}const p=u.pal||{};
 const a=p.a,b=p.b,c=p.c;o.cl=mx(o.cl,a,d.mx);o.cl2=mx(o.cl2||o.cl,b,d.mx);if(o.hcl)o.hcl=mx(o.hcl,a,d.mx*.9);if(!o.sash)o.sash=c;if(!o.pm||o.pm=='#8d939a')o.pm=mx(o.pm||'#8d939a',a,.25);Object.assign(o,d.o);if(d.o.cape)o.cape=mx(d.o.cape,a,.25);o.sg=sn;o.sgc=[a,b,c,p.X]}
 const orbit=(P,K,n,r,y,t,sp,sz,col,em)=>{for(let i=0;i<n;i++){const a=t/sp+i*6.283/n;P(Math.cos(a)*r,y+Math.sin(t/300+i*2)*.03,Math.sin(a)*r,sz,sz,sz,K(col),{em:em??1,lo:1,az:a,ax:a*.7})}};
 const rise=(P,K,n,x,y,z,t,h,sz,col,sp)=>{for(let i=0;i<n;i++){const u=((t/(sp||900)+i/n)%1);P(x+Math.sin(t/260+i*2.1)*.07,y+u*h,z+Math.cos(t/310+i*1.7)*.05,sz*(1-u*.6),sz*(1-u*.6),sz*(1-u*.6),K(col),{em:1,lo:1})}};
@@ -5442,7 +5442,7 @@ function giftIn(peer,d){if(d.to!==MP.myPeer||!mpMember(peer)||!d.id||typeof d.id
  const same=it.k!='gear'&&it.k!='book'?P.inv.find(q=>q.k==it.k&&kOf(q)==kOf(it)):null;
  if(!same&&P.inv.length>=CAP()){GF.seen[id]=0;mpEmit('evt',{k:'gack',to:peer,id,ok:0,why:'full'});toast((String(d.from||'A friend').slice(0,20))+' tried to gift you an item, but your bag is full');return}
  if(same)same.n=(same.n||1)+1;else P.inv.push(it);GF.seen[id]=1;mpEmit('evt',{k:'gack',to:peer,id,ok:1});
- const nm=it.k=='gear'?it.n:it.k=='book'?S[it.s].n:it.k=='pot'?potNm(it):it.k=='cons'?CN[it.t].n:'Phoenix Feather';toast('Gift from '+String(d.from||'a friend').slice(0,20)+': '+nm);try{burst(P.x,P.y,14,'#ffe9a0',90,.6,2.5);buildBelt();if(!$('ov').hidden)showOv()}catch(e){}}
+ const nm=it.k=='gear'?it.n:it.k=='book'?S[it.s].n:it.k=='pot'?potNm(it):it.k=='cons'?CN[it.t].n:'Phoenix Feather';toast('Gift from '+String(d.from||'a friend').slice(0,20)+': '+nm);try{burst(P.x,P.y,14,'#ffe9a0',90,.6,2.5);buildBelt();if(!$('ov').hidden&&ovIsBook())showOv()}catch(e){}}
 function giftAck(peer,d){const q=GF.pend[d.id];if(!q||d.to!==MP.myPeer||q.peer!==peer)return;delete GF.pend[d.id];
  if(!d.ok){toast(d.why=='full'?'Their bag is full. You keep the item.':'The gift could not be delivered.');return}
  const i=P.inv.findIndex(x=>kOf(x)==q.key);if(i<0)return;const x=P.inv[i];if(x.k=='gear'||x.k=='book'||(x.n||1)<=1)P.inv.splice(i,1);else dec(i);BSEL=-1;toast('Gift delivered');try{buildBelt();showOv()}catch(e){}}
@@ -8659,10 +8659,14 @@ function skPop(id){const tb=document.querySelector('.tome2[data-t="skills"] .tbo
  let pop=tb.querySelector('.skpop');if(!pop){pop=document.createElement('div');pop.className='skpop';tb.appendChild(pop)}
  pop.innerHTML=`<button class="spx" onclick="skPopClose()" title="Close">✕</button>`+hp.innerHTML.replace(/<i class="tplus"[^>]*>\+<\/i>/g,'').replace(/onclick="sksel\('[^']+'\)"/g,'onclick="skPopClose()"').replace('<div class="ac">','<div class="ac">'+(!P.sk.includes(id)&&canPlus(id)?`<button class="tpbtn" onclick="treePlus('${id}')">+ Learn</button>`:''));
  let nb=null;tb.querySelectorAll('.tn').forEach(b=>{const on=(b.getAttribute('onclick')||'').includes("'"+id+"'");b.classList.toggle('sel',on);if(on)nb=b});
- const T=tb.getBoundingClientRect(),W=Math.min(340,T.width-24);pop.style.width=W+'px';
- if(nb){const r=nb.getBoundingClientRect();let x=r.right-T.left+10;if(x+W>T.width-8)x=r.left-T.left-W-10;if(x<8)x=Math.max(8,(T.width-W)/2);let y=r.top-T.top+tb.scrollTop-10;pop.style.left=x+'px';pop.style.top=y+'px';
-  requestAnimationFrame(()=>{const ph=pop.offsetHeight,max=tb.scrollTop+tb.clientHeight-ph-8;if(y>max)pop.style.top=Math.max(tb.scrollTop+8,max)+'px'})}
- else{pop.style.left=Math.max(8,(T.width-W)/2)+'px';pop.style.top=(tb.scrollTop+20)+'px'}}
+ /* keep the card wholly inside the page: beside the skill on whichever side has room, never past an edge,
+    and no taller than the page (it scrolls inside itself if it has to) */
+ const T=tb.getBoundingClientRect(),cw=tb.clientWidth,W=Math.min(340,cw-24);pop.style.width=W+'px';pop.style.maxHeight=(tb.clientHeight-16)+'px';pop.style.overflowY='auto';
+ const clampX=x=>Math.max(8,Math.min(cw-W-8,x));
+ if(nb){const r=nb.getBoundingClientRect(),nl=r.left-T.left,nr=r.right-T.left;let x=nl+(nr-nl)/2>cw/2?nl-W-10:nr+10;if(x<8||x+W>cw-8)x=(nl+(nr-nl)/2>cw/2)?nr+10:nl-W-10;x=clampX(x);
+  let y=r.top-T.top+tb.scrollTop-10;pop.style.left=x+'px';pop.style.top=y+'px';
+  requestAnimationFrame(()=>{const ph=pop.offsetHeight,max=tb.scrollTop+tb.clientHeight-ph-8;pop.style.top=Math.max(tb.scrollTop+8,Math.min(y,max))+'px'})}
+ else{pop.style.left=clampX((cw-W)/2)+'px';pop.style.top=(tb.scrollTop+20)+'px'}}
 {const _so=showOv;showOv=function(){const ob=document.querySelector('.tome2 .tbody'),sameT=ob&&!$('ov').hidden&&LOT===OT,sc=sameT?ob.scrollTop:0;const r=_so.apply(this,arguments);const nb=document.querySelector('.tome2 .tbody');
  if(nb&&sameT){nb.classList.add('still');const tb2=nb.closest('.tome2');if(tb2)tb2.classList.add('still');nb.scrollTop=sc}if(OT=='skills'&&SKS&&nb){const s=SKS;SKS=null;const tmp=document.createElement('div');tmp.innerHTML=treeHtml();const h=tmp.querySelector('#hp'),cur=nb.querySelector('#hp');if(h&&cur){cur.innerHTML=h.innerHTML;HD=h.innerHTML}SKS=s;skPop(s)}return r}}
 function treePlus(id){const op=!$('ov').hidden&&OT=='skills';SKS=id;if(P.sk.includes(id))slUp(id);else learnT(id);if(op){OT='skills';showOv()}}
@@ -10066,7 +10070,7 @@ function WPKICON(x,wt,wb,tr,T,gc){try{if(!WPKM)return false;const k=wpkKey(wt,(w
 function beltPut(i,s){const x=P.inv[i];if(!x)return;if(x.t=='respec')return toast('This scroll cannot go on the belt');const k=kOf(x);
  if(P.belt[s]===k){P.belt[s]=null;toast('Cleared the '+'QE'[s]+' slot')}else{const o=P.belt.indexOf(k);if(o>=0&&o!==s)P.belt[o]=P.belt[s]||null;P.belt[s]=k;toast(beltName(k)+' on '+'QE'[s])}
  try{AUD.ui()}catch(e){}showOv()}
-function beltClear(s){if(!P.belt[s])return;P.belt[s]=null;try{AUD.ui()}catch(e){}if(!$('ov').hidden)showOv()}
+function beltClear(s){if(!P.belt[s])return;P.belt[s]=null;try{AUD.ui()}catch(e){}if(!$('ov').hidden&&ovIsBook())showOv()}
 /* one button per slot; the one already holding this potion reads "Off Q" */
 function beltBtns(i){const x=P.inv[i];if(!x)return'';const k=kOf(x);return[0,1].map(s=>{const on=P.belt[s]===k,cur=P.belt[s];return`<button class="bltb${on?' on':''}" onclick="beltPut(${i},${s})" title="${on?'Take it off':'Put it on'} the ${'QE'[s]} slot${!on&&cur?' (replaces '+beltName(cur)+')':''}">${on?'Off':'Belt'} <kbd>${'QE'[s]}</kbd></button>`}).join('')}
 var beltSet=function(i){const x=P.inv[i];if(!x)return;const k=kOf(x),o=P.belt.indexOf(k);if(o>=0)return beltClear(o);const e=P.belt.indexOf(null);beltPut(i,e>=0?e:1)};
@@ -11713,11 +11717,11 @@ function gspHtml(){const rk=gRk(),T=gspTier(),st=gspStock(),nx=GSPR[rk+1];let de
    const e=document.createElement('button');e.className='pri beq';e.textContent=eqOccupied(x)?'Buy + Swap':'Buy + Equip';e.onclick=()=>buyEqG(i);b.after(e)})}}catch(e){}return r}}
 
 /* ---- gifts: the item leaves your bag the moment you send it, and comes back only if it cannot be delivered ---- */
-function giftRefund(q){try{const x=q.esc;if(!x)return;if(x.k!='gear'&&x.k!='book'){const s=P.inv.find(y=>y.k==x.k&&kOf(y)==kOf(x));if(s){s.n=(s.n||1)+1;return}}P.inv.push(x)}finally{try{buildBelt();if(!$('ov').hidden)showOv()}catch(e){}}}
+function giftRefund(q){try{const x=q.esc;if(!x)return;if(x.k!='gear'&&x.k!='book'){const s=P.inv.find(y=>y.k==x.k&&kOf(y)==kOf(x));if(s){s.n=(s.n||1)+1;return}}P.inv.push(x)}finally{try{buildBelt();if(!$('ov').hidden&&ovIsBook())showOv()}catch(e){}}}
 giftSend=function(i,peer){const x=P.inv[i];if(!x)return;const it=giftClean(x);if(!it)return toast('That item cannot be gifted');if(!mpMember(peer))return toast('That player is no longer in your party');
  if(x.k=='gear'&&Object.values(P.eq).includes(x))return toast('Take it off first');
  let esc;if(x.k=='gear'||x.k=='book'||(x.n||1)<=1){P.inv.splice(i,1);esc=x}else{esc=Object.assign({},x,{n:1});dec(i)}
- BSEL=-1;try{buildBelt();if(!$('ov').hidden)showOv()}catch(e){}
+ BSEL=-1;try{buildBelt();if(!$('ov').hidden&&ovIsBook())showOv()}catch(e){}
  const id=Math.random().toString(36).slice(2,10);GF.pend[id]={esc,k:x.k,tries:0,peer};
  const go=()=>{const q=GF.pend[id];if(!q)return;if(q.tries++>=6){delete GF.pend[id];giftRefund(q);toast('The gift could not reach them. It is back in your bag.');return}mpEmit('evt',{k:'gift',to:peer,id,it,from:mpNick()});setTimeout(go,2500)};go();toast('Sending gift...')};
 giftAck=function(peer,d){const q=GF.pend[d.id];if(!q||d.to!==MP.myPeer||q.peer!==peer)return;delete GF.pend[d.id];
@@ -13718,6 +13722,8 @@ var ATBENCH=0;
  /* corner pieces and the crest are real elements so all four corners can be mirrored */
  const deco=()=>{for(const w of document.querySelectorAll('.shopw')){if(w.querySelector(':scope>.uipc'))continue;for(const c of['tl','tr','bl','br']){const e=document.createElement('i');e.className='uipc '+c;w.appendChild(e)}const cr=document.createElement('i');cr.className='uipcr';w.appendChild(cr)}};
  let q=0;new MutationObserver(()=>{if(q)return;q=1;requestAnimationFrame(()=>{q=0;deco()})}).observe(document.getElementById('ov')||document.body,{childList:true,subtree:true});}
+/* the skill card's close button never sits on its title */
+(function(){const st=document.createElement('style');st.textContent='.skpop{padding-right:36px!important}';document.head.appendChild(st)})();
 
 /* ================= POTIONS, BLOWN WHOLE: one solid turned model per potion, sized by grade ================= */
 /* each bottle is a single lathe-turned mesh (glass, liquid, cork, seal, metal) drawn through the moulded-mesh path;
@@ -14173,5 +14179,7 @@ function voDecor(m,jit,gv,thN){const lit=(x,z,h)=>{try{if(DGX&&DGX.chd&&!DGX.chd
   if(r<.44){/* a toppled anvil and a length of chain */const cx=x+voR(-8,8),cz=z+voR(-8,8),ir=jit(voH(VOC.iron),.06),a=voR(0,3.14);m.box(cx,0,cz,10,6,6,ir,0,a);m.box(cx,6,cz,16,4,7,ir,0,a);m.cone(cx+Math.cos(a)*10,6,cz+Math.sin(a)*10,3,0,4,ir,0);
    for(let k=0;k<6;k++)m.box(cx+voR(-12,12)+k*2,.6,cz+12-k*2.5,3,1.2,1.6,jit(voH(VOC.rust),.1),0,k%2?.6:-.6);continue}
   if(r<.5){/* ash drifts */m.blob(x+voR(-10,10),.3,z+voR(-10,10),voR(6,12),.5,voR(5,10),jit(voH(VOC.ash),.08),0,7,3)}}}
+
+function ovIsBook(){try{const f=$('ovc').firstElementChild;return!!(f&&f.classList.contains('tome2'))}catch(e){return false}}
 
 </script></body></html>
