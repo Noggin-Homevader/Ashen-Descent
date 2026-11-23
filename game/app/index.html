@@ -7690,7 +7690,11 @@ function fgReady(){const ps=partsOf(FG.sl,FG.pat);const need={};for(const p of p
  if(!patKnown(FG.sl,FG.pat))return{ok:0,why:'You have not learned this pattern yet'};if(P.gold<fgFee())return{ok:0,why:'Not enough Cinders'};return{ok:1,need}}
 function fgTiers(){const ps=partsOf(FG.sl,FG.pat);let s=0,w=0,mt=1;for(const p of ps){const m=FG.parts[p[0]];if(!m)continue;const t=CMAT[m].t;s+=t*p[3];w+=p[3];if(p[4])mt=t}return{avg:w?s/w:1,main:mt}}
 const fgIL=()=>Math.max(1,Math.min((P.lv||1)+1,(P.lv||1)+(fgTiers().avg>=ilTier(P.lv)+.5?1:0)));
-const fgFee=()=>Math.round((18+fgIL()*7)*careOf().f*(FG.cat?1.4:1));
+/* material quality: the weighted tier of every part (the main part counts most). Better stock costs more to work and gives more:
+   base stats from 0.82x (tier I) to 1.5x (tier V), each material's own bonuses and effects grow with its tier, and the fee rises */
+function fgQ(){const t=fgTiers();return Math.max(1,Math.min(5,t.avg*.6+t.main*.4))}
+const qStat=q=>.82+.17*(q-1),qFee=q=>.75+.18*(q-1),mBon=t=>1+.18*((t||1)-1),mFx=t=>1+.15*((t||1)-1);
+const fgFee=()=>Math.round((18+fgIL()*7)*careOf().f*(FG.cat?1.4:1)*qFee(fgQ()));
 function rcpKey(sl,pat,parts){return sl+'|'+pat+'|'+Object.keys(parts).sort().map(k=>k+'='+parts[k]).join(',')}
 const mastLv=c=>c>=10?3:c>=6?2:c>=3?1:0,MASTN=['Novice','Journeyman','Expert','Master'];
 function fgOdds(){const t=fgTiers(),r=P.rb[rcpKey(FG.sl,FG.pat,FG.parts)],ml=r?mastLv(r.c):0;
@@ -7703,8 +7707,8 @@ function fgHQ(){const t=fgTiers(),r=P.rb[rcpKey(FG.sl,FG.pat,FG.parts)],ml=r?mas
 /* the bonuses each material adds, by role */
 function fgBonus(sl,pat,parts,il,hq,inf){const st={},fx={},ps=partsOf(sl,pat),add=(k,v)=>{st[k]=(st[k]||0)+v},afx=(k,v)=>{fx[k]=(fx[k]||0)+v};
  for(const p of ps){const m=parts[p[0]];if(!m)continue;const M=CMAT[m],w=p[4]?1.5:p[5]?.8:1;
-  if(M.b)for(const k in M.b)add(k,Math.max(1,Math.round(il*M.b[k]*w+(['crit','spd','cdr','blk'].includes(k)?.4:0))));
-  if(M.fx)for(const k in M.fx)afx(k,M.fx[k]*(p[4]?1.2:1)*(M.t>=4?1.1:1))}
+  if(M.b)for(const k in M.b)add(k,Math.max(1,Math.round(il*M.b[k]*w*mBon(M.t)+(['crit','spd','cdr','blk'].includes(k)?.4:0))));
+  if(M.fx)for(const k in M.fx)afx(k,M.fx[k]*(p[4]?1.2:1)*mFx(M.t))}
  if(inf&&INF[inf]){const I=INF[inf];for(const k in I){if(k=='fx'){for(const q in I.fx)afx(q,I.fx[q])}else add(k,Math.max(1,Math.round(il*I[k]+(['crit','spd','cdr','blk'].includes(k)?.5:0))))}}
  for(const D of discOf(sl,pat,parts)){if(D.b)for(const k in D.b)add(k,Math.max(1,Math.round(il*D.b[k]+(['crit','spd','cdr','blk'].includes(k)?.5:0))));if(D.fx)for(const k in D.fx)afx(k,D.fx[k])}
  for(const k in fx)fx[k]=Math.min(FXCAP[k]||30,Math.round(fx[k]*(hq?1.25:1)*10)/10);return{st,fx}}
@@ -7717,7 +7721,7 @@ function fgForge(){cmInit();const rd=fgReady();if(!rd.ok)return toast(rd.why);if
  const sl=FG.sl,pat=FG.pat,parts={...FG.parts},il=fgIL(),odds=fgOdds(),r=rollR(odds),hq=Math.random()<fgHQ(),key=rcpKey(sl,pat,parts),rec=P.rb[key],ml=rec?mastLv(rec.c):0;
  for(const m in rd.need)P.cm[m]-=rd.need[m];if(FG.inf)mTake(FG.inf,1,INFQ);if(FG.cat)P.cm[FG.cat]--;P.gold-=fgFee();
  const it=genPat(il,r,sl,pat),ps=partsOf(sl,pat),main=ps.find(p=>p[4]),mm=CMAT[parts[main[0]]],ds=discOf(sl,pat,parts),mono=ds.some(d=>d.mono);
- const mult=CPW[mm.t]*(hq?1.2:1)*(mono?1.06:1)*(1+ml*.02);for(const k in it.st)it.st[k]=Math.max(1,Math.round(it.st[k]*mult));
+ const mult=qStat(fgQ())*(hq?1.2:1)*(mono?1.06:1)*(1+ml*.02);for(const k in it.st)it.st[k]=Math.max(1,Math.round(it.st[k]*mult));
  if(FG.cat=='primal'){const k=pick(PLG);it.st[k]=(it.st[k]||0)+Math.max(1,Math.round(il*.8))}
  const bo=fgBonus(sl,pat,parts,il,hq,FG.inf);for(const k in bo.st)it.st[k]=(it.st[k]||0)+bo.st[k];
  const named=ds.find(d=>!d.mono),pn=patList(sl).find(p=>p.id==pat);const base=pn?pn.n:(it.wb||it.ob||SLN[sl]);
@@ -7807,7 +7811,7 @@ function fgHtml(){cmInit();if(!FG.pat||!patList(FG.sl).some(p=>p.id==FG.pat))fgS
  const rd=fgReady(),il=fgIL(),od=fgOdds(),hq=fgHQ(),main=ps.find(p=>p[4]),mm=FG.parts[main[0]]&&CMAT[FG.parts[main[0]]],bo=fgBonus(sl,FG.pat,FG.parts,il,0,FG.inf),ds=discOf(sl,FG.pat,FG.parts),key=rcpKey(sl,FG.pat,FG.parts),rec=P.rb[key];
  const pn=(pats.find(p=>p.id==FG.pat)||{}).n||'';const strip=ps.map(p=>FG.parts[p[0]]?`<i style="background:${CMAT[FG.parts[p[0]]].c};flex:${p[3]}"></i>`:`<i style="flex:${p[3]};opacity:.15"></i>`).join('');
  const dn=ds.filter(d=>!d.mono).map(d=>P.disc[d.id]?d.n:'???');
- h+=`<div class="fprev"><div class="fpn"><b>${dn.length?dn.join(' ')+' ':''}${mm?mm.n.split(' ')[0]+' ':''}${pn}</b><small>item level ${il} · ${CPW[mm?mm.t:1]>=1?'+':''}${Math.round((CPW[mm?mm.t:1]-1)*100)}% base from the ${main[1].toLowerCase()}${ds.some(d=>d.mono)?' · Monoforged +6%':''}${rec?` · recipe crafted ${rec.c}× (${MASTN[mastLv(rec.c)]})`:' · new recipe'}</small></div>
+ h+=`<div class="fprev"><div class="fpn"><b>${dn.length?dn.join(' ')+' ':''}${mm?mm.n.split(' ')[0]+' ':''}${pn}</b><small>item level ${il} · material quality ${CTRN[Math.round(fgQ())]||'I'} (${fgQ().toFixed(1)}): base stats ${qStat(fgQ())>=1?'+':''}${Math.round((qStat(fgQ())-1)*100)}%, fee ×${qFee(fgQ()).toFixed(2)}${ds.some(d=>d.mono)?' · Monoforged +6%':''}${rec?` · recipe crafted ${rec.c}× (${MASTN[mastLv(rec.c)]})`:' · new recipe'}</small></div>
  <div class="fstrip">${strip}</div>
  <div class="fbo">${Object.entries(bo.st).map(([k,v])=>`<span>+${v}${LB[k]}</span>`).join('')}${Object.entries(bo.fx).map(([k,v])=>`<span style="color:${FXN[k][1]};border-color:${FXN[k][1]}">${v}${FXN[k][0]}</span>`).join('')}${!Object.keys(bo.st).length&&!Object.keys(bo.fx).length?'<small>Material bonuses appear here.</small>':''}</div>
  ${ds.some(d=>!d.mono&&!P.disc[d.id])?'<div class="fhint">\u2728 Something about this combination stirs the forge…</div>':''}
@@ -14179,6 +14183,46 @@ function voDecor(m,jit,gv,thN){const lit=(x,z,h)=>{try{if(DGX&&DGX.chd&&!DGX.chd
   if(r<.44){/* a toppled anvil and a length of chain */const cx=x+voR(-8,8),cz=z+voR(-8,8),ir=jit(voH(VOC.iron),.06),a=voR(0,3.14);m.box(cx,0,cz,10,6,6,ir,0,a);m.box(cx,6,cz,16,4,7,ir,0,a);m.cone(cx+Math.cos(a)*10,6,cz+Math.sin(a)*10,3,0,4,ir,0);
    for(let k=0;k<6;k++)m.box(cx+voR(-12,12)+k*2,.6,cz+12-k*2.5,3,1.2,1.6,jit(voH(VOC.rust),.1),0,k%2?.6:-.6);continue}
   if(r<.5){/* ash drifts */m.blob(x+voR(-10,10),.3,z+voR(-10,10),voR(6,12),.5,voR(5,10),jit(voH(VOC.ash),.08),0,7,3)}}}
+/* ================= SALVAGE FROM THE BAG: select several pieces, or salvage everything that matches your rules ================= */
+/* The Satchel gets a salvage bar. "Select to salvage" turns clicks on gear into ticks; quick picks tick every unlocked
+   Common, Magic or Rare piece; "Salvage selected" breaks the ticked pieces down. "Salvage all" breaks down everything
+   matching the rarity rules you choose (the same rules the salvage wheel uses). Locked, equipped and Legendary-or-better
+   gear outside town is never touched, and Legendary+ asks once before going. */
+var BSM=false,BSS=new Set(),BSCONF=0;
+function bsReal(){for(const i of[...BSS]){const x=P.inv[i];if(!x||x.k!='gear'||x.lk)BSS.delete(i)}}
+function bsMode(on){BSM=on===undefined?!BSM:!!on;BSS.clear();BSCONF=0;BSEL=-1;showOv()}
+function bsPick(r){P.inv.forEach((x,i)=>{if(x.k=='gear'&&!x.lk&&x.slot!='Pack'&&(r=='all'||Math.min(3,x.r)==r)&&(camp||x.r<3))BSS.add(i)});BSCONF=0;showOv()}
+function bsClear(){BSS.clear();BSCONF=0;showOv()}
+function bsRun(idxs){const L=[...idxs].filter(i=>{const x=P.inv[i];return x&&x.k=='gear'&&!x.lk&&x.slot!='Pack'&&(camp||x.r<3)});if(!L.length)return toast('Nothing to salvage');
+ if(L.some(i=>P.inv[i].r>=3)&&BSCONF!=2){BSCONF=2;showOv();return}
+ const ss=showShop;showShop=()=>{};try{SELS.clear();salvageIdx(L)}finally{showShop=ss}BSS.clear();BSCONF=0;BSM=false;BSEL=-1;
+ try{const r=SRES;if(r&&r.m){const parts=Object.entries(r.m).slice(0,4).map(([k,n])=>n+' '+((CMAT[k]||{}).n||k));toast('Salvaged '+r.n+': '+parts.join(', ')+(Object.keys(r.m).length>4?'…':''))}}catch(e){}
+ showOv()}
+function bsSel(){bsReal();bsRun(BSS)}
+function bsAll(){cmInit();bsRun(salvAllIdx())}
+function bsRule(r){cmInit();P.salvF[r]=P.salvF[r]?0:1;BSCONF=0;showOv()}
+{const _bs=bsel;bsel=function(i){if(BSM&&OT=='bag'){const x=P.inv[i];if(!x)return;if(x.k!='gear')return toast('Only gear can be salvaged');if(x.lk)return toast('That piece is locked');if(!camp&&x.r>=3)return toast('Legendary and better gear can only be salvaged in town');
+  if(BSS.has(i))BSS.delete(i);else BSS.add(i);BSCONF=0;return showOv()}return _bs.apply(this,arguments)}}
+{const _t=tileOf;tileOf=function(x,i){let h=_t.apply(this,arguments);try{if(BSM&&h){if(BSS.has(i))h=h.replace('class="bt','class="bt bss').replace('>',`><i class="bsck">✓</i>`);else if(!x||x.k!='gear'||x.lk||(!camp&&x.r>=3))h=h.replace('class="bt','class="bt bsno')}}catch(e){}return h}}
+{const _b=bagHtml;bagHtml=function(){let h=_b.apply(this,arguments);try{cmInit();bsReal();const n=BSS.size,all=salvAllIdx().filter(i=>camp||P.inv[i].r<3),RN=['Common','Magic','Rare','Legendary+'];
+  let bar='<div class="bsbar">';
+  if(!BSM){bar+=`<button onclick="bsMode(true)"><b>Select to salvage</b><small>tick the pieces to break down</small></button><button class="${all.length?'pri':''}" onclick="bsAll()" ${all.length?'':'disabled'}><b>Salvage all (${all.length})</b><small>${RN.filter((_,r)=>P.salvF[r]).join(', ')||'no rarities chosen'}</small></button>`}
+  else{bar+=`<button class="pri" onclick="bsSel()" ${n?'':'disabled'}><b>Salvage selected (${n})</b><small>${n?'break these down':'click gear to tick it'}</small></button><button onclick="bsMode(false)"><b>Done</b><small>leave selection</small></button>`}
+  bar+='</div>';
+  if(BSCONF==2)bar+=`<div class="bswarn">This includes Legendary or better gear. Press salvage again to confirm.</div>`;
+  if(BSM)bar+=`<div class="bschips"><span>Tick:</span>${['0','1','2'].map(r=>`<button onclick="bsPick(${r})">${RN[r]}</button>`).join('')}${camp?'<button onclick="bsPick(3)">Legendary+</button>':''}<button onclick="bsPick('all')">All</button><button onclick="bsClear()">None</button></div>`;
+  else bar+=`<div class="bschips"><span>Salvage all takes:</span>${RN.map((nm,r)=>`<button class="${P.salvF[r]?'on':''}" onclick="bsRule(${r})">${P.salvF[r]?'☑':'☐'} ${nm}</button>`).join('')}</div><div class="bsnote">Locked and equipped pieces are never included${camp?'':'; Legendary and better only in town'}.</div>`;
+  h=h.replace('<div class="bg">',bar+'<div class="bg">')}catch(e){console.warn('bagsalv',e)}return h}}
+(function(){const st=document.createElement('style');st.textContent=`
+.bsbar{display:flex;gap:8px;margin:8px 0 4px}.bsbar button{flex:1;display:flex;flex-direction:column;align-items:center;min-height:44px;padding:4px 8px}
+.bsbar button small{font-size:10.5px;opacity:.75;font-weight:400}
+.bschips{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:2px 0 6px;font-size:12px}.bschips span{opacity:.8;margin-right:2px}
+.bschips button{min-height:26px;padding:2px 9px;font-size:11.5px}.bschips button.on{border-color:#c8a040;color:#ffe0a0}
+.bsnote{font-size:11px;opacity:.65;margin:-2px 0 6px}.bswarn{font-size:12px;color:#ffb08a;margin:0 0 6px}
+.bg>.bt{position:relative}.bg>.bt.bss{outline:2px solid #e8a040;outline-offset:-2px;box-shadow:0 0 12px #e8a04088 inset}
+.bg>.bt.bsno{opacity:.38;filter:grayscale(.6)}
+.bt .bsck{position:absolute;top:3px;right:4px;width:16px;height:16px;border-radius:50%;background:#e8a040;color:#1a1208;font:900 11px/16px system-ui;text-align:center;font-style:normal;z-index:2}
+`;document.head.appendChild(st)})();
 
 function ovIsBook(){try{const f=$('ovc').firstElementChild;return!!(f&&f.classList.contains('tome2'))}catch(e){return false}}
 
