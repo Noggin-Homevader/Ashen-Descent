@@ -2,6 +2,13 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.8.2
+
+Blender remodel, part 8: hoods and shoulder pieces.
+
+- The five hoods (hood, cowl, face hood, plague mask hood and cap) and the five shoulder pieces (mantle, shawl, short mantle, shoulder guard and leaf mantle) are reworked in Blender from their fitted shapes. The cloth now hangs in soft vertical drapery folds that deepen toward the hem, pushed outward so nothing sinks into the body, while trims, clasps, spikes, masks and lenses keep their shape.
+- Hoods keep exactly how they bend between head and shoulders: each new point takes its weighting from the nearest point of the old hood.
+
 ## 2.8.1
 
 Blender remodel, part 7: potions and the apothecary.
