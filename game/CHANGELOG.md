@@ -2,6 +2,14 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.9.0
+
+Gathering by hand, and rescues you have to bring home.
+
+- Quest herbs and ore are no longer collected by walking over them. Walk up and press F (or click) to pick or mine: picking takes a moment, mining a little longer with sparks and rock chips, and moving or getting hit interrupts it. Ore sometimes gives two.
+- Every gatherable has its own model, made in Blender from real references: Ashbloom is a flame lily with curled-back petals, Frostmoss a frosted cushion bristling with ice, Magma Bloom a charred succulent with a glowing heart, Glowcap a cluster of luminous mushrooms, Pearl Kelp waving ribbons with pearls, and Moonpetal a vine of white trumpet flowers. Ember Ore is rock studded with glowing nuggets, Rime Crystals a quartz-like cluster, Cinderite black rock with burning blades, Bog Iron rusty nodules among reeds, Sea Glass frosted pebbles and shells, and Star Shards a fallen star in its crater.
+- Rescue quests now end in town. When you find the lost person they join you as an extra party member, with their own party frame and health bar: they follow you, rest to heal when it is quiet, and monsters will go after them. Bring them back to town alive to complete the quest. If they are struck down they flee back into the dark, and you can find them again on the same floor.
+
 ## 2.8.2
 
 Blender remodel, part 8: hoods and shoulder pieces.
