@@ -2,6 +2,15 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.6.5
+
+Blender remodel, part 1: every blade weapon rebuilt in Blender.
+
+- All 37 bladed weapons (Longswords, Short Swords, Holy Blades, Greatswords, Daggers, Shivs, Stilettos) are now modelled in Blender: proper diamond and fullered blade cross-sections with polished edges, curved blades that keep their shape along the curve, banded leather grips, bevelled guards and turned pommels with set gems.
+- Distinct hilts per style: knuckle bows on the Sabre, Rapier and Parrying sword, a tsuba on the Nodachi, a disc guard on the Rondel, a finger ring on the Ring-hilt stiletto, a halo on the Haloed blade and gilded wings on the Seraphic blade.
+- The Khopesh now has its sickle hook, the Kris and Ritual daggers their wavy blades, and the Northman, Cinquedea and Seraphic blades glowing runes in the fuller.
+- Baked ambient occlusion on every new model.
+
 ## 2.6.4
 
 Every skill gets its own icon.
