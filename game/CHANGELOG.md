@@ -2,6 +2,17 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.11.0
+
+Text chat with other players.
+
+- A chat box sits above your health and mana, with two tabs: **General**, which reaches everyone connected to the server, and **Party**, which only your party sees.
+- Press Enter to start typing, Enter again to send, and Escape to put it away. Typing "/p" before a message sends it to your party, and "/g" sends it to General, whichever tab is open.
+- What people say also floats over their heads for a few seconds when they are nearby.
+- Tabs show a count of unread messages, and the box can be shrunk to just its tabs with the button in its corner.
+- Party chat turns on as soon as you make or join a party and clears when you leave. General chat needs the online server (open the game from the launcher and connect).
+- Messages are plain text, up to 160 characters, and there is a short pause between sends to keep the channel readable.
+
 ## 2.10.1
 
 Gathering is now a spell.
