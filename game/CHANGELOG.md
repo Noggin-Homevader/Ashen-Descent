@@ -2,6 +2,15 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.10.1
+
+Gathering is now a spell.
+
+- Mining ore calls Durn, the rune of Stone. The rune lights above the vein, a ring of runelight opens on the ground and fills as you work, and a rune-forged pickaxe appears between you and the rock and strikes it in time with the flying chips.
+- Picking herbs and flowers calls Fen, the rune of Growth. Motes of growth spiral up around the plant and it slowly rises out of the earth, turning as it comes.
+- When the work finishes, the harvest streams through the air into your hands.
+- The progress bar names the rune at work (Durn for mining, Fen for gathering).
+
 ## 2.10.0
 
 Elemental golems: their bodies are made of their element.

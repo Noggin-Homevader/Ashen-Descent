@@ -14357,7 +14357,7 @@ function gthPal(it,c){const K=CHM.K,h=K(c),L=(a,e)=>[a[0],a[1],a[2],e],mix=(a,b,
 /* the world nodes draw their own model when the pack has it */
 {const _wd=window.WORLDDRAW;WORLDDRAW=function(vis){if(!window.WPKM||camp||!QN.length)return _wd&&_wd(vis);const hide=[];
  for(const n of QN){if(n.got||n.fl!==fl||(n.k!='herb'&&n.k!='ore'))continue;const g=WPKM['gt_'+(n.it||'')];if(!g)continue;hide.push(n);if(!vis(n.x,n.y,30))continue;if(DGG&&EXP&&!EXP[Math.floor(n.y/CSZ)*DGW+Math.floor(n.x/CSZ)])continue;
-  const sh=GATH&&GATH.n===n?Math.sin(Date.now()/40)*.03*(n.k=='ore'?1:.4):0;CHM.setF(n.x,0,n.y,46,n.ph+sh,0,0,null,0);CHM.wmx(g,[0,0,0],[1,0,0],[0,1,0],[0,0,1],gthPal(n.it,n.c),4,null)}
+  const gn=GATH&&GATH.n===n,sh=gn?Math.sin(Date.now()/40)*.03*(n.k=='ore'?1:.4):0,lift=gn&&n.k=='herb'?Math.min(1,GATH.t/GATH.T)*12:0;CHM.setF(n.x,lift,n.y,46,n.ph+sh+(gn&&n.k=='herb'?GATH.t*1.5:0),0,0,null,0);CHM.wmx(g,[0,0,0],[1,0,0],[0,1,0],[0,0,1],gthPal(n.it,n.c),4,null)}
  for(const n of hide)n.k='_'+n.k;try{_wd&&_wd(vis)}finally{for(const n of hide)n.k=n.k.slice(1)}}}
 /* ---- picking and mining ---- */
 function gathStart(n){if(!n||n.got)return;if(n.k=='lost')return escStart(n);const G=GTHK[n.k];if(!G)return;P.mv=null;P.tgt=null;GATH={n,t:0,T:G.T,x:P.x,y:P.y,hp:P.hp,fx:0};
@@ -14372,7 +14372,7 @@ function gathTick(dt){if(!GBAR){GBAR=document.createElement('div');GBAR.id='gbar
  g.t+=dt;g.fx-=dt;if(g.fx<=0){g.fx=n.k=='ore'?.32:.25;
   if(n.k=='ore'){burst(n.x+R(-6,6),n.y+R(-6,6),6,Math.random()<.5?n.c:'#a8a098',110,.35,2,-30);FT.push({x:n.x+R(-8,8),y:n.y-16,t:.35,s:'*',c:'#ffe0a0'});try{AUD.hit&&AUD.hit()}catch(e){}}
   else burst(n.x+R(-5,5),n.y+R(-5,5),4,n.c,50,.5,2,-35)}
- GBAR.hidden=false;GBAR.querySelector('b').textContent=(GTHK[n.k].t=='Mine'?'Mining ':'Picking ')+((P.qa||[]).find(x=>x.id==n.q)||{}).inm;GBAR.querySelector('s').style.width=Math.min(100,g.t/g.T*100)+'%';GBAR.style.setProperty('--gc',n.c);
+ GBAR.hidden=false;GBAR.querySelector('b').textContent=(GTHK[n.k].t=='Mine'?'Durn \u2014 mining ':'Fen \u2014 gathering ')+((P.qa||[]).find(x=>x.id==n.q)||{}).inm;GBAR.querySelector('s').style.width=Math.min(100,g.t/g.T*100)+'%';GBAR.style.setProperty('--gc',n.c);
  if(g.t>=g.T)gathDone()}
 /* ---- escorts: the rescued person walks with you as a party member ---- */
 MT.escort={nm:'Rescued',hp:100,sp:150,r:12,dm:0,rate:999,spr:'skeleton',tag:'esc',pal:{a:'#e0c8a0',b:'#8a6a4a',c:'#5a4a3a'},ty:'Holy',col:'#ffb347',heal:1e-9};
@@ -14406,6 +14406,44 @@ function escHud(){if(!EFR){EFR=document.createElement('div');EFR.id='escfr';cons
 #escfr{position:absolute;left:12px;top:150px;z-index:5;width:190px;padding:7px 10px 8px;background:#140d08d8;border:1.5px solid #ffb347;border-radius:9px;color:#f1e3c4;font:12px system-ui;box-shadow:0 4px 14px #0008;pointer-events:none}
 #escfr b{display:block;font:700 14px Almendra,Georgia,serif;color:#ffd890}#escfr small{opacity:.7}#escfr i{display:block;height:8px;margin:5px 0 3px;background:#0008;border-radius:4px;overflow:hidden}#escfr s{display:block;height:100%;text-decoration:none}#escfr em{font-style:normal;font-size:11px;opacity:.8}
 `;document.head.appendChild(st)})();
+/* ---- the gathering spells: Durn (Stone) calls a rune-forged pickaxe to break ore loose; Fen (Growth) lifts a flower out of the earth ----
+   A rune from the Rune Index lights above the node and a ring opens on the ground under it. For ore, a glowing pickaxe appears between
+   you and the vein and strikes it in time with the chips; for herbs, motes spiral up and the plant rises. When it is done, the
+   harvest streams into your hands. */
+const GSPELL={ore:{rune:'Durn',g:'M-3 4L-3-1L0-4L3-1L3 4L-3 4',c:'#c8a060',c2:'#ffe2a0'},herb:{rune:'Fen',g:'M0 4V-1M0-1L-3-4M0-1L3-4M0 2L-2 0M0 2L2 0',c:'#7ae07a',c2:'#e8ffb0'}};
+const gsSeg=d=>{const T=d.match(/[MLVH]|-?\d*\.?\d+/g)||[];let i=0,c=null,cur=[0,0];const S=[];while(i<T.length){const t=T[i];if(/[MLVH]/.test(t)){c=t;i++;continue}
+ if(c=='M'||c=='L'){const p=[+T[i],+T[i+1]];i+=2;if(c=='L')S.push([cur,p]);cur=p;if(c=='M')c='L'}else if(c=='V'){const p=[cur[0],+t];i++;S.push([cur,p]);cur=p}else{const p=[+t,cur[1]];i++;S.push([cur,p]);cur=p}}return S};
+for(const k in GSPELL)GSPELL[k].S=gsSeg(GSPELL[k].g);
+let GSTREAM=[];
+{const _gd=gathDone;gathDone=function(){const n=GATH&&GATH.n;if(n)GSTREAM.push({x:n.x,y:n.y,c:n.c,k:n.k,t0:performance.now()});return _gd.apply(this,arguments)}}
+function gathFx(){const PP=CHM.P,K=CHM.K,t=performance.now()/1000;
+ if(GATH&&GATH.n&&(GATH.n.k=='ore'||GATH.n.k=='herb')){const g=GATH,n=g.n,S=GSPELL[n.k],u=Math.min(1,g.t/g.T),c=K(S.c),c2=K(S.c2),nc=K(n.c||S.c),dx=P.x-n.x,dy=P.y-n.y,yaw=Math.atan2(dx,dy),pu=.7+.3*Math.sin(t*6);
+  CHM.setF(n.x,0,n.y,46,yaw,0,0,null,0);
+  /* ground ring, filling in as the work goes */
+  const N=28;for(let k=0;k<N;k++){const a=k/N*6.2832+t*.6,on=k/N<=u+.04;PP(Math.sin(a)*.5,.012,Math.cos(a)*.5,.035,.006,.012,on?c2:c,{em:on?1.1*pu:.35,lo:1,az:0})}
+  for(let k=0;k<4;k++){const a=k*1.5708+t*.6;PP(Math.sin(a)*.42,.012,Math.cos(a)*.42,.02,.008,.02,c2,{em:pu,lo:1})}
+  /* the rune, turning slowly above the node */
+  const ry=n.k=='ore'?1.05:.95,sc=.042*(.85+.15*u);CHM.setF(n.x,0,n.y,46,yaw+Math.sin(t*1.2)*.25,0,0,null,0);
+  for(const[a,b]of S.S){const ddx=b[0]-a[0],ddy=-(b[1]-a[1]),L=Math.hypot(ddx,ddy)||.01;PP((a[0]+b[0])/2*sc,ry-(a[1]+b[1])/2*sc,0,.28*sc,L/2*sc+.14*sc,.01,c2,{az:Math.atan2(-ddx,ddy),em:.45+.4*u*pu,lo:1})}
+  for(let k=0;k<12;k++){const a=k/12*6.2832-t*.8;PP(Math.sin(a)*.3,ry+Math.cos(a)*.3,0,.012,.012,.008,c,{em:.6+.4*u,lo:1})}
+  CHM.setF(n.x,0,n.y,46,yaw,0,0,null,0);
+  if(n.k=='ore'){/* a rune-forged pickaxe: swings back, then bites into the vein every beat */
+   const beat=((t%.32)/.32),sw=beat<.7?-1.1*Math.sin(beat/.7*Math.PI*.5):-1.1+1.6*((beat-.7)/.3),A=Math.max(-1.1,Math.min(.5,sw)),pv=[.18,.62,.62],ca=Math.cos(A),sa=Math.sin(A);
+   const at=(y,z)=>[pv[0],pv[1]+y*ca-z*sa,pv[2]+y*sa+z*ca],hd=at(.05,-.52),ha=at(0,-.24),hc=K('#8a6a3a');
+   PP(ha[0],ha[1],ha[2],.022,.022,.28,gmx3(hc,c2,.35),{ax:A,em:.25,n:.6});
+   PP(hd[0],hd[1],hd[2],.03,.04,.04,c2,{ax:A,em:.6,n:.5});
+   for(const s of[1,-1]){const tp=at(.05+s*.13,-.52-.03),tq=at(.05+s*.24,-.52-.08);PP(tp[0],tp[1],tp[2],.022,.08,.024,c2,{ax:A+s*.35,em:.7,n:.5});PP(tq[0],tq[1],tq[2],.012,.045,.014,K('#fff4d0'),{ax:A+s*.7,em:1,n:.5})}
+   for(let k=0;k<5;k++){const q=at(0,-.08-k*.1);PP(q[0]+Math.sin(t*9+k)*.02,q[1],q[2],.008,.008,.008,c2,{em:.8,lo:1})}
+   if(beat>.92||beat<.08)for(let k=0;k<6;k++){const a=k*1.05+t*3;PP(Math.sin(a)*.12,.2+Math.abs(Math.cos(a))*.15,.08+Math.cos(a)*.08,.014,.014,.014,K('#ffe0a0'),{em:1.4,lo:1})}}
+  else{/* motes of growth spiral up round the plant as it lifts */
+   for(let k=0;k<16;k++){const ph=(t*.5+k/16)%1,a=k*2.4+t*2.2,r=.32*(1-ph)+.05;PP(Math.sin(a)*r,.05+ph*.8,Math.cos(a)*r,.014,.014,.014,k%3?nc:c2,{em:.9*(1-ph*.6),lo:1})}
+   for(let k=0;k<6;k++){const a=k*1.05+t*1.4;PP(Math.sin(a)*.2,.03+u*.25,Math.cos(a)*.2,.03,.004,.012,c,{em:.7,lo:1,az:a})}}}
+ /* the harvest streaming into your hands */
+ GSTREAM=GSTREAM.filter(s=>performance.now()-s.t0<700);
+ for(const s of GSTREAM){const u=(performance.now()-s.t0)/700,c=K(s.c||'#ffffff');for(let k=0;k<10;k++){const v=Math.min(1,u*1.2+k*.03),e=v*v*(3-2*v),x=s.x+(P.x-s.x)*e,y=s.y+(P.y-s.y)*e,h=10+Math.sin(v*Math.PI)*28+k*.6;
+  CHM.setF(x,0,y,46,0,0,0,null,0);PP(Math.sin(k*2.1)*.06,h/46,Math.cos(k*2.1)*.06,.016,.016,.016,c,{em:1.2*(1-u*.5),lo:1})}}}
+const gmx3=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];
+{const _wd=window.WORLDDRAW;WORLDDRAW=function(vis){const r=_wd&&_wd.apply(this,arguments);try{if(!camp&&(GATH||GSTREAM.length))gathFx()}catch(e){}return r}}
 /* ================= THE STASH: a tall chest of polished obsidian bound in star-metal (modelled in Blender) =================
    Five carved runes from the Rune Index glow in their own colours (Lume, Lot and Vor on the front, Brann on the left side, Tarn on the right)
    and an etched channel of ember light runs round the chest linking them. The lid swings up on its back hinges while the
