@@ -2,6 +2,15 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.9.4
+
+Real dual-wield stances, and the stash's runes rearranged.
+
+- Fighting with two weapons no longer points both straight ahead. Two swords take a high-low guard: the main blade raised with its point toward the foe, the off-hand blade held lower across the body to parry. Axes and maces are held low at the hips with their heads up, ready to chop, and a dagger in the off hand keeps its reverse grip.
+- Attacks alternate: the main hand raises high and outside and cuts down across the body, then the off hand follows with its own cut.
+- Main-hand axes and maces can now be paired with an off-hand weapon in the same way, each drawn as itself.
+- The stash now carries Lume, Lot and Vor on the front, Brann on the left side and Tarn on the right, each linked into the ember channels. Where Tarn and Brann used to sit, the foot of the front and the top of the lid now hold eight-point star-metal stars with ember hearts.
+
 ## 2.9.3
 
 Dual wielding looks right, and the stash wears the real runes.
