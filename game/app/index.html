@@ -14528,6 +14528,68 @@ function dwEq(i){const x=P.inv[i];if(!dwIs(x))return;if(!dwOK())return toast('Yo
 function dwDraw(o,hx,hy,hz){try{if(!window.WPKM||!window.wpkKey)return false;const k=wpkKey(o.dwt,o.dwb);if(!k||!WPKM[k])return false;const K=CHM.K,tr=o.tr||0,acH=o.gc||'#9ad0ff';
  const sc=['#6a707e','#7c8496','#939cb0','#a6b0c6','#bcc8de'][Math.min(4,tr)],c={steel:K(mx(sc,acH,.06)),edge:K(mx(mx(sc,acH,.06),'#ffffff',.35)),iron:K(tr==0?'#3a3836':'#4e4a58'),gold:K(tr>=2?'#d8a838':tr>=1?'#9a8a5a':'#5a5048'),wrap:K(tr==0?'#3a2618':'#2a1a12'),wood:K('#5a3c22'),bone:K('#d6cdb4'),gem:K(acH)};
  const wax=-.3,ca=Math.cos(wax),sa=Math.sin(wax);CHM.wmx(WPKM[k],[hx,hy,hz],[1,0,0],[0,ca,sa],[0,-sa,ca],wpkPal(c,tr,0,Date.now()/1000),tr,null);return true}catch(e){return false}}
+/* ================= CHAT: General (everyone on the server) and Party =================
+   General rides the shared lobby room, Party rides the party's own room; both are plain room messages, so the relay
+   needs nothing new. Enter opens the chat box, Enter sends, Escape closes. "/p ..." sends to party, "/g ..." to general.
+   Messages also float briefly over the speaker's head when you can see them. */
+{
+ const gMP=()=>{try{return MP}catch(e){return null}};
+ const CH={tab:'g',open:true,log:{g:[],p:[]},unread:{g:0,p:0},last:0,hooked:null,phooked:null};window.CHAT=CH;CH.gm=()=>gMP();
+ const MAXL=80,MAXC=160,clean=s=>String(s==null?'':s).replace(/[\u0000-\u001f\u007f]/g,' ').replace(/\s+/g,' ').trim().slice(0,MAXC);
+ const nick=()=>{try{return mpNick()||'Wanderer'}catch(e){return 'Wanderer'}};  /* the same name your party and the lobby see */
+ const css=document.createElement('style');css.textContent=`
+#chat{position:absolute;left:12px;bottom:186px;width:340px;z-index:30;font:13px/1.35 system-ui,Segoe UI,sans-serif;color:#efe4cc;pointer-events:auto;user-select:text}
+#chat .cbox{background:linear-gradient(#120d0ad8,#0b0806e8);border:1px solid #a8823c;border-radius:9px;box-shadow:0 0 0 1px #000,0 6px 20px #000a;overflow:hidden}
+#chat .ctabs{display:flex;gap:2px;align-items:center;padding:4px 6px 0;border-bottom:1px solid #5a4424}
+#chat .ctabs button{all:unset;cursor:pointer;padding:4px 11px 5px;border-radius:7px 7px 0 0;font:600 12px Almendra,Georgia,serif;color:#c8b48a;letter-spacing:.3px;position:relative}
+#chat .ctabs button.on{background:#3a2a16;color:#ffe2a0;box-shadow:inset 0 2px 0 #e0b050}
+#chat .ctabs button i{font-style:normal;margin-left:5px;background:#c0392b;color:#fff;border-radius:8px;padding:0 5px;font:700 10px system-ui}
+#chat .ctabs .cmin{margin-left:auto;padding:2px 8px;font:700 14px system-ui;color:#c8b48a}
+#chat .clog{height:148px;overflow-y:auto;padding:6px 9px;scrollbar-width:thin;scrollbar-color:#6a5030 transparent}
+#chat .clog p{margin:0 0 3px;word-wrap:break-word;text-shadow:0 1px 1px #000}
+#chat .clog b{font-weight:700}#chat .clog .sys{color:#b0a080;font-style:italic}
+#chat .clog .me b{color:#9fd8ff!important}
+#chat form{display:flex;border-top:1px solid #5a4424}
+#chat input{flex:1;min-width:0;background:#0006;border:0;outline:0;color:#fff4dc;padding:7px 9px;font:13px system-ui}
+#chat input::placeholder{color:#8a7a5a}
+#chat form button{all:unset;cursor:pointer;padding:0 12px;color:#ffd890;font:600 12px Almendra,Georgia,serif;background:#3a2a16}
+#chat.min .clog,#chat.min form{display:none}
+#chat.min{width:auto}#chat.min .ctabs{border-bottom:0;padding-bottom:4px}
+#chat.idle:not(.min) .cbox{background:#0b080680;border-color:#a8823c66}#chat.idle:not(.min) form{opacity:.55}
+@media (max-width:700px){#chat{width:calc(100vw - 24px);bottom:200px}#chat .clog{height:110px}}`;
+ document.head.appendChild(css);
+ const el=document.createElement('div');el.id='chat';
+ el.innerHTML=`<div class="cbox"><div class="ctabs"><button data-t="g" class="on">General<i hidden></i></button><button data-t="p">Party<i hidden></i></button><button class="cmin" title="Hide chat">–</button></div><div class="clog" aria-live="polite"></div><form autocomplete="off"><input maxlength="${MAXC}" placeholder="Press Enter to chat"><button>Send</button></form></div>`;
+ const mount=()=>{const w=document.getElementById('wrap')||document.body;if(!el.isConnected)w.appendChild(el)};mount();
+ const LOG=el.querySelector('.clog'),IN=el.querySelector('input'),FORM=el.querySelector('form');
+ const colOf=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;return `hsl(${h%360},70%,72%)`};
+ function render(){LOG.textContent='';for(const m of CH.log[CH.tab]){const p=document.createElement('p');if(m.sys){p.className='sys';p.textContent=m.t}else{if(m.me)p.className='me';const b=document.createElement('b');b.textContent=m.n+': ';b.style.color=colOf(m.n);p.append(b,document.createTextNode(m.t))}LOG.appendChild(p)}LOG.scrollTop=LOG.scrollHeight;
+  for(const b of el.querySelectorAll('.ctabs button[data-t]')){const t=b.dataset.t,i=b.querySelector('i');b.classList.toggle('on',t==CH.tab);i.hidden=!CH.unread[t];i.textContent=CH.unread[t]>9?'9+':CH.unread[t]}
+  IN.placeholder=CH.tab=='p'?(gMP()&&gMP().party?'Message your party':'Join a party to use party chat'):(gMP()&&gMP().ok?'Message everyone on the server':'Chat needs the online server')}
+ function push(tab,m){const L=CH.log[tab];L.push(m);if(L.length>MAXL)L.shift();if(tab!=CH.tab||el.classList.contains('min'))CH.unread[tab]++;render()}
+ const sys=(tab,t)=>push(tab,{sys:1,t});
+ function bubble(peer,txt,tab){try{const a=gMP()&&gMP().av&&gMP().av[peer];const me=gMP()&&peer===gMP().myPeer;const x=me?P.x:a&&a.x,y=me?P.y:a&&a.y;if(x==null)return;FT.push({x,y:y-46,t:3,s:(txt.length>40?txt.slice(0,38)+'…':txt),c:tab=='p'?'#9fe8a0':'#f4ead0'})}catch(e){}}
+ function recv(tab,m){try{const d=m&&m.data||{},t=clean(d.m);if(!t)return;const n=clean(d.n).slice(0,16)||'Wanderer',me=!!(m.isMe||gMP()&&m.peer===gMP().myPeer);push(tab,{n,t,me});bubble(m.peer,t,tab)}catch(e){}}
+ function hook(){CH.hk=(CH.hk||0)+1;try{if(gMP()&&gMP().room&&CH.hooked!==gMP().room){CH.hooked=gMP().room;gMP().room.on('chat',m=>recv('g',m),()=>{});sys('g','Connected to General chat.')}
+  const rm=gMP()&&gMP().party&&gMP().party.rm;if(rm&&CH.phooked!==rm){CH.phooked=rm;rm.on('pchat',m=>recv('p',m),()=>{});CH.log.p=[];sys('p','You joined '+(gMP().party.name||'a party')+'. Party chat is on.')}
+  if(!rm&&CH.phooked){CH.phooked=null;sys("p","You left the party.")}}catch(e){CH.err=String(e)}}
+ CH.hook=hook;setInterval(()=>{hook();mount()},700);
+ function send(raw){hook();let tab=CH.tab,t=clean(raw);if(!t)return;
+  const cmd=t.match(/^\/(g|p|general|party)\s+(.*)$/i);if(cmd){tab=/^p/i.test(cmd[1])?'p':'g';t=clean(cmd[2]);CH.tab=tab;CH.unread[tab]=0;if(!t)return render()}
+  const now=Date.now();if(now-CH.last<700)return sys(tab,'Slow down a little.');CH.last=now;
+  const rm=tab=='p'?(gMP()&&gMP().party&&gMP().party.rm):(gMP()&&gMP().room);
+  if(!rm){return sys(tab,tab=='p'?'You are not in a party. Make or join one from the Party button.':'Chat needs the online server. Open the game from the launcher and connect.')}
+  rm.emit(tab=='p'?'pchat':'chat',{n:nick(),m:t}).catch(()=>sys(tab,'That message could not be sent.'))}
+ FORM.addEventListener('submit',e=>{e.preventDefault();send(IN.value);IN.value='';IN.blur()});
+ for(const ev of['keydown','keyup','keypress'])IN.addEventListener(ev,e=>{e.stopPropagation();if(ev=='keydown'&&e.key=='Escape'){IN.value='';IN.blur()}});
+ IN.addEventListener('focus',()=>{el.classList.remove('idle');try{for(const k in keys)keys[k]=0}catch(e){}});IN.addEventListener('blur',()=>el.classList.add('idle'));
+ el.addEventListener('mousedown',e=>e.stopPropagation());el.addEventListener('wheel',e=>e.stopPropagation(),{passive:true});
+ el.querySelector('.ctabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.classList.contains('cmin')){el.classList.toggle('min');b.textContent=el.classList.contains('min')?'+':'–';b.title=el.classList.contains('min')?'Show chat':'Hide chat';if(!el.classList.contains('min'))CH.unread[CH.tab]=0;return render()}CH.tab=b.dataset.t;CH.unread[CH.tab]=0;el.classList.remove('min');render()});
+ addEventListener('keydown',e=>{if(e.key!=='Enter'||e.ctrlKey||e.metaKey||e.altKey)return;const a=document.activeElement;if(a&&a!==document.body&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;if(document.getElementById('ov')&&!document.getElementById('ov').hidden)return;e.preventDefault();el.classList.remove('min');IN.focus()});
+ el.classList.add('idle');sys('g','Welcome. Press Enter to chat. Type /p to talk to your party.');sys('p','Party chat shows here once you are in a party.');render();
+ /* hide it on the title screen and character select; show it once you are in the world */
+ setInterval(()=>{let show=false;try{show=!!(P&&started)}catch(e){}el.hidden=!show},500);
+}
 /* ================= SKILL ICONS, ONE PER SKILL =================
    Every skill used to share one icon per element and kind, so a dozen skills could look identical. Now each icon is
    built from the skill itself:
