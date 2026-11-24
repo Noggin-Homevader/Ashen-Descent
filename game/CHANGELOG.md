@@ -2,6 +2,15 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.9.2
+
+A new personal stash, modelled in Blender.
+
+- The stash in camp is now a tall chest of polished obsidian bound in star-metal, with star studs climbing its corners and faceted volcanic glass on its sides and back.
+- Five carved runes glow in their own colours: Taen (ice blue) at the top of the front, Bruun (green) and Lat (violet) below it, Lumi (pale gold) at the foot, and Var (crimson) on the lid.
+- Etched channels of ember light run round the whole chest and link the runes together, flickering softly.
+- The lid swings up on its hinges while the stash window is open, with a warm glow inside and rune motes rising out of it.
+
 ## 2.9.1
 
 Natural stone and real foliage in the dungeon.
