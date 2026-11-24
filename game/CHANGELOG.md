@@ -2,6 +2,15 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.12.1
+
+Spears held properly, and mining with a pickaxe.
+
+- Spears are now held the way they were fought with: two hands spread on the shaft, the rear hand at the hip near the butt and the lead hand well forward, the point toward the foe at chest-to-face height, angled slightly in across the body.
+- The spear attack is a proper thrust: a short draw back, then the rear hand drives the shaft forward through the lead hand as the point levels out, then it recovers. (Halberds keep their upright guard.)
+- Mining is now done by hand. Your character puts their weapon away, turns to the vein, and swings a pickaxe (modelled in Blender) with both hands, raising it overhead and bringing it down into the rock in a steady rhythm, with chips and sparks flying on each strike.
+- The Durn rune, ground ring and floating pickaxe are gone from mining. Picking herbs and flowers still uses the Fen spell.
+
 ## 2.12.0
 
 New scabbards and a proper sword belt.
