@@ -2,6 +2,16 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.12.0
+
+New scabbards and a proper sword belt.
+
+- Every scabbard is now a single model made in Blender, rather than a tube with fittings laid over it. It has a metal locket at the throat with a pointed lower edge and a set stone, hanger bands with D-rings, raised core-cord ridges under the leather, a tooled line with lozenges down each face, a stitched seam down the back edge, and an arched metal chape with a button at the tip. Swords, greatswords and daggers each have their own.
+- The scabbard is fitted to the blade it holds as it is drawn, so it follows that blade's taper and any curve.
+- Characters now wear a sword belt, also modelled in Blender: stitched leather with a buckle and hanging strap end, round studs across the back, and D-ring slides on each hip.
+- Swords hang from the belt the way they were worn: on the hip opposite the sword hand, hilt forward and tip trailing back, held by a short strap from the front ring to the scabbard's upper D-ring and a longer one from behind the hip to its lower D-ring. The belt sits low on the hips and dips on the side carrying the sword. Daggers hang from a strap off the ring behind the hip.
+- With two swords, each hangs on its own hip from its own hangers.
+
 ## 2.11.1
 
 Elemental beasts are made of their element.
