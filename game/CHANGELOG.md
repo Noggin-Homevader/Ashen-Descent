@@ -2,6 +2,13 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.12.3
+
+A natural flow for the fountain, and a movable chat box.
+
+- The fountain's water now flows naturally instead of in neat circles. It turns slowly round the cradle (faster close to it) and drifts outward, carrying soft swirls of light and shadow with the current. Each drop that falls back from the sphere sends its own ripple out across the flow, and glints ride along with the water.
+- The chat box is now one of the pieces in Move HUD: drag it anywhere and resize it with the − and + buttons or the mouse wheel, and it stays where you put it.
+
 ## 2.12.2
 
 Real water in the Healing Fountain.
