@@ -2,6 +2,14 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.12.2
+
+Real water in the Healing Fountain.
+
+- The fountain's pool is now live water instead of a flat blue disc. Ripples run out across it from the cradle and from where the falling drops land, and it shades from deep blue-green in the middle to lighter, clearer water toward the rim, with a pale line of foam against the stone.
+- Drops falling from the floating sphere splash where they hit, throwing up a small crown and a spreading ring.
+- Glints of light flicker across the surface and caustic light wanders over it.
+
 ## 2.12.1
 
 Spears held properly, and mining with a pickaxe.
