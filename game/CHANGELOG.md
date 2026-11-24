@@ -2,6 +2,16 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.9.3
+
+Dual wielding looks right, and the stash wears the real runes.
+
+- A weapon in the off hand is now drawn as itself. A second sword shows as that sword (it used to appear as a small dagger), and axes, maces and daggers in the off hand use their own models too.
+- Two swords are held in a matching guard, both blades forward, and the off-hand blade cuts down from high outside.
+- Each blade has its own scabbard. With two swords, one hangs on each hip and each is drawn across the body; an off-hand dagger rides at the back of the hip and an off-hand axe or mace hangs from the belt. Sheathing puts both weapons away.
+- Longswords are always straight now. The four curved styles (Falchion, Sabre, Scimitar, Khopesh) were remodelled in Blender as the Broadsword, Sidesword, Knightly and Hand-and-a-half, so a crafted Longsword no longer comes out curved.
+- The stash chest now carries the actual runes from the Rune Index, carved in their own colours: Lume at the top, Lot and Vor beneath it, Tarn at the foot and Brann on the lid.
+
 ## 2.9.2
 
 A new personal stash, modelled in Blender.
