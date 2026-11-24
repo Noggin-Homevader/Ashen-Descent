@@ -2,6 +2,20 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.10.0
+
+Elemental golems: their bodies are made of their element.
+
+- Golems can now roll one of seven elemental forms, the same way wolves, spiders, bats and slimes do. Deeper floors make them more likely, and the zone tilts the roll (magma golems in the Ember Forge, tide golems in flooded halls, wood and runestone golems in overgrown places, ice and gold in the crystal caves).
+- **Tide Golem** (water): a shimmering blue body with water streaming down it and ripples at its feet. Its hits chill.
+- **Magma Golem** (lava): dark basalt split by glowing molten cracks, with embers rising off it. Its hits burn.
+- **Tempest Golem** (storm): no legs; it rides a spinning tornado of cloud with lightning arcing through it. Its hits shock.
+- **Rime Golem** (ice): pale crystal stone with frost spikes along its shoulders and back. Its hits chill.
+- **Gilded Golem** (gold): a gold body with crystal clusters. Its hits shock.
+- **Runestone Golem** (earth): grey stone with green-glowing rune seams and drifting spores. Its hits drain.
+- **Mossbark Golem** (wood): bark and moss with leafy growth and hanging vines. Its hits poison.
+- Each has its own elite name and tougher stats, and gives more experience.
+
 ## 2.9.4
 
 Real dual-wield stances, and the stash's runes rearranged.
