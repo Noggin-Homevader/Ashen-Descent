@@ -2,6 +2,18 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.11.1
+
+Elemental beasts are made of their element.
+
+- The elemental wolves, spiders, bats and slimes no longer look like ordinary creatures with effects floating over them. Their bodies take the element themselves:
+  - Fire: smouldering charcoal hide with ember-lit fur, glowing claws and a burning mouth; fire bats have molten wing membranes and the magma slime glows from inside.
+  - Ice: frosted, faintly glowing crystal hide with ice-blue markings.
+  - Storm: storm-grey bodies whose markings crackle and flicker with lightning.
+  - Venom: sickly green hides with glowing toxic glands.
+  - Shadow: near-black bodies veined with pulsing violet.
+- Their flame manes, crystal spines, storm nodes, venom pustules and shadow wisps are now fixed to the creature's skeleton, so they move with its back, head and tail as it walks, lunges and flies instead of hanging in the air.
+
 ## 2.11.0
 
 Text chat with other players.
