@@ -13321,7 +13321,7 @@ function FOUNTAIN(m,J,H_,rects,tor,T){try{
  m.cyl(x,6,z,72,3,8,J(st3,.03));m.cyl(x,8.1,z,72.8,.7,8,H_(gold),.15);
  /* the basin: an octagonal wall with a gilded coping, water just below its rim */
  m.cyl(x,9,z,FOUNT.R,10,8,J(st1,.04));m.cyl(x,17.6,z,FOUNT.R+1,1.2,8,H_(gold),.2);
- m.cyl(x,9,z,FOUNT.R-5,10.4,8,H_(wat),.35);m.cyl(x,19.4,z,FOUNT.R-8,.2,24,H_(wat2),.5);
+ m.cyl(x,9,z,FOUNT.R-5,10.2,8,H_('#06161e'),.04);
  /* carved panels with rune bosses on each face of the basin */
  for(let k=0;k<8;k++){const a=k/8*6.2832+Math.PI/8,mx=x+Math.cos(a)*(FOUNT.R+.4),mz=z+Math.sin(a)*(FOUNT.R+.4);m.box(mx,11,mz,30,6,1.2,J(st2,.04),0,-a+1.5708);m.blob(mx,14,mz,1.8,1.8,1.8,H_(shard),0,6,4,.8)}
  /* four rune pillars on the top step, banded in gold and crowned with water crystals */
@@ -13352,6 +13352,24 @@ function FTNDRAW(T){try{if(!FOUNT.built||typeof camp=='undefined'||!camp||(typeo
  for(let k=0;k<4;k++){const ph=(t*.35+k/4)%1,a0=k/4*TAU+t*.3,pts=[],ws=[];
   for(let i=0;i<=10;i++){const u=Math.min(1,ph+i*.035),r=44*(1-u)+8*u,a=a0+u*3.2,yy=19.6+(cy-8-19.6)*Math.pow(u,1.4);pts.push([x+Math.cos(a)*r,yy,z+Math.sin(a)*r]);ws.push(1.6*(1-u*.5))}rib(pts,ws,[.5,.85,1],.8)}
  if(typeof sfxBub=='function')for(let k=0;k<6;k++){const ph=(t*.7+k/6)%1,a=k*1.05+t*.4,r=12+ph*24;sfxBub(x+Math.cos(a)*r,cy-10-ph*(cy-30)-ph*ph*6,z+Math.sin(a)*r,.9,.9,'Water',.7*(1-ph*.5),.2,k+10)}
+ /* the pool: live water. Concentric bands are lifted and shaded by ripples running out from the cradle and from where the
+    drops fall back, deep blue-green in the middle, lighter and clearer toward the rim, with a pale foam line at the stone;
+    moving glints catch the light, and caustic light wanders across it */
+ {const R0=FOUNT.R-5.5,N=36,Y=19.25,LF=CHM.lof,deep=[.03,.16,.2],mid=[.06,.34,.4],rim=[.2,.55,.58],hi=[.75,.95,1];CHM.setF(0,0,0,1,0,0,0,null,0);
+  const drops=[];for(let k=0;k<6;k++){const ph=(t*.7+k/6)%1,a=k*1.05+t*.4,r=12+ph*24;if(ph>.92)drops.push([x+Math.cos(a)*r,z+Math.sin(a)*r,(ph-.92)/.08])}
+  const H=r=>.55*Math.sin(r*.42-t*3.1)*Math.exp(-r/38)+.28*Math.sin(r*.9-t*4.7+1.3)*Math.exp(-r/22)+.18*Math.sin(r*.23-t*1.6),
+   dH=r=>(H(r+.4)-H(r-.4))/.8;
+  let prev=null;for(let i=0;i<=N;i++){const r=1+i/N*(R0-1),y=Y+H(r)*.04,ring={c:[x,y,z],rx:r,rz:r,t:[0,1,0]};
+   if(prev){const rm=(prev.rx+r)/2,u=rm/R0,sl=Math.max(-1,Math.min(1,dH(rm)*1.8)),base=u<.5?deep.map((v,j)=>v+(mid[j]-v)*u*2):mid.map((v,j)=>v+(rim[j]-v)*(u-.5)*2),
+     c=base.map((v,j)=>Math.min(1,v+(hi[j]-v)*Math.max(0,sl)*.32-v*Math.max(0,-sl)*.14));LF([prev,ring],c,{seg:40,open:1,em:.18+.22*Math.max(0,sl)})}
+   prev=ring}
+  LF([{c:[x,Y+.25,z],rx:R0-.2,rz:R0-.2,t:[0,1,0]},{c:[x,Y+.3,z],rx:R0+.6,rz:R0+.6,t:[0,1,0]}],[.8,.92,.95],{seg:48,open:1,em:.35+.15*Math.sin(t*2)});
+  /* splash rings where drops land, and the drops' crowns */
+  for(const d of drops){const rr=1+d[2]*7;polyFlat(d[0],d[1],rr,14,0,.25,K('#dff6ff'),.9*(1-d[2]),Y+.5);if(d[2]<.4)for(let k=0;k<5;k++){const a=k*1.2566;CHM.setF(d[0]+Math.cos(a)*1.4,0,d[1]+Math.sin(a)*1.4,1,0,0,0,null,0);CHM.P(0,Y+.6+d[2]*4,0,.35,.6,.35,K('#e8fbff'),{em:1,lo:1})}}
+  /* glints and wandering caustic light */
+  for(let k=0;k<16;k++){const a=k*2.399+t*.13*(k%3-1),r=6+((k*37)%41)/41*(R0-10),f=Math.sin(t*5.3+k*1.7),gx=x+Math.cos(a)*r,gz=z+Math.sin(a)*r;
+   if(f>.45){CHM.setF(gx,0,gz,1,a,0,0,null,0);CHM.P(0,Y+H(r)*.35+.35,0,.9*(f-.4),.12,.25,K('#ffffff'),{em:1.6*(f-.4),lo:1})}}
+  for(let k=0;k<3;k++){const a0=t*.25*(k%2?1:-1)+k*2.1,rr=10+k*12+Math.sin(t*.7+k)*4;polyFlat(x+Math.cos(a0)*4,z+Math.sin(a0)*4,rr,20,a0,.5,K('#7fe8ff'),.18+.1*Math.sin(t*1.3+k),Y+.32)}}
  /* runes orbiting the sphere: Life, Tide, Insight, Clarity */
  if(window.runeUp){const R_=[[14,'#8affb0',hpOn],[2,'#5ad0ff',D],[19,'#5a8cff',mpOn],[23,'#7ab0ff',mpOn],[14,'#8affb0',hpOn],[2,'#5ad0ff',D]];
   R_.forEach((q,i)=>{const a=t*.45+i/R_.length*TAU,rr=28,bx=x+Math.cos(a)*rr,bz=z+Math.sin(a)*rr,bob=Math.sin(t*2+i)*2,on=q[2]||D;
@@ -13360,7 +13378,7 @@ function FTNDRAW(T){try{if(!FOUNT.built||typeof camp=='undefined'||!camp||(typeo
  if(window.runeFlat&&window.polyFlat){const n=16,rot=-t*.06;for(let k=0;k<n;k++){const a=rot+k/n*TAU,rr=FOUNT.R+5.5,rk=[14,2,19,23][k%4],on=(rk==14&&hpOn)||((rk==19||rk==23)&&mpOn)||D;
    runeFlat(x+Math.cos(a)*rr,z+Math.sin(a)*rr,.62,rk,-a+1.5708,K(rk==14?'#8affb0':rk==2?'#5ad0ff':'#7aa8ff'),on?1.3:(.45+.2*Math.sin(t*1.4+k)),9.3)}
   polyFlat(x,z,FOUNT.R+1.8,48,0,.35,K('#d9a441'),.5,9.25);polyFlat(x,z,FOUNT.R+9.5,48,0,.35,K('#d9a441'),.5,9.25);
-  for(let k=0;k<3;k++){const ph=(t*.4+k/3)%1,rr=14+ph*(FOUNT.R-22);polyFlat(x,z,rr,24,ph,.3,K('#bfefff'),.45*(1-ph),19.7)}}
+}
  /* while you are restored, a stream of water reaches out to you */
  if(near&&(hpOn||mpOn||D)&&P){const c=hpOn?[.55,1,.7]:[.55,.75,1],pts=[],ws=[],hx=P.x,hz=P.y,hy=34;
   for(let i=0;i<=14;i++){const u=i/14,yy=cy+(hy-cy)*u+Math.sin(u*Math.PI)*14;pts.push([x+(hx-x)*u,yy,z+(hz-z)*u]);ws.push(1.1+.5*Math.sin((u*6-t*5)*Math.PI))}rib(pts,ws,c,.7,.6);
