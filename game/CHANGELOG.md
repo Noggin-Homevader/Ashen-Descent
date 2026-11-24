@@ -2,6 +2,14 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.9.1
+
+Natural stone and real foliage in the dungeon.
+
+- Cave and mountain walls are now layered rock outcrops modelled in Blender, with crevices, mossy ledges and scree at the foot, and stalactites hanging from many of them.
+- Stone pillars are craggy fused stalagmite columns instead of smooth posts, and rubble piles and boulders are proper broken rock with moss caps.
+- Trees, undergrowth and the forest walls now have leaves: clusters of individual leaves instead of round green blobs, on all three tree shapes and the fallen logs.
+
 ## 2.9.0
 
 Gathering by hand, and rescues you have to bring home.
