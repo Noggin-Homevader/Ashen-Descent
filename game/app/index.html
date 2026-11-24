@@ -3728,7 +3728,7 @@ let q=n*10;const s_=F.s,cy_=F.cy,sy=F.sy,em=F.em*.5,ix=LD?LD.ix:g.ix,mt=g.mt;
 let nout=0;const NT_=LD?LD.nt:g.nt;for(let i=0;i<NT_*3;i+=3){const v0=ix[i];if(!SHOWG[mt[v0]>>4]||!SHOWC[mt[v0]&15])continue;for(let k=0;k<3;k++){const v=ix[i+k],j=v*6;let X=tmp[j],Y=tmp[j+1],Z=tmp[j+2];X+=Y*F.rl;Z+=Y*F.pl;const nx=tmp[j+3],ny=tmp[j+4],nz=tmp[j+5];
 buf[q]=F.ox+s_*(X*cy_+Z*sy);buf[q+1]=F.oy+s_*Y*F.ys;buf[q+2]=F.oz+s_*(-X*sy+Z*cy_);buf[q+3]=nx*cy_+nz*sy;buf[q+4]=ny;buf[q+5]=-nx*sy+nz*cy_;
 const c=pal[mt[v]&15]||pal[0],f=.9+.1*ny+.03*Math.sin(Y*40);let r=c[0]*f,g_=c[1]*f,b_=c[2]*f;if(F.tk){r+=(F.tc[0]-r)*F.tk;g_+=(F.tc[1]-g_)*F.tk;b_+=(F.tc[2]-b_)*F.tk}if(F.fl){r+=(1-r)*F.fl;g_+=(1-g_)*F.fl;b_+=(1-b_)*F.fl}
-buf[q+6]=r;buf[q+7]=g_;buf[q+8]=b_;buf[q+9]=em;q+=10;nout++}}n+=nout;}
+buf[q+6]=r;buf[q+7]=g_;buf[q+8]=b_;buf[q+9]=c.length>3?Math.max(em,c[3]):em;q+=10;nout++}}n+=nout;}
 function skBody(o,st,A,sw,mv,ph,by,up,bd){const xs=bd||1,g=skLoad(),B=new Array(12),hip=.705,KN=.39,AN=.075;
 B[0]=SKI();B[0][10]=by*.4;B[1]=SKI();B[1][10]=by;
 for(let k=0;k<2;k++){const sd=k?-1:1,a=A[k]||{ang:0,EB:-.14,aaz:0},S=[sd*.182,.9,0],E=[sd*.182,.745,0];
@@ -7196,6 +7196,7 @@ var WOLF3D=(()=>{const I=CRIG.idx(WFB);
   let ty=0;if(dead!==undefined){const d=Math.min(1,dead*1.5);P_[0][2]=d*1.35;ty=-d*.12;P_[I.jaw][1]=.35*d;for(const n of['FLu','FRu','BLu','BRu'])P_[I[n]][1]*=1-d}
   const B=CRIG.pose(WFB,P_,[0,by+ty,-hu*.04]);
   const pal=[c,mixc3(c,K('#e8e0d0'),.42),c2,K('#1a1210'),ey,K('#f0e8d8'),K('#2a2420'),K('#7a4a40')];while(pal.length<16)pal.push(c);
+  if(o.vel&&window.ELSKIN)ELSKIN(o.vel,'wolf',pal,T,id);st._B=B;st._BN=WFB;st._K=[1,1,1,0];
   CHM.skE(g,B,pal,CRIG.SHOW,CRIG.SHOW,1,1,1,0)}})();
 function mixc3(a,b,t){return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t]}
 if(window.BEAST3D)BEAST3D.wolf=WOLF3D;
@@ -7213,6 +7214,7 @@ var SPIDER3D=(()=>{const I=CRIG.idx(SPB);
   let ty=0;if(dead!==undefined){const d=Math.min(1,dead*1.5);ty=-d*.12;for(const[sd,S]of[[1,'L'],[-1,'R']])for(let k=0;k<4;k++){P_[I['u'+S+k]][2]=sd*d*.9;P_[I['l'+S+k]][2]=-sd*d*1.5}}
   const B=CRIG.pose(SPB,P_,[0,by+ty,0]);
   const pal=[c,c2,mixc3(c2,K('#000000'),.4),ey,ey,K('#e8dcc0'),mixc3(c2,K('#000000'),.3)];while(pal.length<16)pal.push(c);
+  if(o.vel&&window.ELSKIN)ELSKIN(o.vel,'spider',pal,T,id);st._B=B;st._BN=SPB;st._K=[1,1,1,0];
   CHM.skE(g,B,pal,CRIG.SHOW,CRIG.SHOW,1,1,1,0)}})();
 if(window.BEAST3D)BEAST3D.spider=SPIDER3D;
 
@@ -7226,6 +7228,7 @@ var BAT3D=(()=>{const I=CRIG.idx(BTB);
   let ty=0;if(dead!==undefined){const d=Math.min(1,dead*1.5);for(const[a,h,sd]of[['WLa','WLh',1],['WRa','WRh',-1]]){P_[I[a]][0]=sd*1.1*d;P_[I[a]][2]=-sd*.4*d;P_[I[h]][0]=sd*1.6*d}P_[0][2]=d*1.2;ty=-d*.25}
   const B=CRIG.pose(BTB,P_,[0,by+ty,0]);
   const pal=[c,c2,mixc3(c2,K('#5a2a32'),.35),mixc3(c,K('#000000'),.3),ey,K('#e8dcc8'),K('#a8707a'),K('#2a1a1e')];while(pal.length<16)pal.push(c);
+  if(o.vel&&window.ELSKIN)ELSKIN(o.vel,'bat',pal,T,id);st._B=B;st._BN=BTB;st._K=[1,1,1,0];
   CHM.skE(g,B,pal,CRIG.SHOW,CRIG.SHOW,1,1,1,0)}})();
 if(window.BEAST3D)BEAST3D.bat=BAT3D;
 
@@ -7236,6 +7239,7 @@ var SLIME3D=(()=>{const I=CRIG.idx(SLB);
   const P_=SLB.map(()=>[0,0,0,1]);P_[I.mid][2]=Math.sin(t*.8+1)*.05;P_[I.mid][1]=Math.sin(t*.7)*.04;P_[I.top][2]=Math.sin(t*.8)*.09;P_[I.top][1]=Math.sin(t*.6+2)*.07+at*.15;
   const B=CRIG.pose(SLB,P_,[0,0,0]);
   const pal=[c,mixc3(c2,K('#000000'),.15),mixc3(c,K('#ffffff'),.5),K('#1a2a14'),K('#f4fff0'),mixc3(c2,K('#000000'),.6),K('#d8d0b8'),K('#8a8f98')];while(pal.length<16)pal.push(c);
+  if(o.vel&&window.ELSKIN)ELSKIN(o.vel,'slime',pal,Date.now()/1000,st.id||0);st._B=B;st._BN=SLB;st._K=[w,q,w,0];
   CHM.skE(g,B,pal,CRIG.SHOW,CRIG.SHOW,w,q,w,0)}})();
 if(window.BEAST3D)BEAST3D.slime=SLIME3D;
 
@@ -9737,7 +9741,7 @@ GOLEM3D=(()=>{
   const up=(id,k)=>{const i=G.findIndex(v=>v.id==id);if(i>=0)w[i]+=k};if(/Forge|Ember|volc|lava/i.test(n))up('gl',4);if(/Flood|Catacomb|water/i.test(n))up('gw',4);if(/Overgrown|Wild|forest|grass/i.test(n)){up('gt',3);up('ge',2)}if(/Crystal|cave/i.test(n)){up('gi',2);up('gg',2)}}catch(e){}
   let s=w.reduce((a,b)=>a+b,0)*Math.random();for(let i=0;i<G.length;i++){s-=w[i];if(s<=0)return G[i]}return G[0]};
  /* look: the variant's element goes onto the golem's body */
- const _es=eSpec;eSpec=function(e){const had=e&&e._sp,o=_es.apply(this,arguments);try{if(!had&&o&&e.race=='golem'&&e.vr&&e.vr.el){o.gel=e.vr.el;o.sk=e.vr.pal.a;o.cl=e.vr.pal.b;o.tr=e.vr.pal.c;o.ey=e.vr.pal.c}}catch(_){}return o};
+ const _es=eSpec;eSpec=function(e){const had=e&&e._sp,o=_es.apply(this,arguments);try{if(!had&&o&&e.vr&&e.vr.el&&e.race!='golem')o.vel=e.vr.el;if(!had&&o&&e.race=='golem'&&e.vr&&e.vr.el){o.gel=e.vr.el;o.sk=e.vr.pal.a;o.cl=e.vr.pal.b;o.tr=e.vr.pal.c;o.ey=e.vr.pal.c}}catch(_){}return o};
 }catch(e){console.warn('elemgolem',e)}}
 /* ================= BIG FOES: the camera pulls back so dragons and other giants fit on screen ================= */
 var BIGCAM=null;
@@ -14241,6 +14245,52 @@ rock:(Q,K,t,W,c)=>{const s=K('#8a8070'),s2=K('#6e6558'),cr=K('#3a342c');Q(0,0,0,
 claw:(Q,K,t,W,c)=>{for(let i=-1;i<=1;i++){for(let j=0;j<4;j++){const u=j/3;Q(i*.07+Math.sin(u*2)*.02*i,.06-u*.12,-u*.04-Math.abs(i)*.03,.011-j*.002,.035,.04,c,{em:1-.15*j,lo:1,az:-i*.3})}}Q(0,0,.06,.035,.035,.035,W,{em:1.2,lo:1})},
 sonic:(Q,K,t,W,c)=>{for(let k=0;k<3;k++){const ph=(t*3+k/3)%1,R=.04+ph*.14;for(let i=0;i<9;i++){const a=-1.2+i*.3;Q(Math.sin(a)*R,Math.cos(a)*R*.7,-ph*.2,.014,.014,.02,c,{em:1.2-ph,lo:1})}}Q(0,0,.02,.035,.035,.035,W,{em:1.2,lo:1})}
 });
+/* ================= ELEMENTAL BEASTS, MADE OF THEIR ELEMENT =================
+   The elemental wolves, spiders, bats and slimes used to be ordinary creatures with effects drawn at fixed points above
+   them, so the flames and crystals floated off the body whenever it moved. Now:
+   - the body itself takes the element: each material of the Blender mesh gets the element's colour and, where it suits,
+     its own inner light (ember fur and glowing claws, frosted crystal hide, crackling storm markings, toxic glands,
+     violet shadow-veins), pulsing or flickering with the creature;
+   - every flame, crystal, node, pustule and wisp is pinned to the nearest bone of the posed rig, so it rides the spine,
+     head and tail as they move instead of hanging in the air. */
+{
+ const H=h=>{const n=parseInt(h.slice(1,7),16);return[(n>>16&255)/255,(n>>8&255)/255,(n&255)/255]};
+ /* [slot, colour, glow, pulse kind] ; pulse kinds: 0 steady, 1 breathing, 2 flicker (storm) */
+ const SK={
+  fire:{wolf:[[0,'#4a1c10',.16,1],[1,'#ff7a1a',.75,1],[2,'#1e0c08',.06,1],[3,'#ff9a2a',.8,1],[4,'#ffe08a',1.4],[6,'#ff5a10',.8,1],[7,'#ffb040',.9]],
+   spider:[[0,'#3a1a10',.14,1],[1,'#ff6a14',.65,1],[2,'#120806'],[3,'#ffe08a',1.4],[4,'#ffe08a',1.4],[5,'#ffb040',.8],[6,'#ff5a10',.5,1]],
+   bat:[[0,'#3a1a10',.14,1],[1,'#ff5a10',.5,1],[2,'#ffa030',.6,1],[3,'#160c08'],[4,'#ffe08a',1.4],[6,'#ff7a2a',.6]],
+   slime:[[0,'#ff6a1a',.55,1],[1,'#8a2008',.3],[2,'#ffd23a',.9,1],[5,'#3a1004']]},
+  ice:{wolf:[[0,'#cfe8f6',.12],[1,'#ffffff',.3,1],[2,'#7ab0d8',.18],[3,'#bff0ff',.6],[4,'#dffaff',1.3],[6,'#5a90b8',.2]],
+   spider:[[0,'#b8d8ec',.12],[1,'#e8fbff',.35,1],[2,'#5a90b8',.1],[3,'#dffaff',1.3],[4,'#dffaff',1.3],[5,'#bff0ff',.6]],
+   bat:[[0,'#bcdcee',.1],[1,'#e0f6ff',.3],[2,'#9ae0ff',.4,1],[3,'#7ab0d8'],[4,'#dffaff',1.3]],
+   slime:[[0,'#a8e0f8',.3,1],[1,'#4a90b8',.2],[2,'#ffffff',.7]]},
+  storm:{wolf:[[0,'#4a4c64',.05,2],[1,'#fff3a0',.5,2],[2,'#22243a'],[3,'#ffe85a',.9,2],[4,'#fff6a0',1.4]],
+   spider:[[0,'#3a3a58'],[1,'#ffe85a',.5,2],[2,'#1a1a2c'],[3,'#fff6a0',1.4],[4,'#fff6a0',1.4]],
+   bat:[[0,'#4a4c64'],[1,'#2c2e46'],[2,'#ffe85a',.5,2],[4,'#fff6a0',1.4]],
+   slime:[[0,'#6a70c8',.4,2],[1,'#2c2e66',.2],[2,'#fff6a0',1,2]]},
+  venom:{wolf:[[0,'#3e5228'],[1,'#a8ff4a',.45,1],[2,'#1e2a12'],[3,'#c8ff6a',.7],[4,'#e4ff9a',1.3],[6,'#7aff2a',.8,1],[7,'#a8ff4a',.9]],
+   spider:[[0,'#2e3e1c'],[1,'#a8ff4a',.5,1],[2,'#141c0a'],[3,'#e4ff9a',1.3],[4,'#e4ff9a',1.3],[5,'#c8ff6a',.7]],
+   bat:[[0,'#3a4a24'],[1,'#22301a'],[2,'#9aff4a',.45,1],[4,'#e4ff9a',1.3]],
+   slime:[[0,'#7ad02a',.45,1],[1,'#2a5010',.2],[2,'#e4ff9a',.8,1]]},
+  shadow:{wolf:[[0,'#1c1428'],[1,'#7a3ad0',.45,1],[2,'#0a0610'],[3,'#c070ff',.7],[4,'#e0a0ff',1.4],[6,'#5a20a0',.6]],
+   spider:[[0,'#1a1226'],[1,'#8a40e0',.45,1],[2,'#08050e'],[3,'#e0a0ff',1.4],[4,'#e0a0ff',1.4]],
+   bat:[[0,'#1c1428'],[1,'#120c1c'],[2,'#7a3ad0',.4,1],[4,'#e0a0ff',1.4]],
+   slime:[[0,'#3a2050',.35,1],[1,'#140a22',.1],[2,'#c070ff',.8,1]]}};
+ window.ELSKIN=function(el,race,pal,T,id){const L=SK[el]&&SK[el][race];if(!L)return;
+  for(const[i,h,g,k]of L){const c=H(h);let e=g||0;if(e){if(k==1)e*=.75+.25*Math.sin(T*2.6+id*1.7+i);else if(k==2)e*=Math.sin(T*31+id+i)*Math.sin(T*17+i*2)>.15?1.6:.55}
+   pal[i]=e?[c[0],c[1],c[2],e]:c}};
+ /* pin a point to the nearest bone of the creature's spine/head/tail as posed this frame */
+ const SPINE={wolf:/^(root|chest|neck|head|jaw|t\d)$/,spider:/^(ceph|abd)$/,bat:/^(body|head)$/,slime:/./};
+ function skin(st,race,x,y,z){const B=st._B,BN=st._BN,k=st._K||[1,1,1,0],rx=x/k[0],ry=(y-k[3])/k[1],rz=z/k[2],re=SPINE[race]||/./;
+  let bi=-1,bd=1e9;for(let i=0;i<BN.length;i++){const b=BN[i];if(!b[1]||!b[2]||!re.test(b[0]))continue;const a=b[1],c=b[2],vx=c[0]-a[0],vy=c[1]-a[1],vz=c[2]-a[2],L2=vx*vx+vy*vy+vz*vz||1e-6;
+   let u=((rx-a[0])*vx+(ry-a[1])*vy+(rz-a[2])*vz)/L2;u=Math.max(0,Math.min(1,u));const dx=rx-a[0]-vx*u,dy=ry-a[1]-vy*u,dz=rz-a[2]-vz*u,d=dx*dx+dy*dy+dz*dz;if(d<bd){bd=d;bi=i}}
+  if(bi<0)return[x,y,z];const m=B[bi];return[(m[0]*rx+m[1]*ry+m[2]*rz+m[9])*k[0],k[3]+(m[3]*rx+m[4]*ry+m[5]*rz+m[10])*k[1],(m[6]*rx+m[7]*ry+m[8]*rz+m[11])*k[2]]}
+ const _vf=varFx;
+ varFx=function(e,st){if(!st||!st._B||!st._BN)return _vf.apply(this,arguments);const P0=CHM.P,race=e.race;
+  CHM.P=function(x,y,z){const q=skin(st,race,x,y,z);arguments[0]=q[0];arguments[1]=q[1];arguments[2]=q[2];return P0.apply(this,arguments)};
+  try{return _vf.apply(this,arguments)}finally{CHM.P=P0}};
+}
 /* ================= MAGE HATS: proper wizard hats, the circlet now rare ================= */
 /* Mage helms come in six shapes: the Wizard Hat, the Wide Hat, the Crooked Hat (a tall crown that leans back and
    droops at the tip, with a buckled band, a patch and a bell-star), the Magister Cap (a tall quilted cap with gold
