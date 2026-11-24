@@ -14,7 +14,7 @@ Elemental golems: their bodies are made of their element.
 - **Gilded Golem** (gold): a gold body with crystal clusters. Its hits shock.
 - **Runestone Golem** (earth): grey stone with green-glowing rune seams and drifting spores. Its hits drain.
 - **Mossbark Golem** (wood): bark and moss with leafy growth and hanging vines. Its hits poison.
-- Each has its own name at elite rank, tougher stats and better rewards, and they show up in the bestiary as you meet them.
+- Each has its own elite name and tougher stats, and gives more experience.
 
 ## 2.9.4
 
