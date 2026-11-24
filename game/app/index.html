@@ -1282,7 +1282,7 @@ slime:[{id:'mf',el:'fire',nm:['Magma Ooze','Molten Slag','Lava Sovereign'],pal:{
 for(const r in BV)BV[r].forEach(v=>{Object.assign(v,VEL[v.el]);v.orb=v.pal.c});
 const HPX=2.8,MDX=.8;
 function add(t,hm,dm,race,o){const d=T[t],m=RD[race].mod,b=o=='boss',u=o=='mut',k=u?1.8:1;
-E.push({t,race,mut:u,x:R(30,W-30),y:R(80,200),hp:d.hp*1.3*HPX*(b?2:1)*hm*m[0]*k,mh:d.hp*1.3*HPX*(b?2:1)*hm*m[0]*k,sp:d.sp*m[2],dm:d.dm*2*(fl<=3?.5:fl<=7?.62:MDX)*dm*m[1]*(u?1.3:1),r:b?36:d.r*(u?1.25:1)*R(.92,1.12)*(RD[race].sz||1),rng:d.rng,mage:d.mage,cleric:d.cleric,xp:d.xp*.5*(b?8:u?7:1)*(1+fl*.1),cd:R(0,1.5),sl:0,boss:b,nm:RD[race].nm[b?2:u?1:0]+(b||BEAST[race]?'':' '+((RROLE[race]||{})[t]||''))});armEnemy(E[E.length-1]);{const e_=E[E.length-1];if(race=='golem')e_.ar=Math.min(.6,(e_.ar||0)+.3);if(!BST.s.includes(race)){BST.s.push(race);BSTsave()}e_.pc=!BEAST[race]&&race!='golem'&&Math.random()<(b?1:u?.8:.35);if(BEAST[race]){e_.sh=false;e_.hm=false;if(BV[race]&&!b&&Math.random()<Math.min(.6,.1+fl*.045)){const v=pick(BV[race]);e_.vr=v;if(!BST.s.includes(v.id)){BST.s.push(v.id);BSTsave()}e_.nm=v.nm[u?1:0];e_.hp*=v.m[0];e_.mh=e_.hp;e_.dm*=v.m[1];e_.sp*=v.m[2];e_.xp*=1.3}}}}
+E.push({t,race,mut:u,x:R(30,W-30),y:R(80,200),hp:d.hp*1.3*HPX*(b?2:1)*hm*m[0]*k,mh:d.hp*1.3*HPX*(b?2:1)*hm*m[0]*k,sp:d.sp*m[2],dm:d.dm*2*(fl<=3?.5:fl<=7?.62:MDX)*dm*m[1]*(u?1.3:1),r:b?36:d.r*(u?1.25:1)*R(.92,1.12)*(RD[race].sz||1),rng:d.rng,mage:d.mage,cleric:d.cleric,xp:d.xp*.5*(b?8:u?7:1)*(1+fl*.1),cd:R(0,1.5),sl:0,boss:b,nm:RD[race].nm[b?2:u?1:0]+(b||BEAST[race]?'':' '+((RROLE[race]||{})[t]||''))});armEnemy(E[E.length-1]);{const e_=E[E.length-1];if(race=='golem')e_.ar=Math.min(.6,(e_.ar||0)+.3);if(!BST.s.includes(race)){BST.s.push(race);BSTsave()}e_.pc=!BEAST[race]&&race!='golem'&&Math.random()<(b?1:u?.8:.35);if(BEAST[race]){e_.sh=false;e_.hm=false;if(BV[race]&&!b&&Math.random()<Math.min(.6,.1+fl*.045)){const v=pick(BV[race]);e_.vr=v;if(!BST.s.includes(v.id)){BST.s.push(v.id);BSTsave()}e_.nm=v.nm[u?1:0];e_.hp*=v.m[0];e_.mh=e_.hp;e_.dm*=v.m[1];e_.sp*=v.m[2];e_.xp*=1.3}}else if(race=='golem'&&window.GOLVPICK&&!b&&Math.random()<Math.min(.55,.12+fl*.04)){const v=GOLVPICK();e_.vr=v;if(!BST.s.includes(v.id)){BST.s.push(v.id);BSTsave()}e_.nm=v.nm[u?1:0];e_.hp*=v.m[0];e_.mh=e_.hp;e_.dm*=v.m[1];e_.sp*=v.m[2];e_.xp*=1.3}}}
 let BG=null,camp=false;
 const ZON=[{n:'Ruined Halls',bk:'grass',r:'goblin',p:['wolf','bat','cultist'],acc:['grass','forest','cave']},
 {n:'Crystal Caverns',bk:'cave',r:'skeleton',p:['spider','slime','cultist','bat'],acc:['cave','water','crypt']},
@@ -9641,13 +9641,29 @@ function gStride(o){const r=o===P?null:o.race;return(r&&GSTR[r])||1.85}
 
 /* ================= GOLEM, REBUILT: angular quarried stone on a rigid rig, moss on the tops, crystal growths, glowing rune seams ================= */
 GOLEM3D=(()=>{
- const PP=CHM.P,K=CHM.K,KC={},kc=h=>KC[h]||(KC[h]=K(h)),col=v=>typeof v=='string'&&v[0]=='#'?kc(v):null,dk=(c,k)=>[c[0]*k,c[1]*k,c[2]*k],mx=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];
+ let PP=CHM.P;const PP0=CHM.P,K=CHM.K,KC={},kc=h=>KC[h]||(KC[h]=K(h)),col=v=>typeof v=='string'&&v[0]=='#'?kc(v):null,dk=(c,k)=>[c[0]*k,c[1]*k,c[2]*k],mx=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];
  const add=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],mul=(a,k)=>[a[0]*k,a[1]*k,a[2]*k],sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],lerp=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];
  const dirOf=(ax,az)=>{const y=-Math.cos(ax),z=-Math.sin(ax);return[-y*Math.sin(az),y*Math.cos(az),z]};
  /* a stone block laid along a bone: long axis follows the bone, slight per-block twist so no two read the same */
  const seg=(P,Q,rx,rz,c,j,op)=>{const d=sub(Q,P),L=Math.hypot(d[0],d[1],d[2])||1e-4,n=mul(d,1/L),m=lerp(P,Q,.5);PP(m[0],m[1],m[2],rx,L*.56,rz,c,Object.assign({pv:m,ax:-Math.asin(Math.max(-1,Math.min(1,n[2])))+j*.12,az:Math.atan2(n[0],-n[1])+j*.1,n:.42},op||{}))};
- return function(o,st){const t=(st.t||Date.now())/1000,id=st.id||0,mv=st.mv||0,ph=st.ph||0,a=st.atk,dead=st.dead,hu=st.hurt||0;
-  const stn=col(o.sk)||kc('#8a8478'),st2=dk(stn,.68),st3=mx(stn,kc('#d8d0c0'),.18),moss=mx(kc('#4a6a2a'),col(o.cl)||kc('#4a6a2a'),.15),moss2=dk(moss,.7),glow=col(o.tr)||col(o.ey)||kc('#ffb040');
+ /* elemental golems: the body itself is made of the element (water, lava rock, storm, ice crystal, gold, glowing runestone, mossy wood) */
+ const GEL={water:{s:'#2f7fd8',s2:'#1d55a8',s3:'#7cc8f4',top:'#e6f6ff',g:'#b0f0ff',bem:.32,drip:1},
+  lava:{s:'#2c221e',s2:'#181210',s3:'#40302a',top:'#ff6a14',tem:1,g:'#ffa030',crk:1,emb:1},
+  storm:{s:'#4c5470',s2:'#2c3246',s3:'#7884a4',top:'#aab4d4',g:'#ffe85a',tor:1},
+  ice:{s:'#a6d8f2',s2:'#6aa8d0',s3:'#e4f6ff',top:'#ffffff',g:'#8ae4ff',bem:.1,xt:'#c8f4ff',frost:1},
+  gold:{s:'#c89a3a',s2:'#8a6420',s3:'#f0cc6a',top:'#ffe48a',g:'#fff0a0',xt:'#ffcc30',bem:.05},
+  earth:{s:'#6e6c64',s2:'#4a4842',s3:'#8e8a7e',top:'#4a6a2a',g:'#5aff6a',crk:1,spore:1},
+  wood:{s:'#5e4128',s2:'#3e2a18',s3:'#7a5a36',top:'#3f7a24',g:'#b8ff6a',leaf:1}};
+ window.GOLEMEL=GEL;
+ return function(o,st){const t=(st.t||Date.now())/1000,id=st.id||0,mv=st.mv||0,ph=st.ph||0,a=st.atk,dead=st.dead,hu=st.hurt||0,EL=o.gel&&GEL[o.gel];
+  let stn=col(o.sk)||kc('#8a8478'),st2=dk(stn,.68),st3=mx(stn,kc('#d8d0c0'),.18),moss=mx(kc('#4a6a2a'),col(o.cl)||kc('#4a6a2a'),.15),moss2=dk(moss,.7),glow=col(o.tr)||col(o.ey)||kc('#ffb040');
+  if(EL){stn=kc(EL.s);st2=kc(EL.s2);st3=kc(EL.s3);moss=kc(EL.top);moss2=dk(moss,.75);glow=kc(EL.g)}
+  const pul0=.75+.25*Math.sin(t*2.2+id);
+  /* the body's blocks: water shimmers, lava and runestone split along glowing seams */
+  PP=!EL?PP0:(x,y,z,rx,ry,rz,c,op)=>{const em=op&&op.em;if(em||!(c===stn||c===st2||c===st3)){if(EL.tem&&c===moss)return PP0(x,y,z,rx,ry,rz,c,Object.assign({},op,{em:.9+.1*Math.sin(t*5+x*30)}));return PP0(x,y,z,rx,ry,rz,c,op)}
+   if(EL.bem)op=Object.assign({},op,{em:EL.bem*(.6+.4*Math.sin(t*3+y*24+x*11))});
+   PP0(x,y,z,rx,ry,rz,c,op);
+   if(EL.crk&&rx>.03&&ry>.03){const q=Object.assign({},op,{em:pul0*(EL.emb?1:.8)});PP0(x,y,z,rx*1.03,Math.min(ry,rx)*.07,rz*1.03,glow,q)}};
   let lean=.06+mv*.08-hu*.25+(a?Math.max(-.2,Math.min(.25,(a.sw||0)*.1)):0),drop=0;if(dead!==undefined){const ez=1-Math.pow(1-Math.min(1,dead*1.4),3);lean+=.5*ez;drop=.3*ez}
   /* legs: planted stance, heavy lift on the swing (GAITS) */
   const Yh=.4,legs=[];let minY=1;
@@ -9657,7 +9673,13 @@ GOLEM3D=(()=>{
   const UP=(x,y,z,rx,ry,rz,c,op)=>{const q=U([x,y+br,z]);PP(q[0],q[1],q[2],rx,ry,rz,c,Object.assign({pv:q,ax:lean,n:.45},op||{}))};
   const pul=.75+.25*Math.sin(t*2.2+id),gl=[Math.min(1,glow[0]*(1+.5*pul)),Math.min(1,glow[1]*(1+.5*pul)),Math.min(1,glow[2]*(1+.5*pul))];
   /* ---- legs ---- */
-  for(const L of legs){const sd=L.sd,H=sh(L.H),Kn=sh(L.Kn),An=sh(L.An);
+  if(EL&&EL.tor){/* the legs are a spinning funnel of cloud with lightning in it */
+   const cw=kc('#d4dcf0'),cg=kc('#8a94b4');
+   for(let k=0;k<56;k++){const u=(k/56+t*.35)%1,y=.02+u*.46,r=.03+.26*u*u+.015*Math.sin(t*9+k),an=t*(9-u*4)+k*2.39,c=mx(cg,cw,.35+.65*((k*7)%5)/5);
+    PP0(Math.sin(an)*r,y,Math.cos(an)*r,.03+.035*u,.012+.01*u,.03+.035*u,c,{em:.25+.2*u,n:.7})}
+   for(let k=0;k<3;k++){const y=.08+k*.15,r=.06+.22*((y/.48)**2),an=t*8+k*2;for(let j=0;j<10;j++){const b=an+j*.35;PP0(Math.sin(b)*r,y+j*.004,Math.cos(b)*r,.006,.006,.03,cw,{em:.5,lo:1})}}
+   const fl=Math.sin(t*17+id)>.2;if(fl){let p=[0,.05,0];for(let k=0;k<6;k++){const q=[Math.sin(t*41+k*3)*.14,.05+k*.075,Math.cos(t*37+k*5)*.12];const m=lerp(p,q,.5);PP0(m[0],m[1],m[2],.008,.045,.008,glow,{em:1.6,lo:1,az:Math.atan2(q[0]-p[0],q[1]-p[1])});p=q}}}
+  else for(const L of legs){const sd=L.sd,H=sh(L.H),Kn=sh(L.Kn),An=sh(L.An);
    seg(H,Kn,.072,.078,stn,sd);seg(lerp(H,Kn,.15),lerp(H,Kn,.7),.06,.084,st3,-sd,{n:.5});
    PP(Kn[0],Kn[1],Kn[2]+.02,.058,.05,.06,st2,{pv:Kn,n:.45,az:sd*.2});
    seg(Kn,An,.074,.076,stn,sd*2);seg(lerp(Kn,An,.1),lerp(Kn,An,.55),.07,.07,st3,0,{n:.5});
@@ -9674,6 +9696,16 @@ GOLEM3D=(()=>{
   /* moss on the tops and a few crystal growths */
   UP(0,.95,.08,.06,.014,.06,moss,{n:.9});UP(0,.83,-.06,.17,.02,.09,moss,{n:.9});
   for(const sd of[-1,1]){for(let k=0;k<3;k++){const q=U([sd*(.24-k*.03),.94+k*.01,-.06+k*.035]);PP(q[0],q[1],q[2],.016,.05+k*.012,.016,mx(gl,[1,1,1],.15),{pv:q,em:.35+.3*pul,n:2,ax:lean-.3+k*.2,az:-sd*(.35+k*.15)})}}
+  if(EL){/* element growths and motes */
+   if(EL.xt){const xc=kc(EL.xt);for(const sd of[-1,1])for(let k=0;k<4;k++){const q=U([sd*(.18+k*.035),.9+k*.02,-.1+k*.04]);PP0(q[0],q[1],q[2],.022,.07+k*.02,.022,xc,{pv:q,em:.35+.25*pul0,n:2,ax:lean-.4+k*.25,az:-sd*(.3+k*.2)})}
+    for(let k=0;k<5;k++){const q=U([(k-2)*.07,.84-Math.abs(k-2)*.03,-.17]);PP0(q[0],q[1],q[2],.02,.06+.02*(2-Math.abs(k-2)),.02,xc,{pv:q,em:.4,n:2,ax:lean+.6})}}
+   if(EL.drip){const wc=kc('#d8f4ff');for(let k=0;k<16;k++){const sd=k%2?1:-1,fx=sd*(.04+(k*.031)%.2),u=(t*.6+k*.137)%1,q=U([fx,.95-u*.5,.17-Math.abs(fx)*.12]);PP0(q[0],q[1],q[2],.006,.03,.006,wc,{pv:q,em:.7*(1-u),lo:1,ax:lean})}
+    for(let k=0;k<6;k++){const an=t*1.5+k*1.05,q=[Math.sin(an)*.24,.02,Math.cos(an)*.2];PP0(q[0],q[1],q[2],.05,.004,.05,kc('#7cc8f4'),{em:.35+.2*Math.sin(t*3+k),n:.6})}}
+   if(EL.leaf){const lc=[kc('#3f7a24'),kc('#5a9a30'),kc('#2e5e1a')];for(let k=0;k<14;k++){const sd=k%2?1:-1,q=U([sd*(.12+(k*.037)%.18),.86+(k*.013)%.1,-.08+(k*.029)%.14]);PP0(q[0],q[1],q[2],.045,.03,.045,lc[k%3],{pv:q,n:.9,ax:k,az:k*1.3})}
+    for(let k=0;k<4;k++){const q=U([(k-1.5)*.1,.62,.16]);PP0(q[0],q[1]-.06,q[2],.008,.09,.008,kc('#3a6a20'),{pv:q,n:.8})}}
+   if(EL.spore||EL.emb||EL.frost||EL.drip){for(let k=0;k<7;k++){const ph2=(t*(EL.drip?.9:.4)+k/7)%1,an=k*2.4+id,r=.18+.1*Math.sin(k);
+     const x=Math.sin(an)*r,z=Math.cos(an)*r*.7,y=EL.drip?.85-ph2*.8:.3+ph2*.9;
+     PP0(x,y,z,.012,EL.drip?.02:.012,.012,EL.emb?kc('#ffb040'):EL.drip?kc('#9ad8ff'):glow,{em:EL.drip?.5:1.2*(1-ph2),lo:1})}}}
   /* ---- arms: boulder shoulders, stacked upper arm, a huge forearm and fist ---- */
   const ws=st.wt?st.ws:0;let handW=null;const sw=Math.sin(ph)*mv;
   for(const sd of[-1,1]){const isW=sd==ws&&st.wt,S=U([sd*.29,.8,0]);let ang=-sd*sw*.45-.1,eb=-.2;if(a&&(isW||!st.wt)){ang=Math.max(-2.4,Math.min(.5,(a.sw||0)*.85-.9));eb=-.1}if(dead!==undefined){ang=.3}
@@ -9685,6 +9717,28 @@ GOLEM3D=(()=>{
   try{STFSUB=null;WTHM=st.wth||'f'}catch(_){}
   if(st.wt&&handW){const WK=1.5;CHM.wsc(WK);CHM.weapon(st.wt,st.wc,mul(handW,1/WK),a?a.sw:0,a?a.wa:null,ws,st.wtr,st.wb,st.wgc);CHM.wsc(1/WK)}
   if(o.crown)for(let k=0;k<8;k++){const an=k/8*6.2832;UP(Math.sin(an)*.08,.97,.08+Math.cos(an)*.08,.012,.025,.012,kc('#d8b04a'),{em:.3,n:1})}}})();
+/* ================= ELEMENTAL GOLEMS: seven golems whose bodies are made of their element =================
+   They roll like the beast variants (wolves, spiders, bats, slimes): a deeper floor makes them likelier. GOLEM3D draws the
+   body from o.gel; this file defines the variants, their names, colours, stat shifts and what their hits do. */
+{try{
+ VEL.water={col:'#5ab8ff',eff:'chill',m:[1.12,.95,.95]};VEL.lava={col:'#ff7a2a',eff:'burn',m:[1.05,1.12,1]};
+ VEL.gold={col:'#ffd860',eff:'shock',m:[1.2,1,.92]};VEL.earth={col:'#5aff6a',eff:'drain',m:[1.15,1.05,.95]};VEL.wood={col:'#9aff4a',eff:'poison',m:[1.1,1,1]};
+ const G=[{id:'gw',el:'water',nm:['Tide Golem','Deluge Colossus','Leviathan Ward'],pal:{a:'#2f7fd8',b:'#1d55a8',c:'#b0f0ff'}},
+  {id:'gl',el:'lava',nm:['Magma Golem','Molten Colossus','Heart of the Forge'],pal:{a:'#2c221e',b:'#181210',c:'#ff8a2a'}},
+  {id:'gs',el:'storm',nm:['Tempest Golem','Thunderhead Colossus','The Living Storm'],pal:{a:'#4c5470',b:'#2c3246',c:'#ffe85a'}},
+  {id:'gi',el:'ice',nm:['Rime Golem','Glacier Colossus','Winter Sentinel'],pal:{a:'#a6d8f2',b:'#6aa8d0',c:'#8ae4ff'}},
+  {id:'gg',el:'gold',nm:['Gilded Golem','Auric Colossus','The Golden Warden'],pal:{a:'#c89a3a',b:'#8a6420',c:'#fff0a0'}},
+  {id:'ge',el:'earth',nm:['Runestone Golem','Verdant Monolith','The Green Heart'],pal:{a:'#6e6c64',b:'#4a4842',c:'#5aff6a'}},
+  {id:'gt',el:'wood',nm:['Mossbark Golem','Thornwood Colossus','Elder Grove-Ward'],pal:{a:'#5e4128',b:'#3e2a18',c:'#b8ff6a'}}];
+ for(const v of G){Object.assign(v,VEL[v.el]);v.orb=v.pal.c}
+ window.GOLV=G;
+ /* the zone leans the roll: forges breed magma golems, flooded halls tide golems, groves the wood and runestone ones */
+ window.GOLVPICK=function(){let w=G.map(()=>1);try{const z=(typeof ZON!=='undefined'&&typeof zi!=='undefined'?ZON[zi%ZON.length]:null)||{},n=(z.n||'')+' '+(z.bk||'');
+  const up=(id,k)=>{const i=G.findIndex(v=>v.id==id);if(i>=0)w[i]+=k};if(/Forge|Ember|volc|lava/i.test(n))up('gl',4);if(/Flood|Catacomb|water/i.test(n))up('gw',4);if(/Overgrown|Wild|forest|grass/i.test(n)){up('gt',3);up('ge',2)}if(/Crystal|cave/i.test(n)){up('gi',2);up('gg',2)}}catch(e){}
+  let s=w.reduce((a,b)=>a+b,0)*Math.random();for(let i=0;i<G.length;i++){s-=w[i];if(s<=0)return G[i]}return G[0]};
+ /* look: the variant's element goes onto the golem's body */
+ const _es=eSpec;eSpec=function(e){const had=e&&e._sp,o=_es.apply(this,arguments);try{if(!had&&o&&e.race=='golem'&&e.vr&&e.vr.el){o.gel=e.vr.el;o.sk=e.vr.pal.a;o.cl=e.vr.pal.b;o.tr=e.vr.pal.c;o.ey=e.vr.pal.c}}catch(_){}return o};
+}catch(e){console.warn('elemgolem',e)}}
 /* ================= BIG FOES: the camera pulls back so dragons and other giants fit on screen ================= */
 var BIGCAM=null;
 setInterval(()=>{try{if(typeof C3=='undefined'||!P||camp||typeof E=='undefined')return;let best=null,bs=0;for(const e of E){if(!(e.hp>0)||e.r<34)continue;const d=Math.hypot(e.x-P.x,e.y-P.y);if(d>1000)continue;const s=e.r*(1-d/1400);if(s>bs){bs=s;best=e}}
