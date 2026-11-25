@@ -2,6 +2,12 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.12.6
+
+A clear line between chin and neck.
+
+- The neck is now a slimmer column set back under the skull, so the chin and jaw stand out in front of it, with a visible underside running from the chin back to the throat. Before, the neck came as far forward as the chin and the two blurred together. Male characters also get a faint throat line.
+
 ## 2.12.5
 
 Faces with real chins, and hats and helms that fit the head.
