@@ -2,6 +2,14 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.13.1
+
+Minotaurs and gobtaurs rebuilt in Blender.
+
+- **Minotaurs** are a new model: a towering bull-headed brute with a massive neck and shoulder hump, a broad muzzle with a nose ring, swept horns, heavy arms, a leather belt with a skull buckle and loincloth, digitigrade legs on cloven hooves, and a tufted tail. They keep their stalk, charge and greataxe swing.
+- **Gobtaurs** now ride a proper war-horse body: a deep chest, round barrel and strong croup, muscled forearms over slim cannons, feathered fetlocks and dark hooves, a flowing tail, and a red saddle cloth with gold trim and a leather girth. The goblin rider and their gallop are unchanged.
+- Both use the new skeleton, so their bodies bend smoothly as they move, and elemental variants keep their effects.
+
 ## 2.13.0
 
 Wolves and bears rebuilt in Blender.
