@@ -2,6 +2,15 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.13.2
+
+Dragons rebuilt in Blender.
+
+- **Dragons** have a new body shared by whelps, drakes, wyverns, wyrms and elders: a deep keeled chest and lean waist, heavy haunches, a long S-curved neck, a wedge-shaped skull with brow ridges, cheek horns and a long toothed snout, swept-back horns, muscled legs on clawed feet, and a long tail ending in a spade.
+- Belly plates run from throat to tail, and a row of spines runs from the head to the tail tip, largest over the shoulders.
+- Wings now have a proper arm, three long fingers and a thumb claw, with a scalloped membrane stretched between them. They still fold at rest and beat in flight.
+- Every colour (Ember, Frost, Venom, Storm, Shadow, Gilded) and every attack and animation works as before.
+
 ## 2.13.1
 
 Minotaurs and gobtaurs rebuilt in Blender.
