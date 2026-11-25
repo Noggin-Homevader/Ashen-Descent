@@ -2,6 +2,14 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.13.0
+
+Wolves and bears rebuilt in Blender.
+
+- **Wolves** are rebuilt as one smooth body, shaped from real wolf anatomy: a deep narrow chest and tucked waist, a straight back, long legs with the hind hock well off the ground, a thick ruff round the neck and throat, a broad skull with a long tapering muzzle, upright cupped ears, amber eyes, a full bushy tail, and claws on the paws. They use the same walk, run and bite animations as before, and every elemental wolf keeps its effects.
+- **Bears** are a new model too, built like a grizzly: the shoulder hump as the highest point, a heavy deep barrel, thick legs on broad paws with long claws, a big round head with a dished face, a short muzzle and small round ears. They walk with a heavy rolling gait and rear up on their hind legs to maul.
+- Both models are now animated with a proper skeleton, so legs, neck, head and jaw move as one flexible body.
+
 ## 2.12.7
 
 Elemental monsters that flow, and see-through slimes.
