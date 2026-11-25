@@ -2,6 +2,13 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.13.3
+
+Imps and crabs rebuilt in Blender.
+
+- **Imps** are a wiry little fire demon now: a lean chest over a small pot belly, a big head with a heavy brow, a toothy grin and glowing eyes, long pointed ears, ridged horns curling back, bat wings with a thumb hook, clawed hands, digitigrade legs, and a whip-thin tail ending in a spade. They still hover, flit and lunge with their claws.
+- **Crabs** have a proper carapace: a wide shell with a raised rim, a toothed front edge and lateral spines, eyes on stalks, heavy pincers with toothed fingers and dark tips, and smooth jointed legs ending in points. The moving finger of each pincer opens and snaps shut when it attacks.
+
 ## 2.13.2
 
 Dragons rebuilt in Blender.
