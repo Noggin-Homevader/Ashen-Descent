@@ -2,6 +2,21 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.12.4
+
+Sheaths rebuilt in Blender, a dragon-scale finish, a sheath for each blade when dual wielding, a proper flamberge, and a fixed spear grip.
+
+- Every sheath is now one model built in Blender for its material. Leather is tooled and saddle-stitched. Wood shows its grain between riveted metal rails. Metal has rolled edges and engraved panels. Drakehide is covered in real overlapping dragon scales. Each finish is modelled onto that body and bent to fit the blade you carry.
+- The Scaled finish now looks like dragon scale: rounded plates in staggered rows, each lapping over the one below it, domed with a soft ridge, dark where it tucks under and bright at its raised heart.
+- Five new finishes: Knotwork, Engraved, Jewelled, Chain-bound and Thorned. There is also a new Chape choice for the tip of the sheath: Plain, Trefoil, or a Drake-head with gem eyes.
+- The sheath bench now shows a real 3D view of the sheath you are designing, with your own sword in it.
+- Dual wielding: the sheath bench has a Two blades row. Choose a Matching pair, or Separate to design and forge the off-hand blade's sheath on its own.
+- The wavy-bladed swords, greatsword and daggers are now true flamberges. The spine stays straight and only the edges ripple, with a straight section above the guard and a straight point, instead of the whole blade snaking.
+- Spears point forward again, with both hands on the shaft.
+- Dual-wielded blades are held in an open fighting stance: arms out at the sides, elbows bent, both blades raised and angled outward.
+- Enhanced gear now shows one level that counts up ("Silver Scythe +8") instead of a trail of numbers like "+2 +4 +5 +6 +7 +8". Items that already have a trail are tidied automatically.
+- The chat box hides while a shop or menu window is open, so it no longer shows through them.
+
 ## 2.12.3
 
 A natural flow for the fountain, and a movable chat box.
