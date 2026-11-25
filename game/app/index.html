@@ -14374,6 +14374,139 @@ rock:(Q,K,t,W,c)=>{const s=K('#8a8070'),s2=K('#6e6558'),cr=K('#3a342c');Q(0,0,0,
 claw:(Q,K,t,W,c)=>{for(let i=-1;i<=1;i++){for(let j=0;j<4;j++){const u=j/3;Q(i*.07+Math.sin(u*2)*.02*i,.06-u*.12,-u*.04-Math.abs(i)*.03,.011-j*.002,.035,.04,c,{em:1-.15*j,lo:1,az:-i*.3})}}Q(0,0,.06,.035,.035,.035,W,{em:1.2,lo:1})},
 sonic:(Q,K,t,W,c)=>{for(let k=0;k<3;k++){const ph=(t*3+k/3)%1,R=.04+ph*.14;for(let i=0;i<9;i++){const a=-1.2+i*.3;Q(Math.sin(a)*R,Math.cos(a)*R*.7,-ph*.2,.014,.014,.02,c,{em:1.2-ph,lo:1})}}Q(0,0,.02,.035,.035,.035,W,{em:1.2,lo:1})}
 });
+/* ================= ELEMENTS THAT FLOW: soft light, flowing flames, faceted ice, and slimes made of their element =================
+   Monster element effects used to be built from stacked solid ellipsoids, so flames read as orange balloons and ice as
+   pale sausages. Now:
+   - a soft-light layer: additive glows queued in the monster's own frame and drawn with the scene's particles, so fire,
+     frost, sparks and venom give off light that blends, overlaps and fades instead of sitting there as solid shapes;
+   - flames are tapered tongues that sway from root to tip, deep red-orange at the root to pale gold at the tip, with
+     heat glow round them and embers lifting off;
+   - ice is faceted crystal: hexagonal shards with flat facets that catch the light, glints at the points, icicles
+     hanging from the belly and a cold mist low round the body;
+   - slimes are see-through: a dim heart and whatever they have swallowed show inside a body of soft glowing gel in the
+     colour of their element, with motes drifting in it and a bright skin of highlights. */
+var MGQ={a:new Float32Array(8*7000),n:0,t:0};
+var MFPIN=null;   /* set by the elemental-beast pinning (elbeast.js) so the soft layer rides the spine too */
+function mfPin(p){return MFPIN?MFPIN(p[0],p[1],p[2]):p}
+function mfScale(){try{const a=CHM.wpt([0,0,0]),b=CHM.wpt([0,1,0]);return Math.hypot(b.x-a.x,b.y-a.y,b.z-a.z)||1}catch(e){return 1}}
+/* one soft additive glow at a point in the current frame; size in frame units */
+function mfGlow(x,y,z,c,al,sz,sc){const now=performance.now();if(now-MGQ.t>250)MGQ.n=0;MGQ.t=now;if(MGQ.n>=7000||al<=.004)return;
+ const q=mfPin([x,y,z]),w=CHM.wpt(q),o=MGQ.n*8,a=MGQ.a;a[o]=w.x;a[o+1]=w.y;a[o+2]=w.z;a[o+3]=c[0];a[o+4]=c[1];a[o+5]=c[2];a[o+6]=al;a[o+7]=sz*(sc||1);MGQ.n++}
+{const _p3=parts3;parts3=function(){try{mfGlassDraw()}catch(e){}_p3.apply(this,arguments);try{if(MGQ.n&&typeof R3!="undefined"&&R3.particles)R3.particles(MGQ.a,MGQ.n,C3.pk)}catch(e){}MGQ.n=0}}
+
+/* ---- a see-through pass: triangles moved out of the solid buffer and drawn after it, glassy, with a bright rim ---- */
+var MTQ={a:new Float32Array(10*60000),n:0,t:0,prog:null,buf:null};
+/* move the vertices the last draw emitted (n0..n1) into the see-through queue, tinted and with an opacity */
+function mfToGlass(n0,n1,al){try{const B=CHM.dbg(),now=performance.now();if(now-MTQ.t>250)MTQ.n=0;MTQ.t=now;if(n1<=n0)return;
+  const cnt=Math.min(n1-n0,60000-MTQ.n);if(cnt<=0)return;MTQ.a.set(B.subarray(n0*10,(n0+cnt)*10),MTQ.n*10);
+  for(let i=0;i<cnt;i++)MTQ.a[(MTQ.n+i)*10+9]=al;MTQ.n+=cnt;
+  /* and leave nothing behind in the solid buffer: collapse those triangles to a point */
+  const x=B[n0*10],y=B[n0*10+1],z=B[n0*10+2];for(let i=n0;i<n1;i++){B[i*10]=x;B[i*10+1]=y;B[i*10+2]=z}}catch(e){}}
+function mfGlassDraw(){if(!MTQ.n||typeof R3=='undefined')return;const gl=R3.gl,vp=C3&&C3.vp,eye=C3&&C3.eye;if(!gl||!vp||!eye){MTQ.n=0;return}
+ try{if(!MTQ.prog){const sh=(t,src)=>{const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);return s};const p=gl.createProgram();
+   gl.attachShader(p,sh(gl.VERTEX_SHADER,'attribute vec3 aP;attribute vec3 aN;attribute vec4 aC;uniform mat4 uVP;varying vec3 vW;varying vec3 vN;varying vec4 vC;void main(){vW=aP;vN=aN;vC=aC;gl_Position=uVP*vec4(aP,1.);}'));
+   gl.attachShader(p,sh(gl.FRAGMENT_SHADER,'precision mediump float;uniform vec3 uEye;varying vec3 vW;varying vec3 vN;varying vec4 vC;void main(){vec3 N=normalize(vN),V=normalize(uEye-vW);float c=abs(dot(N,V)),f=pow(1.-c,2.2);vec3 L=normalize(vec3(.3,1.,.4));float d=.45+.55*max(dot(N,L),0.);vec3 H=normalize(L+V);float sp=pow(max(dot(N,H),0.),40.)*.9;float a=clamp(vC.a*(.45+1.1*f),0.,.95);vec3 col=vC.rgb*d*(.8+.6*f)+vec3(sp)+vC.rgb*f*.5;gl_FragColor=vec4(col*a,a);}'));
+   gl.bindAttribLocation(p,0,'aP');gl.bindAttribLocation(p,1,'aN');gl.bindAttribLocation(p,2,'aC');gl.linkProgram(p);MTQ.prog=p;MTQ.uVP=gl.getUniformLocation(p,'uVP');MTQ.uEye=gl.getUniformLocation(p,'uEye');MTQ.buf=gl.createBuffer()}
+  gl.useProgram(MTQ.prog);gl.bindBuffer(gl.ARRAY_BUFFER,MTQ.buf);gl.bufferData(gl.ARRAY_BUFFER,MTQ.a.subarray(0,MTQ.n*10),gl.DYNAMIC_DRAW);
+  for(let i=0;i<4;i++)gl.disableVertexAttribArray(i);gl.enableVertexAttribArray(0);gl.enableVertexAttribArray(1);gl.enableVertexAttribArray(2);
+  gl.vertexAttribPointer(0,3,gl.FLOAT,false,40,0);gl.vertexAttribPointer(1,3,gl.FLOAT,false,40,12);gl.vertexAttribPointer(2,4,gl.FLOAT,false,40,24);
+  gl.uniformMatrix4fv(MTQ.uVP,false,vp);gl.uniform3fv(MTQ.uEye,eye);gl.enable(gl.DEPTH_TEST);gl.enable(gl.BLEND);gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);
+  gl.enable(gl.CULL_FACE);gl.cullFace(gl.FRONT);gl.drawArrays(gl.TRIANGLES,0,MTQ.n);gl.cullFace(gl.BACK);gl.drawArrays(gl.TRIANGLES,0,MTQ.n);gl.disable(gl.CULL_FACE);
+  gl.disableVertexAttribArray(0);gl.disableVertexAttribArray(1);gl.disableVertexAttribArray(2)}catch(e){}MTQ.n=0}
+const MF2={K:c=>CHM.K(c),col:{}};
+function mfC(h){return MF2.col[h]||(MF2.col[h]=CHM.K(h))}
+const MFEL={fire:['#d8300a','#ff7a1a','#ffd77a'],ice:['#4aa8e0','#bfeeff','#ffffff'],storm:['#6a6cff','#c8ccff','#fff6a0'],venom:['#3a9a1a','#9aff4a','#eaffb0'],shadow:['#3a1858','#9a5ae0','#e8c8ff']};
+
+/* a flame tongue: a tapered body that sways more toward its tip, coloured root to tip, wrapped in heat glow */
+mfFlame=function(x,y,z,s,t,seed,cols){try{const S=mfScale(),ph=seed*1.71,f=.84+.16*Math.sin(t*9.3+seed*2.3)+.07*Math.sin(t*21+seed),H=s*1.7*f,N=8,R=[],RW=[];
+  const C0=mfC('#c8280a'),C1=mfC('#ff7a1a'),C2=mfC('#ffcf6a'),C3_=mfC('#fff0c0');
+  for(let i=0;i<N;i++){const u=i/(N-1),uu=u*u,sw=Math.sin(t*6.4+ph-u*3.3)*s*.26*uu+Math.sin(t*11+ph*2-u*5)*s*.05*u,sw2=Math.cos(t*5.1+ph*1.3-u*2.8)*s*.18*uu;
+   const r=s*.36*Math.sin(Math.PI*Math.pow(.14+.86*u,.62))*(1-.15*u)+.0006;
+   const raw=[x+sw,y+u*H,z+sw2];RW.push(raw);R.push({c:mfPin(raw),rx:r,rz:r*.8})}
+  /* the body of the flame is light: overlapping soft glows up the tongue, deep at the root, gold toward the tip */
+  const lerp=(a,b,k)=>[a[0]+(b[0]-a[0])*k,a[1]+(b[1]-a[1])*k,a[2]+(b[2]-a[2])*k];
+  for(let i=0;i<N*2-1;i++){const u=i/(N*2-2),k=u*(N-1),i0=Math.floor(k),i1=Math.min(N-1,i0+1),fk=k-i0,p=lerp(RW[i0],RW[i1],fk),col=u<.5?lerp(C0,C1,u*2):lerp(C1,C2,(u-.5)*2);
+   mfGlow(p[0],p[1],p[2],col,.7*(1-u*.4),s*(1.45-.95*u),S)}
+  mfGlow(x,y+H*.15,z,C1,.22,s*2.6,S);
+  /* a thin bright heart, so the flame keeps its shape up close */
+  CHM.lof(R.slice(0,N-1).map((q,i)=>({c:q.c,rx:q.rx*.42,rz:q.rz*.42})),mfC('#ff8a2a'),{seg:7,em:1.15});
+  CHM.lof(R.slice(3).map(q=>({c:q.c,rx:q.rx*.3,rz:q.rz*.3})),C2,{seg:6,em:1.3});
+  /* embers lifting off the tip */
+  for(let k=0;k<2;k++){const e=(t*.9+seed*.37+k*.5)%1;mfGlow(x+Math.sin(seed*3+k*2+t*2)*s*.4*e,y+H*(.9+1.1*e),z+Math.cos(seed*2+k+t*1.7)*s*.3*e,k?C2:C3_,.5*(1-e),s*.28,S)}}catch(e){}};
+
+/* a faceted crystal shard from b to tip: six flat facets, alternate faces lighter, sharp point */
+function mfShard(b,tip,r,c1,c2,em){b=mfPin(b);tip=mfPin(tip);const d=[tip[0]-b[0],tip[1]-b[1],tip[2]-b[2]],L=Math.hypot(d[0],d[1],d[2])||1e-4,D=[d[0]/L,d[1]/L,d[2]/L];
+ let u=Math.abs(D[1])<.9?[0,1,0]:[1,0,0];const X=[u[1]*D[2]-u[2]*D[1],u[2]*D[0]-u[0]*D[2],u[0]*D[1]-u[1]*D[0]],xl=Math.hypot(X[0],X[1],X[2]);X[0]/=xl;X[1]/=xl;X[2]/=xl;
+ const Y=[D[1]*X[2]-D[2]*X[1],D[2]*X[0]-D[0]*X[2],D[0]*X[1]-D[1]*X[0]],ring=(k,rr)=>{const R=[];for(let i=0;i<6;i++){const a=i/6*6.2832+.3;R.push([b[0]+D[0]*L*k+(X[0]*Math.cos(a)+Y[0]*Math.sin(a))*rr,b[1]+D[1]*L*k+(X[1]*Math.cos(a)+Y[1]*Math.sin(a))*rr,b[2]+D[2]*L*k+(X[2]*Math.cos(a)+Y[2]*Math.sin(a))*rr])}return R};
+ const A=ring(0,r*.8),B=ring(.62,r),o={em:em||.5};for(let i=0;i<6;i++){const j=(i+1)%6,c=i%2?c1:c2;CHM.tri3(A[i],A[j],B[j],c,o);CHM.tri3(A[i],B[j],B[i],c,o);CHM.tri3(B[i],B[j],tip,i%2?c2:c1,{em:(em||.5)+.15})}}
+
+/* ---- the elements on the beasts ---- */
+{const _vf=varFx;
+ varFx=function(e,st){try{const v=e.vr;if(!v)return;const el=v.el;if(e.race=='slime')return;   /* a slime's element is its gel (below) */
+  if(el!='fire'&&el!='ice'){_vf.apply(this,arguments);mfAura(e,el);return}
+  const t=Date.now()/1000+(e.id||0)*.37,A=MFAN[e.race]||MFAN.wolf,sp=u=>A.z0+(A.z1-A.z0)*u,S=mfScale();
+  if(el=='fire'){
+   /* a mane of tongues down the back, tallest over the shoulders, and the tail alight */
+   for(let i=0;i<11;i++){const u=i/10,s=.05+.05*Math.sin(u*Math.PI)+(u>.6?.018:0);mfFlame(Math.sin(i*2.1)*.022,A.y-.015,sp(u),s,t,i)}
+   for(let i=0;i<6;i++){const u=.1+i*.15,sd=i%2?1:-1;mfFlame(sd*A.w*.55,A.y-.05,sp(u),.035,t,20+i)}
+   mfFlame(0,A.y-.04,A.z0-.06,.06,t,11);
+   /* ember cracks glowing along the flanks and a heat haze over the back */
+   for(let i=0;i<8;i++){const sd=i%2?1:-1,u=(i>>1)/4+.1,fl=.6+.4*Math.sin(t*3+i);mfGlow(sd*A.w*.98,A.y-.09-.05*(i%3)/2,sp(u),mfC(i%3?'#ff6a1a':'#ffc050'),.28*fl,.05,S)}
+   for(let k=0;k<5;k++)mfGlow(0,A.y+.05,sp(k/4),mfC('#ff7a2a'),.12,.24,S);
+   for(const sd of[-1,1]){CHM.P(sd*.035,A.hy,A.hz,.012,.01,.008,mfC('#ffe08a'),{em:1.4,lo:1});mfGlow(sd*.035,A.hy,A.hz,mfC('#ffb040'),.5,.07,S)}}
+  else{/* ice: crystal spines along the back, icicles hanging from the belly, cold mist, drifting snow */
+   const ic=mfC('#c8f2ff'),ic2=mfC('#e8fcff'),dp=mfC('#5ab0e8'),dp2=mfC('#8ad4ff');
+   for(let i=0;i<10;i++){const u=i/9,sd=i%2?1:-1,L=.06+.06*Math.sin(u*Math.PI)+.018*(i%3),z=sp(u);
+    mfShard([sd*.018,A.y-.01,z],[sd*(.04+L*.45),A.y+L,z-.025],.013+.004*(i%2),i%3?ic:dp2,i%3?dp2:ic2,.5);
+    if(i%3==1)mfShard([-sd*.02,A.y-.01,z+.01],[-sd*(.03+L*.3),A.y+L*.6,z+.005],.009,ic2,dp2,.5);
+    if(i%2==0)mfGlow(sd*(.04+L*.45),A.y+L,z-.025,ic2,.35+.25*Math.sin(t*4+i*1.7),.035,S)}
+   for(let i=0;i<8;i++){const sd=i%2?1:-1,u=.12+(i>>1)*.22,L=.04+.025*((i*7)%3),x=sd*A.w*.85,y=A.y-.12;
+    mfShard([x,y,sp(u)],[x*1.02,y-L,sp(u)+.005],.008,ic,dp2,.45)}
+   for(let k=0;k<6;k++){const a=k/6*6.2832+t*.15;mfGlow(Math.cos(a)*A.w*2.2,.03,(A.z0+A.z1)/2+Math.sin(a)*(A.z1-A.z0)*.7,mfC('#bfe6ff'),.10,.28,S)}
+   for(let k=0;k<7;k++){const ph=(t*.25+k*.143)%1,a=k*2.4+t*.4;mfGlow(Math.cos(a)*A.w*2,A.y+.18-ph*.3,(A.z0+A.z1)/2+Math.sin(a)*A.w*2.4,ic2,.45*Math.sin(ph*Math.PI),.022,S)}
+   for(const sd of[-1,1]){CHM.P(sd*.035,A.hy,A.hz,.012,.01,.008,mfC('#dffaff'),{em:1.3,lo:1});mfGlow(sd*.035,A.hy,A.hz,mfC('#9fe0ff'),.5,.07,S)}}
+ }catch(x){}};
+ /* soft light over the other elements: arcs and nodes give off light, venom glows, shadow trails violet motes */
+ function mfAura(e,el){try{const t=Date.now()/1000+(e.id||0)*.37,A=MFAN[e.race]||MFAN.wolf,sp=u=>A.z0+(A.z1-A.z0)*u,S=mfScale(),C=MFEL[el];if(!C)return;
+  const c0=mfC(C[0]),c1=mfC(C[1]),c2=mfC(C[2]);
+  if(el=='storm'){for(let i=0;i<5;i++){const fl=Math.sin(t*13+i*2.7)>-.3?1:.35;mfGlow(0,A.y+.035,sp(i/4),c2,.45*fl,.08,S);mfGlow(0,A.y+.035,sp(i/4),c1,.18,.2,S)}
+   for(let k=0;k<6;k++){const a=t*6+k*1.05;if(Math.sin(t*23+k*3)>.2)mfGlow(Math.cos(a)*A.w*1.8,A.y+Math.sin(t*9+k)*.08,(A.z0+A.z1)/2+Math.sin(a)*A.w*2.4,c2,.7,.025,S)}}
+  else if(el=='venom'){for(let i=0;i<8;i++){const sd=i%2?1:-1,u=.08+i*.11,pu=.7+.3*Math.sin(t*4+i*1.3);mfGlow(sd*A.w*(.35+.4*(i%3)/2),A.y-.01,sp(u),c1,.22*pu,.08,S)}
+   for(let k=0;k<5;k++){const ph=(t*.5+k*.2)%1;mfGlow(Math.sin(k*2.3)*A.w*.8,A.y+ph*.22,sp(.15+k*.17),c2,.3*Math.sin(ph*Math.PI),.03,S)}
+   mfGlow(0,.02,(A.z0+A.z1)/2,c0,.12,.35,S)}
+  else if(el=='shadow'){for(let k=0;k<9;k++){const ph=(t*.45+k*.111)%1;mfGlow(Math.sin(t*1.3+k)*.05,A.y+.03+ph*.3,sp((k*.37)%1)-ph*.08,k%2?c1:c2,.35*Math.sin(ph*Math.PI),.03+.03*ph,S)}
+   for(const sd of[-1,1])mfGlow(sd*.035,A.hy,A.hz,c1,.6,.08,S)}}catch(x){}}
+ window.mfAura=mfAura}
+
+/* ---- slimes: a body of glowing gel you can see into ---- */
+{const SLP=[],SLS=[];let rs=7;const rnd=()=>(rs=(rs*16807)%2147483647)/2147483647;
+ for(let i=0;i<110;i++){let x,y,z;do{x=rnd()*2-1;y=rnd();z=rnd()*2-1}while(x*x+z*z+y*y>1);SLP.push([x,y,z,rnd()])}
+ for(let i=0;i<56;i++){const a=rnd()*6.2832,h=Math.acos(rnd()*.9);SLS.push([Math.cos(a)*Math.sin(h),Math.cos(h),Math.sin(a)*Math.sin(h),rnd()])}
+ const SLC=new Array(16).fill(1),SHC=new Array(16).fill(0),SHI6=new Array(16).fill(0);[0,1,2].forEach(i=>SHC[i]=1);[6,7].forEach(i=>SHI6[i]=1);
+ const _sl=window.BEAST3D&&BEAST3D.slime;
+ if(window.BEAST3D&&window.SLB&&window.CRIG&&window.SKSLM)BEAST3D.slime=function(o,st){try{
+  const I=CRIG.idx(SLB),g=CHM.skL(SKSLM,'slime'),K=CHM.K,el=o.vel,C=MFEL[el]||[o.cl2||'#2a7a3a',o.cl||'#6ad07a',o.ey||'#d8ffb0'],c0=mfC(C[0]),c1=mfC(C[1]),c2=mfC(C[2]),ey=K(o.ey||'#c8ff9a');
+  const T=Date.now()/1000+(st.id||0),t=(st.t||Date.now())/280+(st.id||0),mv=st.mv||0,at=st.gat||0,dead=st.dead;let q=1+Math.sin(t)*.07+(mv>.5?Math.sin(t*3)*.08:0)+at*.15;if(dead!==undefined)q*=1-Math.min(.85,dead);const w=1/Math.sqrt(q);
+  const P_=SLB.map(()=>[0,0,0,1]),sx=Math.sin(t*.8)*.09,sy=Math.sin(t*.6+2)*.07+at*.15;P_[I.mid][2]=Math.sin(t*.8+1)*.05;P_[I.mid][1]=Math.sin(t*.7)*.04;P_[I.top][2]=sx;P_[I.top][1]=sy;
+  const B=CRIG.pose(SLB,P_,[0,0,0]);
+  /* inside: a small glowing heart and whatever it has swallowed; the body round them is see-through gel */
+  const core=[c1[0],c1[1],c1[2],.9+.3*Math.sin(T*2.2)],gel=[c1[0]*.9,c1[1]*.9,c1[2]*.9],pal=[core,core,core,core,core,core,K('#d8d0b8'),K('#8a8f98')];while(pal.length<16)pal.push(core);
+  st._B=B;st._BN=SLB;st._K=[w,q,w,0];
+  CHM.skE(g,B,pal,CRIG.SHOW,SHC,w*.3,q*.32,w*.3,.06);
+  CHM.skE(g,B,pal,CRIG.SHOW,SHI6,w,q,w,0);
+  const gp=[gel,[c0[0]*.8,c0[1]*.8,c0[2]*.8],[c2[0],c2[1],c2[2]]];while(gp.length<16)gp.push(gel);
+  const n0=CHM.n;CHM.skE(g,B,gp,CRIG.SHOW,SHC,w,q,w,0);mfToGlass(n0,CHM.n,dead!==undefined?.45*(1-Math.min(1,dead)):.45);
+  if(dead!==undefined&&dead>.6)return;
+  const S=mfScale(),RX=.27*w,RY=.39*q;
+  /* light inside the gel round the heart, and two small eye-lights */
+  mfGlow(0,RY*.3,0,c1,.35,.22,S);mfGlow(0,RY*.45,0,c2,.25,.12,S);
+  const lk=Math.sin(T*.9)*.012;for(const sd of[-1,1])mfGlow(sd*.06+lk,RY*.6+sy*.15,RX*.72+sx*.3,c2,.85,.035,S);
+  /* motes drifting inside: embers, frost glints, sparks, bubbles, wisps */
+  for(let k=0;k<9;k++){const ph=(T*(el=='venom'?.35:.22)+k*.111)%1,a=k*2.3+T*.3,r=RX*.55*(1-ph*.4),y=el=='ice'?(.2+.6*((k*.37)%1))*RY:ph*RY*.9,
+    al=(el=='storm'?(Math.sin(T*31+k*7)>.4?.9:.15):.55)*Math.sin(Math.PI*(el=='ice'?.5:ph));
+   mfGlow(Math.cos(a)*r,y,Math.sin(a)*r,c2,al,el=='venom'?.04:.03,S)}
+  mfGlow(0,.02,0,c1,.16,.45*w,S);   /* the light it throws on the ground */
+ }catch(x){try{_sl&&_sl(o,st)}catch(e){}}};}
 /* ================= ELEMENTAL BEASTS, MADE OF THEIR ELEMENT =================
    The elemental wolves, spiders, bats and slimes used to be ordinary creatures with effects drawn at fixed points above
    them, so the flames and crystals floated off the body whenever it moved. Now:
@@ -14418,7 +14551,7 @@ sonic:(Q,K,t,W,c)=>{for(let k=0;k<3;k++){const ph=(t*3+k/3)%1,R=.04+ph*.14;for(l
  const _vf=varFx;
  varFx=function(e,st){if(!st||!st._B||!st._BN)return _vf.apply(this,arguments);const P0=CHM.P,race=e.race;
   CHM.P=function(x,y,z){const q=skin(st,race,x,y,z);arguments[0]=q[0];arguments[1]=q[1];arguments[2]=q[2];return P0.apply(this,arguments)};
-  try{return _vf.apply(this,arguments)}finally{CHM.P=P0}};
+  MFPIN=(x,y,z)=>skin(st,race,x,y,z);try{return _vf.apply(this,arguments)}finally{CHM.P=P0;MFPIN=null}};
 }
 /* ================= MAGE HATS: proper wizard hats, the circlet now rare ================= */
 /* Mage helms come in six shapes: the Wizard Hat, the Wide Hat, the Crooked Hat (a tall crown that leans back and
