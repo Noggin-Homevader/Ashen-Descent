@@ -2,6 +2,15 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.14.0
+
+New weapon looks, part one: spears, polearms and maces.
+
+- **Spears** gain four new forgings: the **Trident** (three barbed tines on a forged crossbar), the **Dragon** spear (a flame-rippled leaf blade rising from a gilt dragon collar with swept horns and a red tassel), the **Boar** spear (a broad midribbed leaf with a toggle crossbar), and the **Ranseur** (a long spike flanked by two wing-like side blades).
+- **Polearms** gain the **Naginata** (a long curved blade over a round guard), the **Crescent Moon** (a heavy backswept moon blade with a hooked spur and a tassel), the **Voulge** (a tall cleaver lashed to the haft, rising to a forward point), and the **Crow's Beak** (a hammer face, a long down-curved beak and a top spike).
+- **Maces** gain the **Crystal** mace (raw glowing crystals bursting from an iron setting), the **Thornhead** (twisted ribs studded with thorns), and the **Caged Orb** (a glowing orb inside a gilt cage).
+- Newly found and crafted weapons can roll any of the new looks. Weapons you already own keep exactly the look they have now.
+
 ## 2.13.3
 
 Imps and crabs rebuilt in Blender.
