@@ -2,6 +2,18 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.12.5
+
+Faces with real chins, and hats and helms that fit the head.
+
+- Every character now has a proper chin and jawline. The lower face is a little longer, the chin stands forward under the lip with a soft dip above it, and the jaw narrows toward it.
+- Mage hats now sit on the head. The Wizard Hat, Wide Hat, Crooked Hat, Magister Cap and Starcaller Hat were rebuilt in Blender around the actual head and hair. The band rides just above the brow and lower at the nape, and the crown follows the skull before rising into its shape, with no gap or floating box. The Magister Cap is now a softly rounded cap with two gentle peaks.
+- Forged helms were rebuilt in Blender around the actual skull, face and chin:
+  - The **Greathelm** follows the jaw and chin, with a sight split by a central keel, breathing holes on the right cheek and a riveted brow band.
+  - The **Sallet** has a rounded skull with a tail sweeping over the nape, a sight slit, and a bevor that cups the chin and jaw.
+  - The **Open Helm** has a nasal, and cheek plates that lie on the cheeks and stop short of the chin. The **Horned Helm** adds swept horns.
+- Helm crests now lie along the crown instead of arching above it.
+
 ## 2.12.4
 
 Sheaths rebuilt in Blender, a dragon-scale finish, a sheath for each blade when dual wielding, a proper flamberge, and a fixed spear grip.
