@@ -2,6 +2,25 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.14.1
+
+New weapon looks, part two: swords, daggers, staves and bows. And enchanted weapons now take on their element.
+
+- **Swords:** the **Falchion** (a broad blade widening to a clipped point), the elven **Leafblade**, the curved **Sabre** with a knuckle bow, and the serrated **Sawtooth**.
+- **Greatswords:** the slab-like **Dragonslayer** and the curved, rune-lit **Moonblade**.
+- **Short swords:** the forward-curved **Kopis** and the **Wakizashi**.
+- **Holy blades:** the **Sunblade**, with spread wings and a halo.
+- **Daggers:** the hooked **Karambit**, the leaf-pointed **Kunai** and the serrated, curved **Fang**.
+- **Staves:**
+  - **Serpent:** a gilt snake coiling up to an orb.
+  - **Ethereal:** three claws holding a floating crystal inside a glowing ring.
+  - **Obelisk:** a runed standing stone with circling shards.
+  - **Seraph:** gilt wings around a haloed gem.
+  - **Thornwood:** a thorny branch curling round glowing berries.
+- **Bows:** the **Wingbow** (gilt feathers along the limbs), the **Bladed** longbow (steel blades along the back), the **Serpent** longbow (a gilt snake winding along each limb) and the **Crystal** warbow (crystal-tipped limbs).
+- **Enchanted weapons are imbued with their element.** Fire heats the steel to ember red with a molten core and glowing edge. Ice frosts it pale blue. Lightning turns it storm-grey with flickering veins. Shadow and Death blacken it around a lit core. Holy gilds it. Water, Wind, Earth, Nature and Arcane each tint it their own way. On maces, axes and staves only the steel, edge and runes change. The existing flames, frost, arcs and other effects still play on top.
+- As before, weapons you already own keep their current look. New ones can roll any style.
+
 ## 2.14.0
 
 New weapon looks, part one: spears, polearms and maces.
