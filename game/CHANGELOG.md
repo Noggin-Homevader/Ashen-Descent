@@ -2,6 +2,16 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.12.7
+
+Elemental monsters that flow, and see-through slimes.
+
+- Monster element effects now give off soft light that blends and fades, instead of being built from solid shapes.
+- Fire beasts carry flowing flame tongues that sway from root to tip, glow from deep orange to gold, and throw off embers. Burning enemies get the same flames.
+- Ice beasts have sharp faceted crystal spines that catch the light, icicles hanging from the belly, glinting points, cold mist and drifting snow.
+- Storm, venom and shadow beasts glow: sparks crackle off their nodes, venom pustules and drips shine, and shadow beasts trail violet motes.
+- Slimes are now see-through gel in the colour of their element, with a glassy bright rim and a shine on top. You can see their glowing heart and whatever they've swallowed inside. The big cartoon face is gone; a pair of small eye-lights glows in the gel instead.
+
 ## 2.12.6
 
 A clear line between chin and neck.
