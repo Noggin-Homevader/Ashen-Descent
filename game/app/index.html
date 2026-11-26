@@ -8912,6 +8912,10 @@ function matIcon(t){return icn('mat'+t,q=>{switch(t){
  default:icGlow(q,'#c8b898');rgfill(q,32,34,16,'#e8d8b8','#8a6a42');q.beginPath();q.arc(32,34,15,0,7);q.fill();ink(q)}})}
 {const _ic=ico;ico=function(x){try{if(x&&x.k=='cons')return elixirIcon(x.t);if(x&&x.k=='feather')return featherIcon();if(x&&x.k=='mat'&&!/^cm_/.test(x.t))return matIcon(x.t)}catch(e){}return _ic.apply(this,arguments)}}
 /* ---------- the stash chest: icon grids with counters ---------- */
+/* Sort: gear first (by slot, best rarity first, then item level), then potions, consumables and everything else by name */
+const STSO=['Weapon','Offhand','Helm','Shoulder','Armor','Hands','Legs','Feet','Cape','Amulet','Ring'],STKO=['gear','pot','cons','tome','feather','mat'];
+function stSortKey(x){const ki=STKO.indexOf(x.k);return[ki<0?99:ki,x.k=='gear'?(STSO.indexOf(x.slot)+1||50):0,-(x.r||0),-(x.il||0),String(x.k=='gear'?x.n||'':NAMEOF(x)||x.t||'')]}
+function stSort(){const d=stGet(),c=(a,b)=>{const A=stSortKey(a),B=stSortKey(b);for(let i=0;i<A.length;i++){if(A[i]<B[i])return-1;if(A[i]>B[i])return 1}return 0};d.inv=d.inv.slice().sort(c);if(stSet(d)){try{AUD.ui()}catch(e){}stashUi()}}
 function stCm(k,dir){cmInit();const d=stGet();d.cm=d.cm||{};if(dir>0){const n=cmHave(k);if(!n)return;d.cm[k]=(d.cm[k]||0)+n;if(stSet(d))P.cm[k]=0}else{const n=d.cm[k]||0;if(!n)return;delete d.cm[k];if(stSet(d))cmAdd(k,n)}stashUi()}
 function stGrid(L){return L.length?'<div class="sgr">'+L.join('')+'</div>':'<p class="sge">Empty</p>'}
 function stCell(img,n,col,on,tip,cls){const k=tpAdd(tip);return`<button class="sgc ${cls||''}" style="--rc:${col}" onclick="${on}" onmouseenter="hovr(${k})" onmouseleave="hovr(-1)"><img src="${img}" alt="">${n!=null&&n!==''?`<b>${n}</b>`:''}</button>`}
@@ -8923,9 +8927,10 @@ stashUi=function(){const vn=CNP.find(n=>n.id=='vault');if(!P||!camp||!vn||dist(P
  $('ovc').innerHTML=`<div class="chest"><div class="chh"><div class="chl"></div><div><h1>Account Stash</h1><small>Shared by all your heroes and kept safe if one dies. Click any icon to move it across.</small></div><button class="tx" onclick="$('ov').hidden=true;VC.open=0">✕</button></div>
  <div class="chg"><span>\u{1FA99} Carried <b>${P.gold}</b></span><button onclick="stGold(500)">Store 500</button><button onclick="stGold('all')">Store all</button><span>Stored <b>${d.gold}</b></span><button onclick="stGold(-500)">Take 500</button><button onclick="stGold('-all')">Take all</button></div>
  <div class="chc"><section><h2>Your bag <small>${P.inv.length}/${CAP()}</small></h2>${stGrid(P.inv.map((x,i)=>itCell(x,`stPut(${i})`)))}<h3>Monster parts</h3>${stGrid(mats(P.mats))}<h3>Crafting materials</h3>${stGrid(cms(P.cm,1))}</section>
- <section class="st2"><h2>Stash <small>${d.inv.length}/${STCAPS(d)}</small></h2>${stGrid(d.inv.map((x,i)=>itCell(x,`stTake(${i})`)))}<h3>Monster parts <small>up to ${STMAT(d)} each</small></h3>${stGrid(mats(d.mats))}<h3>Crafting materials</h3>${stGrid(cms(d.cm,-1))}</section></div>
+ <section class="st2"><h2>Stash <small>${d.inv.length}/${STCAPS(d)}</small><button class="stsort" onclick="stSort()" title="Sort the stash: gear by slot, then rarity and level; then potions, scrolls and the rest">Sort</button></h2>${stGrid(d.inv.map((x,i)=>itCell(x,`stTake(${i})`)))}<h3>Monster parts <small>up to ${STMAT(d)} each</small></h3>${stGrid(mats(d.mats))}<h3>Crafting materials</h3>${stGrid(cms(d.cm,-1))}</section></div>
  ${c?`<div class="chx"><b>Expand chest (level ${lv} → ${lv+1})</b><small>${STCAPS(d)} → ${STCAPS({lv:lv+1})} slots · ${c.gold}c · ${MN.iron} ${P.mats.iron||0}/${c.iron} · ${MN.core} ${P.mats.core||0}/${c.core} · ${MN.ess} ${P.mats.ess||0}/${c.ess}</small><button class="${ok?'pri':''}" onclick="stUp()">Expand</button></div>`:'<div class="chx"><b style="color:#d4a017">Chest fully expanded</b></div>'}</div>`;
  $('ov').hidden=false};
+{const z=document.createElement('style');z.textContent='.chest h2 .stsort{margin-left:10px;font:12px Georgia,serif;padding:2px 10px;background:#3a2a14;color:#ffe27a;border:1px solid #c9a24a;border-radius:5px;cursor:pointer;vertical-align:middle}';document.head.appendChild(z)}
 /* ---------- the Save Crystal in every town ---------- */
 const SCP={x:860,y:700};
 {const sv={id:'save',x:SCP.x,y:SCP.y+46,s:1,ti:'Save Crystal',nm:'Save Crystal',rl:'Record your journey',ac:'#8ad8ff',a1:'#1a2a3a',a2:'#8ad8ff',lt:[.6,.8,1],tabs:[],d:'Touch the crystal to save your hero.',q:''};if(!CNP.some(n=>n.id=='save'))CNP.push(sv);if(CNPALL&&!CNPALL.some(n=>n.id=='save'))CNPALL.push(sv)}

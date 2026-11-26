@@ -2,6 +2,10 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.19.1
+
+- Account Stash: a Sort button next to the stash count orders stored items - gear first by slot (weapon, offhand, helm, shoulders, armour, hands, legs, feet, cape, amulet, rings), best rarity and highest item level first, then potions and everything else by name.
+
 ## 2.19.0
 
 - New skill trees. Every class tab is three stat paths of four skills (unlocking at levels 1, 6, 15 and 30): Warrior Might / Finesse / Vigor, Paladin Zeal / Faith / Bulwark, Rogue Blades / Shadows / Poisons, Mage Arcana / Tempo / Warding, Ranger Marksman / Survival / Wilds, Necromancer Bone / Blood / Hex, Shaman Spirit / Earth / Storm. Every subclass adds eight signature skills (levels 3, 10, 22 and 40, ultimates last). The ~900 generated, look-alike tree entries are gone: 252 distinct skills in all, about 20 per build.
