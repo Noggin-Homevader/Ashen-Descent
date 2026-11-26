@@ -2,6 +2,15 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.19.0
+
+- New skill trees. Every class tab is three stat paths of four skills (unlocking at levels 1, 6, 15 and 30): Warrior Might / Finesse / Vigor, Paladin Zeal / Faith / Bulwark, Rogue Blades / Shadows / Poisons, Mage Arcana / Tempo / Warding, Ranger Marksman / Survival / Wilds, Necromancer Bone / Blood / Hex, Shaman Spirit / Earth / Storm. Every subclass adds eight signature skills (levels 3, 10, 22 and 40, ultimates last). The ~900 generated, look-alike tree entries are gone: 252 distinct skills in all, about 20 per build.
+- New skill effects: executes (double damage to foes under 25-30% health), double damage to stunned, slowed or fleeing foes, to bleeding, poisoned or burning foes, or to marked foes; lucky strikes that sometimes deal triple; bleeds and burns.
+- Stats reworked. No stat adds damage on its own any more. Strength: armour, health, block. Dexterity: attack and cast speed, dodge. Vitality: health, armour, regeneration. Energy: mana, mana regeneration, cooldowns. Luck: crit, cinders, drop rarity.
+- Every skill names the stat that powers it and grows 1% per point of it (compared with a typical hero of your level); heals and wards too. Tooltips show the bonus your stat gives.
+- Growth: +1 Vitality every level, plus 2 points to place each level - on the level-up window or the character sheet. Auto-assign (on by default) places them on your subclass's recommended stats. Attribute points can be reset for free in camp.
+- Existing characters: every skill point is returned once and stats are rebuilt from your level with auto-assign.
+
 ## 2.18.0
 
 - Melee foes fight at the reach of their weapon: daggers have to step right in, swords and axes stand a little off, greatswords and scythes sweep from further out, and spears keep you at length. Beasts strike at the reach of their bite, claws or horns (wolves close, bears and crabs further, minotaurs and dragons from well out).
