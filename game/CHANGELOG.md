@@ -2,6 +2,13 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.18.0
+
+- Melee foes fight at the reach of their weapon: daggers have to step right in, swords and axes stand a little off, greatswords and scythes sweep from further out, and spears keep you at length. Beasts strike at the reach of their bite, claws or horns (wolves close, bears and crabs further, minotaurs and dragons from well out).
+- Every weapon and beast has its own wind-up - quick daggers and bites, slow greatswords, horns and golem fists - shown by a red ring that grows to the edge of its reach. A committed swing lands where it lands: step out of the ring and it misses. Spears, daggers and beasts lunge in as they strike.
+- Between swings foes no longer pile onto you: they hold at their reach, circle you and give ground when crowded in.
+- Monster sizes are capped by rank, so mutated brutes, great drakes and minotaur brutes stop towering over the screen (their hit areas are unchanged).
+
 ## 2.17.2
 
 - No more blobby monsters at any graphics setting. The light version of every model is now worked out ahead of time by collapsing edges in the order that changes the shape least - never across a colour, armour piece or joint, and only while the change stays tiny compared with the model's size. Goblins, skeletons, heroes, spiders, crabs, slimes, golems, wraiths, bats and all gear keep their silhouette and colours at a quarter of the triangles. The old on-the-fly merge is gone; a model without a light version simply draws at full detail.
