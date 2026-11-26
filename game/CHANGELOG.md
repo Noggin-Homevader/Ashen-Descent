@@ -2,6 +2,11 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.16.2
+
+- Drakes, wyrms and wyverns no longer stand like horses: they crouch low with elbows and knees bowed out, carry the neck forward with the head level, and have heavier shoulders, haunches, knobbed joints and broad splayed feet.
+- Dragon hides gain a dark ridge down the back and tail, banded scales along the flanks and darker feet; the Gilded bloodline is a deeper gold.
+
 ## 2.16.1
 
 - Minotaurs rebuilt in Blender: a broad V-shaped torso with a narrow waist and hips, defined chest and abs, a proper bull head (long muzzle, wet nose pad, brow, lidded eyes, nose ring), a studded leather war-kilt with a skull-buckled belt, a chest harness, a spiked iron pauldron and banded bracers, dark shaggy lower legs.
