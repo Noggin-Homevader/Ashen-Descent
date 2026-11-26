@@ -5525,7 +5525,7 @@ function TPmv(){const ix=(keys.d||keys.ArrowRight?1:0)-(keys.a||keys.ArrowLeft?1
   for(const c of CH){if(c.open||c.vault)continue;if(DGG&&!EXP[Math.floor(c.y/CSZ)*DGW+Math.floor(c.x/CSZ)])continue;const d=dist(P,c);if(d<IR)off(d,{k:'go',x:c.x,y:c.y,t:'Open chest',s:(CHT[c.tier]||{}).n||''})}
   for(const c of CH){if(!c.vault)continue;const d=dist(P,c);if(d<IR)off(d,{k:'vault',t:'Open stash',s:'Account stash'})}
   for(const o of GR){const d=dist(P,o);if(d<IR){let nm='item';try{nm=INAME(o.i)}catch(e){}let ok=true;try{ok=room(o.i)}catch(e){}if(ok)off(d,{k:'go',x:o.x,y:o.y,t:'Pick up',s:nm.slice(0,40)});else off(d+90,{k:'full',t:'Bag full',s:nm.slice(0,40)})}}
-  if(!camp&&window.QN)for(const n of QN){if(n.got||n.fl!==fl||(n.k!='herb'&&n.k!='ore'&&n.k!='lost'))continue;if(DGG&&EXP&&!EXP[Math.floor(n.y/CSZ)*DGW+Math.floor(n.x/CSZ)])continue;const d=Math.hypot(P.x-n.x,P.y-n.y);if(d<IR+10){const q=(P.qa||[]).find(x=>x.id==n.q);off(d-5,{k:'gath',n,t:n.k=='lost'?'Talk':n.k=='ore'?'Mine':'Pick',s:n.k=='lost'?(q?q.who:'Someone lost'):(q?q.inm:'')})}}
+  if(!camp&&window.QN)for(const n of QN){if(n.got||n.fl!==fl||(n.k!='herb'&&n.k!='ore'&&n.k!='lost'))continue;if(DGG&&EXP&&!EXP[Math.floor(n.y/CSZ)*DGW+Math.floor(n.x/CSZ)])continue;const d=Math.hypot(P.x-n.x,P.y-n.y);if(d<IR+10){const q=(P.qa||[]).find(x=>x.id==n.q);off(d-5,{k:'gath',n,t:n.g2&&window.G2T?G2T[n.gk].vb:n.k=='lost'?'Talk':n.k=='ore'?'Mine':'Pick',s:n.g2?n.nm+' (rank '+n.tr+')':n.k=='lost'?(q?q.who:'Someone lost'):(q?q.inm:'')})}}
   return b}
  function interact(){const a=interactable();if(!a)return toast('Nothing to interact with nearby');
   if(a.k=='npc'){unlock();(window.NPCGO||showShop)(a.n.id);return}
@@ -15356,6 +15356,103 @@ function allyHeal(m,a){a=Math.round(a);if(!(a>0)||!(m.hp>0))return;const h0=m.hp
 {const _m=hurtM;hurtM=function(m,d){try{if(m&&m.shv>0&&performance.now()<(m.shT||0)){const a=Math.min(m.shv,d);m.shv-=a;d-=a;if(d<=0){FT.push({x:m.x,y:m.y-(m.r||12)-6,t:.4,s:'Absorbed',c:'#7ac8ff'});return}}}catch(e){}return _m.call(this,m,d)}}
 /* renew on a follower: heals over its duration */
 {let lt=performance.now();setInterval(()=>{const t=performance.now(),dt=Math.min(.5,(t-lt)/1000);lt=t;try{if(!P||!started)return;for(const m of MIN){if(m.rgT>t&&m.hp>0)m.hp=Math.min(m.mh,m.hp+HREF()*.03*dt)}}catch(e){}},200)}
+/* ================= GATHERING: ore veins, timber and wild flowers on every floor =================
+   Each dungeon floor now has ore veins to mine, old timber to chop and wild flowers to pick, all with F (or a click)
+   like quest herbs. Ore and timber give the forge's crafting metals and woods; flowers are for brewing at the
+   Apothecary's cauldron. Every node has a rank set by how deep you are, and you need a tool of that rank or better:
+   a Pickaxe for ore, a Hatchet for timber, a Sickle for flowers. Tools are upgraded at the material stores in the
+   Cinder Forge, paid for in Cinders and the materials of the rank below. A better tool than a node needs gathers more. */
+var G2T={ore:{vb:'Mine',ing:'Mining',tool:'pick',T:2.4,max:5},wood:{vb:'Chop',ing:'Chopping',tool:'axe',T:2.2,max:5},flower:{vb:'Pick',ing:'Picking',tool:'sick',T:1.2,max:3}};
+var TOOLN={pick:'Pickaxe',axe:'Hatchet',sick:'Sickle'},TOOLI={pick:'⛏',axe:'\u{1FA93}',sick:'\u{1F33F}'},TOOLR=['','Copper','Iron','Steel','Mithril','Starmetal'];
+/* what each rank of node gives */
+var G2ORE={1:[['copper','Copper vein','gt_bogiron'],['bronze','Tin-streaked vein','gt_bogiron']],2:[['iron','Iron vein','gt_emberore']],3:[['steel','Dark iron seam','gt_cinderite'],['silver','Silver vein','gt_rimecrystal'],['gold','Gold vein','gt_emberore']],
+ 4:[['mithril','Mithril vein','gt_rimecrystal'],['obsidian','Obsidian outcrop','gt_cinderite']],5:[['starmetal','Fallen star','gt_starshard']]};
+var G2WOOD={1:['ash','Fallen ash'],2:['oak','Old oak stump'],3:['yew','Yew stump'],4:['ironwood','Ironwood stump'],5:['emberwood','Smouldering emberwood']};
+/* flowers for alchemy: red ones go into health potions, blue ones into mana potions */
+var HERB={redcap:{n:'Redcap Poppy',t:1,p:'hp',c:'#e04a3a',m:'gt_ashbloom'},bluebell:{n:'Bluebell',t:1,p:'mp',c:'#5a8aff',m:'gt_moonpetal'},
+ bloodthorn:{n:'Bloodthorn',t:2,p:'hp',c:'#c0203a',m:'gt_ashbloom'},moonbell:{n:'Moonbell',t:2,p:'mp',c:'#9ab8ff',m:'gt_moonpetal'},
+ heartbloom:{n:'Heartbloom',t:3,p:'hp',c:'#ff3060',m:'gt_magmabloom'},starlily:{n:'Starlily',t:3,p:'mp',c:'#b8a0ff',m:'gt_glowcap'}};
+function g2Init(){if(!P)return;P.tl=P.tl||{pick:1,axe:1,sick:1};P.hb=P.hb||{};P.alc=P.alc||{xp:0}}
+const g2Ft=()=>Math.min(5,1+Math.floor((fl-1)/8)),g2FtF=()=>Math.min(3,1+Math.floor((fl-1)/12));
+function g2Rank(top){return Math.random()<.35?Math.max(1,top-1):top}
+/* ---- nodes are placed when a floor is built ---- */
+function g2Place(){try{if(camp||typeof DGR=='undefined'||!DGR||!DGR.length||fl%10==0)return;g2Init();QN=QN.filter(n=>!n.g2);
+ const rs=DGR.slice(1).length?DGR.slice(1):DGR,put=(o)=>{const r=pick(rs),s=spot(r.px,r.py,40,0);QN.push(Object.assign({x:s.x,y:s.y,fl,ph:Math.random()*6,g2:1},o))};
+ for(let i=RI(2,4);i>0;i--){const t=g2Rank(g2Ft()),o=pick(G2ORE[t]);put({k:'ore',gk:'ore',tr:t,mat:o[0],nm:o[1],it:o[2].slice(3),c:CMAT[o[0]].c})}
+ for(let i=RI(2,3);i>0;i--){const t=g2Rank(g2Ft()),w=G2WOOD[t];put({k:'ore',gk:'wood',tr:t,mat:w[0],nm:w[1],it:'_wood',c:CMAT[w[0]].c})}
+ for(let i=RI(3,5);i>0;i--){const t=g2Rank(g2FtF()),L=Object.keys(HERB).filter(k=>HERB[k].t==t),k=pick(L),h=HERB[k];put({k:'herb',gk:'flower',tr:t,hb:k,nm:h.n,it:h.m.slice(3),c:h.c})}
+ }catch(e){console.warn('g2Place',e)}}
+{const _sp=spawn;spawn=function(){const r=_sp.apply(this,arguments);g2Place();return r}}
+/* ---- a tool of the node's rank is needed ---- */
+{const _gs=gathStart;gathStart=function(n){if(n&&n.g2){g2Init();const G=G2T[n.gk],have=P.tl[G.tool]||1;
+  if(have<n.tr){toast(`This ${n.nm} needs ${TOOLR[n.tr]=='Iron'?'an':'a'} ${TOOLR[n.tr]} ${TOOLN[G.tool]} (yours is ${TOOLR[have]}). Upgrade it at the material stores in the Cinder Forge.`);return}
+  const r=_gs.apply(this,arguments);if(GATH&&GATH.n===n)GATH.T=G.T*Math.max(.55,1-.12*(have-n.tr));return r}return _gs.apply(this,arguments)}}
+{const _gt=gathTick;gathTick=function(dt){const r=_gt.apply(this,arguments);try{if(GATH&&GATH.n.g2&&GBAR){const n=GATH.n;GBAR.querySelector('b').textContent=G2T[n.gk].ing+' — '+n.nm}}catch(e){}return r}}
+{const _gd=gathDone;gathDone=function(){const n=GATH&&GATH.n;if(!n||!n.g2)return _gd.apply(this,arguments);GATH=null;n.got=1;g2Init();
+  const G=G2T[n.gk],over_=Math.max(0,(P.tl[G.tool]||1)-n.tr),k=RI(1,2)+(Math.random()<.3*over_?1:0)+(n.gk=='flower'?1:0);let lab;
+  if(n.gk=='flower'){P.hb[n.hb]=(P.hb[n.hb]||0)+k;lab=HERB[n.hb].n}else{cmInit();cmAdd(n.mat,k);lab=CMAT[n.mat].n}
+  FT.push({x:n.x,y:n.y-24,t:1.2,s:'+'+k+' '+lab,c:n.c});burst(n.x,n.y,n.gk=='flower'?16:22,n.c,n.gk=='flower'?80:130,.6,n.gk=='flower'?2:3,-20);try{AUD.ui()}catch(e){}}}
+/* ---- timber nodes draw as a stump; ore and flower nodes use the gathering models ---- */
+function g2WoodPal(c){const K=CHM.K,h=K(c),L=(a,e)=>[a[0],a[1],a[2],e],dk=(a,k)=>[a[0]*k,a[1]*k,a[2]*k];
+ return[L(dk(h,.55),0),L(dk(h,.35),0),L(K('#4a6a2a'),0),L(K('#3a5a22'),0),L(K('#3a5a22'),0),L(K('#8ab06a'),.2),L(h,0),L(dk(h,.7),0)]}
+{const _wd=window.WORLDDRAW;WORLDDRAW=function(vis){try{if(window.WPKM&&!camp&&QN.length){const g=WPKM.pr_stump;if(g)for(const n of QN){if(!n.g2||n.gk!='wood'||n.got||n.fl!==fl)continue;if(!vis(n.x,n.y,30))continue;if(DGG&&EXP&&!EXP[Math.floor(n.y/CSZ)*DGW+Math.floor(n.x/CSZ)])continue;
+   const gn=GATH&&GATH.n===n,sh=gn?Math.sin(Date.now()/45)*.04:0;CHM.setF(n.x,0,n.y,40,n.ph+sh,0,0,null,0);CHM.wmx(g,[0,0,0],[1,0,0],[0,1,0],[0,0,1],g2WoodPal(n.c),4,null)}}}catch(e){}
+ const hid=[];try{for(const n of QN)if(n.g2&&n.gk=='wood'){hid.push(n);n.k='_g2'}}catch(e){}try{return _wd&&_wd(vis)}finally{for(const n of hid)n.k='ore'}}}
+
+/* ================= TOOLS: upgraded at the material stores ================= */
+function toolCost(tool,to){const gold=[0,0,250,700,1600,3500][to]||0,ty=tool=='axe'?'wood':'metal',need=tool=='sick'?5:8;return{gold,ty,need,t:to-1}}
+function toolMats(ty,t){return Object.keys(CMAT).filter(k=>CMAT[k].ty==ty&&CMAT[k].t==t)}
+function toolHave(ty,t){cmInit();return toolMats(ty,t).reduce((a,k)=>a+(P.cm[k]||0),0)}
+function toolUp(tool){g2Init();const cur=P.tl[tool]||1,mx=tool=='sick'?3:5;if(cur>=mx)return toast('Your '+TOOLN[tool]+' is already the best there is');
+ const c=toolCost(tool,cur+1);if(P.gold<c.gold)return toast('Not enough Cinders');if(toolHave(c.ty,c.t)<c.need)return toast(`You need ${c.need} rank-${c.t} ${c.ty=='wood'?'wood':'metal'}`);
+ P.gold-=c.gold;let n=c.need;for(const k of toolMats(c.ty,c.t)){const q=Math.min(n,P.cm[k]||0);P.cm[k]-=q;n-=q;if(!n)break}
+ P.tl[tool]=cur+1;toast(`Your ${TOOLN[tool]} is now ${TOOLR[cur+1]}`);try{AUD.ui()}catch(e){}showShop()}
+function toolsHtml(){g2Init();return`<h2>Gathering tools <small>a node needs a tool of its rank or better</small></h2><div class="tlr">`+['pick','axe','sick'].map(k=>{const cur=P.tl[k]||1,mx=k=='sick'?3:5,c=cur<mx?toolCost(k,cur+1):null,have=c?toolHave(c.ty,c.t):0,ok=c&&P.gold>=c.gold&&have>=c.need;
+  return`<div class="tlc"><i>${TOOLI[k]}</i><b>${TOOLR[cur]} ${TOOLN[k]}</b><small>rank ${cur} of ${mx} · ${k=='pick'?'ore veins':k=='axe'?'timber':'flowers'}</small>${c?`<button ${ok?'':'disabled'} onclick="toolUp('${k}')">Upgrade to ${TOOLR[cur+1]}<br><small>${c.gold}c + ${c.need} rank-${c.t} ${c.ty} (${have})</small></button>`:'<small class="mx">Best there is</small>'}</div>`}).join('')+'</div>'}
+{const _st=shopTiles;shopTiles=function(){if(SHT=='mats'){let r='';try{r=_st.apply(this,arguments)}catch(e){}return toolsHtml()+r}return _st.apply(this,arguments)}}
+
+/* ================= ALCHEMY at the Apothecary's cauldron =================
+   Brew health potions from red flowers and mana potions from blue ones. Low quality takes rank-1 flowers or better,
+   Normal rank-2, High rank-3 plus a scoop of Ooze Gel to bind it. Each brew makes two potions. Brewing raises your
+   Alchemy: every level gives a chance of an extra potion, and at levels 4 and 8 each brew needs one flower fewer. */
+var ALCQ=[{n:'Low',q:0,t:1,c:2,gel:0},{n:'Normal',q:1,t:2,c:2,gel:0},{n:'High',q:2,t:3,c:3,gel:1}];
+function alcLv(){g2Init();return Math.min(10,Math.floor(Math.sqrt(P.alc.xp/3)))}
+function alcNext(){const L=alcLv();return L>=10?null:3*(L+1)*(L+1)}
+function alcCost(Q){const L=alcLv();return Math.max(1,Q.c-(L>=4?1:0)-(L>=8?1:0))}
+function alcFlw(p,t){return Object.keys(HERB).filter(k=>HERB[k].p==p&&HERB[k].t>=t).sort((a,b)=>HERB[a].t-HERB[b].t)}
+function alcHave(p,t){g2Init();return alcFlw(p,t).reduce((a,k)=>a+(P.hb[k]||0),0)}
+const GELK=['gel','gel2','gel3'];function alcGel(){return GELK.reduce((a,k)=>a+((P.mats&&P.mats[k])||0),0)}
+function potAdd(t,q,n){const x=P.inv.find(y=>y.k=='pot'&&y.t==t&&qOf(y)==q);if(x){x.n=(x.n||1)+n;return true}if(P.inv.length>=CAP())return false;P.inv.push({k:'pot',t,q,n});return true}
+function alcBrew(p,qi,times){g2Init();const Q=ALCQ[qi],cost=alcCost(Q);let made=0;times=times||1;
+ for(let i=0;i<times;i++){if(alcHave(p,Q.t)<cost||(Q.gel&&alcGel()<Q.gel))break;
+  const n=2+(Math.random()<.08*alcLv()?1:0);if(!potAdd(p,Q.q,n)){toast('Your bag is full');break}
+  let need=cost;for(const k of alcFlw(p,Q.t)){const u=Math.min(need,P.hb[k]||0);P.hb[k]-=u;need-=u;if(!need)break}if(Q.gel){let g=Q.gel;for(const k of GELK){const u=Math.min(g,P.mats[k]||0);P.mats[k]-=u;g-=u;if(!g)break}}
+  made+=n;const L0=alcLv();P.alc.xp+=1+qi;if(alcLv()>L0)setTimeout(()=>toast('Alchemy level '+alcLv()+'!'),400)}
+ if(made){toast(`Brewed ${made} ${Q.n.toLowerCase()} quality ${p=='hp'?'health':'mana'} potion${made>1?'s':''}`);try{burst(FP.x,FP.y,24,p=='hp'?'#ff5a6a':'#6a9aff',90,.8,3,-40)}catch(e){}try{AUD.ui()}catch(e){}}
+ else toast('Not enough ingredients');showShop()}
+function alchHtml(){g2Init();const L=alcLv(),nx=alcNext();
+ const inv=Object.keys(HERB).map(k=>`<span class="hbc" style="--c:${HERB[k].c}"><i></i>${HERB[k].n} <small>r${HERB[k].t}</small> <b>${P.hb[k]||0}</b></span>`).join('')+`<span class="hbc" style="--c:#8aff8a"><i></i>Ooze Gel <b>${alcGel()}</b></span>`;
+ const card=(p,nm,col)=>`<div class="alr"><h3 style="color:${col}">${nm}</h3>`+ALCQ.map((Q,i)=>{const c=alcCost(Q),have=alcHave(p,Q.t),ok=have>=c&&(!Q.gel||alcGel()>=Q.gel),pn=QL[Q.q].n;
+  return`<div class="alq"><b>${Q.n}</b> <small>(${pn}, restores ${Math.round(QL[Q.q][p]*100)}%)</small><br><small>${c} ${p=='hp'?'red':'blue'} flower${c>1?'s':''} of rank ${Q.t}+ (${have})${Q.gel?` + ${Q.gel} Ooze Gel (${alcGel()})`:''}</small>
+   <span><button ${ok?'':'disabled'} onclick="alcBrew('${p}',${i},1)">Brew</button><button ${ok?'':'disabled'} onclick="alcBrew('${p}',${i},5)">×5</button></span></div>`}).join('')+'</div>';
+ return`<h2>Alchemy <small>level ${L}${nx?` · ${P.alc.xp}/${nx} to next`:' · mastered'}</small></h2><p><small>Each brew makes two potions. Every Alchemy level gives an ${8}% chance of an extra potion (now ${8*L}%); from level 4 each brew needs one flower fewer, and again from level 8. Flowers grow on every dungeon floor; pick them with your Sickle.</small></p>
+  <div class="hbl">${inv}</div><div class="alg">${card('hp','Health potions','#ff8a8a')}${card('mp','Mana potions','#8ab4ff')}</div>`}
+{const _st=shopTiles;shopTiles=function(){if(SHT=='alch')return alchHtml();return _st.apply(this,arguments)}}
+{const _tb=shopTabs;shopTabs=function(N){if(SHT=='alch'&&SHOPIN&&SHOPIN.id=='sup')return['alch'];return _tb.apply(this,arguments)}}
+/* the cauldron is a station */
+BENCH2.sup=Object.assign(BENCH2.sup||{},{cld:{x:SRW/2,z:300,tab:'alch',r:62,cr:0}});
+BENCHN.alch=['Alchemy','the cauldron'];BENCHI.alch='⚗';
+BENCHSAY.cld=['Brew at the cauldron','Alchemy: brew potions from flowers'];
+BENCHTIP.cld='<b>The cauldron</b><br><small>Brew health and mana potions of Low, Normal and High quality from the flowers you pick in the dungeon.</small>';
+{const _e=enterShop;enterShop=function(id){const r=_e.apply(this,arguments);try{if(id=='sup'&&BENCH2.sup.cld)BENCH2.sup.cld.x=SRW/2}catch(e){}return r}}
+{const st_=document.createElement('style');st_.textContent=`.tlr{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 12px}.tlc{flex:1 1 150px;display:flex;flex-direction:column;gap:3px;padding:8px 10px;border:1px solid #c9a24a55;border-radius:9px;background:#0004}
+.tlc i{font-style:normal;font-size:22px}.tlc b{color:#ffd890}.tlc button{margin-top:4px;line-height:1.2}.tlc .mx{color:#9be39b}
+.hbl{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 10px}.hbc{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:7px;background:#0005;border:1px solid color-mix(in srgb,var(--c) 50%,transparent);font-size:12px}
+.hbc i{width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 6px var(--c)}.hbc b{color:#fff}
+.alg{display:flex;gap:10px;flex-wrap:wrap}.alr{flex:1 1 260px;padding:6px 10px;border:1px solid #c9a24a44;border-radius:9px;background:#0003}.alr h3{margin:4px 0 6px}
+.alq{display:flex;flex-wrap:wrap;align-items:center;gap:4px;padding:6px 0;border-top:1px solid #ffffff12}.alq>span{margin-left:auto;display:flex;gap:4px}.alq button{min-width:52px}`;document.head.appendChild(st_)}
+/* flowers keep their own colour even when they borrow a quest herb's model */
+{const _gp=gthPal,HC=new Set(Object.values(HERB).map(h=>h.c));gthPal=function(it,c){if(HC.has(c))return _gp('_flower',c);return _gp.apply(this,arguments)}}
 
 function ovIsBook(){try{const f=$('ovc').firstElementChild;return!!(f&&f.classList.contains('tome2'))}catch(e){return false}}
 
