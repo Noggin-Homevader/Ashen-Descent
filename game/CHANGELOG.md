@@ -2,6 +2,10 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.17.2
+
+- No more blobby monsters at any graphics setting. The light version of every model is now worked out ahead of time by collapsing edges in the order that changes the shape least - never across a colour, armour piece or joint, and only while the change stays tiny compared with the model's size. Goblins, skeletons, heroes, spiders, crabs, slimes, golems, wraiths, bats and all gear keep their silhouette and colours at a quarter of the triangles. The old on-the-fly merge is gone; a model without a light version simply draws at full detail.
+
 ## 2.17.1
 
 - Far-view models made in Blender for dragons (all four kinds), minotaurs, bears, wolves, imps and the gobtaur's horse. When the game lightens monsters for distance or smoothness, these keep their silhouette, horns, frills, wings, spine and belly plates and armour instead of melting into smooth blobs; only scales, teeth, claws and eyelids are left off.
