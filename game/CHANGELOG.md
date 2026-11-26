@@ -2,6 +2,15 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.17.0
+
+- Dragons are four different creatures now, each with its own Blender-built body on the shared dragon rig:
+  - Dragon (elders and whelps): four legs and great wings, a crown of curved horns with a webbed frill between the cheek horns.
+  - Drake: wingless and heavily armoured, a high shoulder hump, massive forearms, a crest of horns swept flat back, and a finned tail fan.
+  - Wyvern: two legs, its wings are its arms with a clawed hand at each wrist, and it rears up on its hind legs.
+  - Wyrm: a legless serpent that slithers with its neck raised, a finned crest over its skull and neck, and a tail fin.
+- Modelled detail on every kind: overlapping scales over the hide, ridged plates down the spine and tail, raised belly plates with dark seams, three toes and a dewclaw on every foot with hooked claws, spikes under the jaw.
+
 ## 2.16.2
 
 - Drakes, wyrms and wyverns no longer stand like horses: they crouch low with elbows and knees bowed out, carry the neck forward with the head level, and have heavier shoulders, haunches, knobbed joints and broad splayed feet.
