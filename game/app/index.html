@@ -1740,7 +1740,7 @@ else if(s.k=='storm'){for(let i=0;i<s.sn;i++)SCH.push({t:i*(s.dur||1.6)/s.sn,fn:
 else if(s.k=='zone'){const x=s.self?P.x:s.fw?P.x+f.x*s.fw:n?n.x:P.x+f.x*120,y=s.self?P.y:s.fw?P.y+f.y*s.fw:n?n.y:P.y+f.y*120;ZD.push({id,d0:s.dur,x,y,r:s.r,t:s.dur,tk:0,tick:.5,dm:s.d*m*.5/s.dur,ty:s.t,slow:s.slow,weak:s.weak,stn:s.ztn,heal:s.heal});fx(x,y,s.r,col)}
 else if(s.k=='wall'){const wd=s.cat=='range'?55:80,cx=P.x+f.x*wd,cy=P.y+f.y*wd;mkWall('p',Math.max(30,Math.min(W-30,cx)),Math.max(70,Math.min(H-30,cy)),f.x,f.y,{w:s.w,dur:s.dur,t:s.t,id,th:s.th,slow:s.slow,hp:(40+HREF()*.25)*(1+.04*ml(P.uses[id]||0))})}
 else if(s.k=='bar'){mkBar('p',P.x,P.y,{r:s.r,dur:s.dur,t:s.t,id,red:Math.min(.75,s.red+.01*ml(P.uses[id]||0)),pr:s.pr,hl:s.hl,hp:(90+HREF()*1.2)*(1+.04*ml(P.uses[id]||0))})}
-else if(s.k=='buff'&&s.bx){for(const k in s.bx){P.bf[k]=Math.max(P.bf[k]||0,s.bx[k]);try{BFSET(k,sl(id),s.bx[k])}catch(_){}}toast(s.n+'!')}else if(s.k=='buff'){{let bm_=s.bm||1.2;const up_=Math.random()<.22;if(up_)bm_=1+(bm_-1)*1.5;P.buff=s.dur||8;P.bm=bm_;toast(up_?'Surge! Empowered: +'+Math.round((bm_-1)*100)+'% damage':'Empowered: +'+Math.round((bm_-1)*100)+'% damage');if(up_)try{FT.push({x:P.x,y:P.y-40,t:.9,s:'SURGE',c:'#ffd23a'})}catch(e){}}}else if(s.k=='ward'){shAdd(id,(20+HREF()*.3)*(s.wm||1),s.dur||10);toast('Ward raised ('+(s.dur||10)+'s)');if(s.sh)try{mpBuffOut(id)}catch(e){}}else if(s.k=='haste'){P.bf.spd=10}else if(s.k=='regen'){try{P.regEl=s.t}catch(_){}const ht=mpHealTgt(300);if(ht){mpEmit('evt',{k:'hl',to:ht.ghost,a:0,rg:10});FX.push({k:'bolt',a:{x:P.x,y:P.y},b:{x:ht.x,y:ht.y},t:.35,T:.35,c:'#9be39b'});FT.push({x:ht.x,y:ht.y-24,t:.8,s:'Renew',c:'#9be39b'})}else{P.bf.reg=s.dur||10;try{BFSET('reg',sl(id),s.dur||10)}catch(_){}}}else if(s.k=='mana'){P.mp=Math.min(mxm(),P.mp+mxm()*(s.mf||.4))}else if(s.k=='mark'){E.forEach(e=>{if(dist(e,n||P)<(s.mr||150))e.mk=Math.max(e.mk||0,s.md||8)});toast('Targets marked: +30% damage taken')}else if(s.k=='fear'){E.forEach(e=>{if(dist(e,P)<130)e.st=2.5});fx(P.x,P.y,130,c)}else if(s.k=='revive'){mpRevive(id)}else if(s.k=='heal'){const ht=s.f>=1||s.ar?null:mpHealTgt(300);if(ht){mpHealSend(ht,s.f||.3);FX.push({k:'bolt',a:{x:P.x,y:P.y},b:{x:ht.x,y:ht.y},t:.35,T:.35,c:'#9be39b'})}else{P.hp=Math.min(mxh(),P.hp+HREF()*(s.f||.3));FT.push({x:P.x,y:P.y-20,t:.8,s:'Heal',c:'#9be39b'});if(s.f>=1||s.ar)mpHealA(s.f||.3,s.ar||380,P.x,P.y)}}
+else if(s.k=='buff'&&s.bx){for(const k in s.bx){P.bf[k]=Math.max(P.bf[k]||0,s.bx[k]);try{BFSET(k,sl(id),s.bx[k])}catch(_){}}toast(s.n+'!')}else if(s.k=='buff'){{let bm_=s.bm||1.2;const up_=Math.random()<.22;if(up_)bm_=1+(bm_-1)*1.5;P.buff=s.dur||8;P.bm=bm_;toast(up_?'Surge! Empowered: +'+Math.round((bm_-1)*100)+'% damage':'Empowered: +'+Math.round((bm_-1)*100)+'% damage');if(up_)try{FT.push({x:P.x,y:P.y-40,t:.9,s:'SURGE',c:'#ffd23a'})}catch(e){}}}else if(s.k=='ward'){shAdd(id,(20+HREF()*.3)*(s.wm||1),s.dur||10);toast('Ward raised ('+(s.dur||10)+'s)');if(s.sh)try{mpBuffOut(id)}catch(e){}}else if(s.k=='haste'){P.bf.spd=10}else if(s.k=='regen'){try{P.regEl=s.t}catch(_){}const ht=mpHealTgt(300);if(ht){if(ht._m){ht._m.rgT=performance.now()+1e4;FT.push({x:ht.x,y:ht.y-24,t:.8,s:'Renew',c:'#9be39b'})}else mpEmit('evt',{k:'hl',to:ht.ghost,a:0,rg:10});FX.push({k:'bolt',a:{x:P.x,y:P.y},b:{x:ht.x,y:ht.y},t:.35,T:.35,c:'#9be39b'});FT.push({x:ht.x,y:ht.y-24,t:.8,s:'Renew',c:'#9be39b'})}else{P.bf.reg=s.dur||10;try{BFSET('reg',sl(id),s.dur||10)}catch(_){}}}else if(s.k=='mana'){P.mp=Math.min(mxm(),P.mp+mxm()*(s.mf||.4))}else if(s.k=='mark'){E.forEach(e=>{if(dist(e,n||P)<(s.mr||150))e.mk=Math.max(e.mk||0,s.md||8)});toast('Targets marked: +30% damage taken')}else if(s.k=='fear'){E.forEach(e=>{if(dist(e,P)<130)e.st=2.5});fx(P.x,P.y,130,c)}else if(s.k=='revive'){mpRevive(id)}else if(s.k=='heal'){const ht=s.f>=1||s.ar?null:mpHealTgt(300);if(ht){mpHealSend(ht,s.f||.3);FX.push({k:'bolt',a:{x:P.x,y:P.y},b:{x:ht.x,y:ht.y},t:.35,T:.35,c:'#9be39b'})}else{P.hp=Math.min(mxh(),P.hp+HREF()*(s.f||.3));FT.push({x:P.x,y:P.y-20,t:.8,s:'Heal',c:'#9be39b'});if(s.f>=1||s.ar)mpHealA(s.f||.3,s.ar||380,P.x,P.y)}}
 else if(s.k=='summon'){SUM(s,id)}else if(s.k=='lust'){P.bf.lust=s.dur||10;toast('Bloodlust: heal when you hit')}
 else if(s.k=='dash'){if(s.tp&&n&&!n.ps){P.x=Math.max(14,Math.min(W-14,n.x-f.x*(n.r+14)));P.y=Math.max(50,Math.min(H-14,n.y-f.y*(n.r+14)))}else{const ds=s.ch?170:110,sx0=P.x,sy0=P.y;P.x=Math.max(14,Math.min(W-14,P.x+f.x*ds));P.y=Math.max(50,Math.min(H-14,P.y+f.y*ds));if(s.ch)SEG(sx0,sy0,P.x,P.y,s,id,m)}P.iv=.4;at(P.x,P.y,s.tp?70:55);fx(P.x,P.y,55,c)}
 if(s.sh&&MP.run)try{mpBuffOut(id)}catch(e){}
@@ -15271,8 +15271,40 @@ setInterval(()=>{try{if(!P||!P.cls)return;if(P.pts)P.pts=0;if(P.sa&&P.sa.some(v=
   setTimeout(()=>{try{toast('Attributes now grow by themselves each level; your spent points were folded into your new growth.')}catch(e){}},1500)}
  if(!P.grw2)P.grw2=1;
  if(GRW_LV&&P.lv>GRW_LV){const G=GROWL(P.lv),tot={};for(let l=GRW_LV+1;l<=P.lv;l++)for(const k in(G.by[l]||{}))tot[k]=(tot[k]||0)+G.by[l][k];
-  const s=AT.filter(k=>tot[k]).map(k=>'+'+tot[k]+' '+ATN[k]).join(', ');if(s){try{FT.push({x:P.x,y:P.y-52,t:2,s,c:'#bfe3ff'})}catch(e){}try{toast('Level '+P.lv+': '+s)}catch(e){}}}
+  const s=AT.filter(k=>tot[k]).map(k=>'+'+tot[k]+' '+ATN[k]).join(', ');if(s){try{FT.push({x:P.x,y:P.y-52,t:2,s,c:'#bfe3ff'})}catch(e){}}
+  try{LVWIN(GRW_LV,P.lv,tot)}catch(e){console.warn(e)}}
+ if(GRW_LV!=P.lv||!LVSNAP)LVSNAP=lvSnap();
  GRW_LV=P.lv}catch(e){}},400);
+/* ================= LEVEL-UP WINDOW =================
+   Pops up whenever you level: every attribute with what this level gave it (+1 or +0) and the stats that come from
+   them, old to new. Drag it by its title bar anywhere on the screen; it remembers where you put it. The old Stats
+   button is gone (attributes have nothing to spend); the character sheet is still in the Folio. */
+var LVSNAP=null;
+function lvSnap(){try{const s=st();return{A:{...s.A},hp:mxh(),mp:mxm(),dmg:Math.round(PDMG(s)),arm:Math.round(s.arm),crit:+s.crit.toFixed(1),spd:+(s.spd||0).toFixed(1),cdr:+(s.cdr||0).toFixed(1)}}catch(e){return null}}
+function LVWIN(l0,l1,tot){const old=LVSNAP,now=lvSnap();let w=document.getElementById('lvwin');
+ if(!w){w=document.createElement('div');w.id='lvwin';(document.getElementById('wrap')||document.body).appendChild(w);
+  let pos=null;try{pos=JSON.parse(localStorage.getItem('ad_lvwin')||'null')}catch(e){}
+  w.style.left=(pos?pos[0]:Math.max(10,innerWidth/2-150))+'px';w.style.top=(pos?pos[1]:90)+'px'}
+ /* several level-ups before you close it add up */
+ if(w.hidden||!w._tot){w._tot={};w._l0=l0;w._old=old}
+ for(const k in tot)w._tot[k]=(w._tot[k]||0)+tot[k];const T=w._tot,O=w._old||old||now,n=l1-w._l0;
+ const row=(nm,a,b,c,fmt)=>{const d=b-a,ds=fmt?fmt(d):d;return`<tr><td style="color:${c||'#e8dcc0'}">${nm}</td><td class="v">${fmt?fmt(b,1):b}</td><td class="${d>0?'up':'no'}">${d>0?'+':d<0?'':'+'}${d?ds:0}</td></tr>`};
+ const pc=(v,abs)=>abs?v+'%':(+v.toFixed(1))+'%';
+ w.innerHTML=`<div class="lvh"><b>Level ${l1}</b>${n>1?` <small>(+${n} levels)</small>`:''}<button title="Close">✕</button></div>
+  <table><tr class="sh"><td colspan="3">Attributes</td></tr>${AT.map(k=>`<tr><td style="color:${(window.ATC||{})[k]||'#e8dcc0'}">${ATN[k]}${k==MAINA[P.cls]?' ★':''}</td><td class="v">${now.A[k]}</td><td class="${T[k]?'up':'no'}">+${T[k]||0}</td></tr>`).join('')}
+  <tr class="sh"><td colspan="3">Stats</td></tr>${row('Health',O.hp,now.hp,'#ff8a7a')}${row('Mana',O.mp,now.mp,'#8ab4ff')}${row('Damage',O.dmg,now.dmg,'#ffd27a')}${row('Armor',O.arm,now.arm,'#c8c8d0')}${row('Crit',O.crit,now.crit,'#ffb0e0',pc)}${row('Speed',O.spd,now.spd,'#9be39b',pc)}${row('Cooldown cut',O.cdr,now.cdr,'#a8e0ff',pc)}</table>`;
+ w.hidden=false;w.querySelector('.lvh button').onclick=()=>{w.hidden=true;w._tot=null};
+ const h=w.querySelector('.lvh');h.onpointerdown=ev=>{if(ev.target.tagName=='BUTTON')return;ev.preventDefault();const r=w.getBoundingClientRect(),ox=ev.clientX-r.left,oy=ev.clientY-r.top,P0=w.offsetParent?w.offsetParent.getBoundingClientRect():{left:0,top:0};h.setPointerCapture(ev.pointerId);
+  h.onpointermove=e=>{const x=Math.max(0,Math.min(innerWidth-60,e.clientX-P0.left-ox)),y=Math.max(0,Math.min(innerHeight-40,e.clientY-P0.top-oy));w.style.left=x+'px';w.style.top=y+'px'};
+  h.onpointerup=()=>{h.onpointermove=null;try{localStorage.setItem('ad_lvwin',JSON.stringify([parseFloat(w.style.left),parseFloat(w.style.top)]))}catch(e){}}};
+ try{AUD.ui()}catch(e){}}
+{const st_=document.createElement('style');st_.textContent=`#lst{display:none!important}
+#lvwin{position:absolute;z-index:60;width:250px;background:linear-gradient(#2a2016f2,#18120cf2);border:1px solid #c9a24a;border-radius:10px;box-shadow:0 8px 24px #000b,0 0 18px #ffd23a33;color:#e8dcc0;font:13px/1.35 Georgia,serif;user-select:none}
+#lvwin .lvh{display:flex;align-items:center;gap:6px;padding:7px 10px;cursor:move;border-bottom:1px solid #c9a24a66;background:#3a2a14aa;border-radius:10px 10px 0 0}
+#lvwin .lvh b{color:#ffe27a;font-size:15px;letter-spacing:.5px}#lvwin .lvh small{opacity:.75}
+#lvwin .lvh button{margin-left:auto!important;background:none!important;border:0!important;box-shadow:none!important;color:#e8dcc0!important;font-size:15px!important;cursor:pointer;padding:0 4px!important;min-width:0!important;width:auto!important;height:auto!important}
+#lvwin table{width:100%;border-collapse:collapse;padding:4px 10px 8px;display:table}#lvwin td{padding:2px 10px}#lvwin tr.sh td{font-size:11px;text-transform:uppercase;letter-spacing:1px;opacity:.6;padding-top:7px}
+#lvwin td.v{text-align:right;font-weight:bold}#lvwin td.up{color:#7dff8a;text-align:right;width:52px;font-weight:bold}#lvwin td.no{color:#8a8070;text-align:right;width:52px}`;document.head.appendChild(st_)}
 
 /* ================= monsters from the same curves ================= */
 function MROLE(e){return e.boss||e.hb?'boss':e.uq?'uq':e.cmd?'cmd':e.grd?'grd':e.mut?'mut':e.t=='brute'?'brute':e.t=='archer'?'archer':e.t=='mage'?'mage':e.t=='cleric'?'cleric':'grunt'}
@@ -15291,6 +15323,28 @@ function statHtml(){const s=st(),A=s.A,m=MAINA[P.cls],G=GROWA(),pl=grwPlan(),pc=
  const grow=AT.map(k=>pl.sure.includes(k)?'+1 every level':pc(pl.ch[k]||0)+' chance each level');
  return`<h2>Attributes <small>grow by themselves</small></h2><p><small>${P.cls} main attribute: <b>${ATN[m]}</b>. Each level adds +1 ${ATN[m]} and +1 ${pl.sure.filter(k=>k!=m).map(k=>ATN[k]).join(' and +1 ')}; your other attributes may also rise, more often the ones your ${(P.sub&&P.sub.n)||'class'} build favours. Gear can roll any attribute.</small></p>`+
  AT.map((k,i)=>{const lv=G[i],gr=A[k]-lv;return`<div class="it"><button disabled style="text-align:left;border-left:4px solid ${ATC[k]||'#d9a83a'};width:100%"><b style="color:${ATC[k]||'inherit'}">${ATN[k]}</b>${k==m?' <small>(main)</small>':''} <b>${A[k]}</b> <small>(${lv} from levels${gr?', '+gr+' from gear':''} · ${grow[i]})</small><br><small>${ATDS[k]}</small></button></div>`}).join('')}
+/* ================= YOUR HEALS AND WARDS REACH YOUR FOLLOWERS =================
+   Skills that heal or shield allies used to reach only other players. Now they also reach whoever is walking with
+   you: the person you are escorting home on a rescue quest, and your summons. Group heals heal followers in range,
+   single-target heals and renews go to a follower when they are hurt worse than you, and party wards shield them. */
+function allyMins(cx,cy,r){try{return MIN.filter(m=>m&&m.hp>0&&m.t!='banner'&&!m.gh&&Math.hypot(m.x-cx,m.y-cy)<=r)}catch(e){return[]}}
+function allyHeal(m,a){a=Math.round(a);if(!(a>0)||!(m.hp>0))return;const h0=m.hp;m.hp=Math.min(m.mh,m.hp+a);const g=Math.round(m.hp-h0);
+ if(g>0){FT.push({x:m.x,y:m.y-(m.r||12)-10,t:.8,s:'+'+g,c:'#9be39b'});for(let i=0;i<6;i++)pt(m.x,m.y,'#9be39b',3,.5,R(-50,50),R(-80,-20),0,1)}}
+/* group heals (and sanctuaries, healing novas) */
+{const _h=mpHealA;mpHealA=function(fr,r,cx,cy){try{_h.apply(this,arguments)}catch(e){}try{for(const m of allyMins(cx,cy,r))allyHeal(m,HREF()*fr)}catch(e){}}}
+/* single-target heals and renews pick the worst-hurt ally, followers included */
+{const _t=mpHealTgt;mpHealTgt=function(range){const g=_t.apply(this,arguments);if(g)return g;try{let best=null,bf=over?9:P.hp/mxh();
+  for(const m of allyMins(P.x,P.y,range)){const f=m.hp/m.mh;if(f<bf-.02){bf=f;best=m}}
+  if(best){const px={x:best.x,y:best.y,hp:best.hp,mh:best.mh,_m:best};px.ghost=px;return px}}catch(e){}return null}}
+{const _s=mpHealSend;mpHealSend=function(g,fr){if(g&&g._m){try{allyHeal(g._m,Math.min(g._m.mh*fr*1.5,HREF()*fr))}catch(e){}return}return _s.apply(this,arguments)}}
+/* party wards and buffs */
+{const _b=mpBuffOut;mpBuffOut=function(id){try{_b.apply(this,arguments)}catch(e){}try{const s=S[id];if(!s)return;
+  for(const m of allyMins(P.x,P.y,640)){if(s.k=='ward'){m.shv=Math.round((20+HREF()*.3)*(s.wm||1)*.8);m.shT=performance.now()+Math.min(12,s.dur||10)*1000;FT.push({x:m.x,y:m.y-(m.r||12)-10,t:.8,s:'Shielded',c:'#7ac8ff'})}
+   else if(s.k=='buff'||s.k=='haste'){m.bfT=performance.now()+Math.min(12,s.dur||8)*1000}}}catch(e){}}}
+/* a follower's ward soaks hits first */
+{const _m=hurtM;hurtM=function(m,d){try{if(m&&m.shv>0&&performance.now()<(m.shT||0)){const a=Math.min(m.shv,d);m.shv-=a;d-=a;if(d<=0){FT.push({x:m.x,y:m.y-(m.r||12)-6,t:.4,s:'Absorbed',c:'#7ac8ff'});return}}}catch(e){}return _m.call(this,m,d)}}
+/* renew on a follower: heals over its duration */
+{let lt=performance.now();setInterval(()=>{const t=performance.now(),dt=Math.min(.5,(t-lt)/1000);lt=t;try{if(!P||!started)return;for(const m of MIN){if(m.rgT>t&&m.hp>0)m.hp=Math.min(m.mh,m.hp+HREF()*.03*dt)}}catch(e){}},200)}
 
 function ovIsBook(){try{const f=$('ovc').firstElementChild;return!!(f&&f.classList.contains('tome2'))}catch(e){return false}}
 
