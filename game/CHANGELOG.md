@@ -2,6 +2,17 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.15.1
+
+Hoods, pelts, necks and jaws.
+
+- **Hunter hoods and the other cloth hoods** now end at the neck as full head pieces. The shawl that draped over the shoulders and down the back is gone, so quivers, bows and back weapons no longer sink into it.
+- **Shaman pelts** (stag, wolf and bear) lose the hide that trailed down the back and sit on the head as full head pieces.
+- **More human proportions on the base character:**
+  - A squarer jaw with a real angle under the ears.
+  - A fuller neck.
+  - The top of the torso and the tunic collar sit a little lower, so more of the neck shows between chin and collar. Chest armour collars follow it down.
+
 ## 2.15.0
 
 Combat rescaled: smaller numbers, tougher monsters, closer fights.
