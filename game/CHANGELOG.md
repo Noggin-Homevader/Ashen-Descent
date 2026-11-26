@@ -2,6 +2,18 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.15.2
+
+A level-up window, and your heals and shields now reach your followers.
+
+- **Level-up window.** When you level, a window pops up listing every attribute with what the level gave it (+1 or +0), plus your Health, Mana, Damage, Armor, Crit, Speed and Cooldown cut, old to new. Several level-ups in a row add together until you close it. Drag it by its title bar anywhere on the screen and it stays where you put it.
+- **The Stats button is gone,** since there are no points to spend. The character sheet is still in the Folio.
+- **Heals and shields that say "allies" now reach your followers,** not only other players:
+  - Followers are the person you're escorting home on a rescue quest, and your summons.
+  - Group heals, healing novas and sanctuaries heal followers in range.
+  - Single-target heals and Renew go to a follower when they're hurt worse than you.
+  - Party wards give followers a shield that soaks their next hits.
+
 ## 2.15.1
 
 Hoods, pelts, necks and jaws.
