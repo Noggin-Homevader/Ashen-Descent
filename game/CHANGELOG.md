@@ -2,6 +2,12 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.16.1
+
+- Minotaurs rebuilt in Blender: a broad V-shaped torso with a narrow waist and hips, defined chest and abs, a proper bull head (long muzzle, wet nose pad, brow, lidded eyes, nose ring), a studded leather war-kilt with a skull-buckled belt, a chest harness, a spiked iron pauldron and banded bracers, dark shaggy lower legs.
+- Wolves, bears, imps and dragons gain facial detail: lidded eyes with pupils, brow ridges, nostrils and lip lines.
+- The level-up window no longer pops up listing every stat when a character is loaded.
+
 ## 2.16.0
 
 Gathering and alchemy.
