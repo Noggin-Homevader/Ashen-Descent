@@ -2,6 +2,19 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.15.3
+
+Gelatinous slimes.
+
+- **Slimes now look like jelly:**
+  - A clear outer skin over a denser, deeper-coloured inner jelly.
+  - A thin puddle of gel spreading on the floor under them.
+  - Wet highlights that slide across the skin.
+  - Bubbles that rise slowly through the body.
+- **They wobble more,** swaying side to side as well as front to back.
+- **The hard drip columns are gone** from inside the body.
+- **Elemental slimes keep their colours and inner effects.** The swallowed bones and weapons still show through the gel.
+
 ## 2.15.2
 
 A level-up window, and your heals and shields now reach your followers.
