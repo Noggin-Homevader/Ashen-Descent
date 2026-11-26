@@ -2,6 +2,24 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.15.0
+
+Combat rescaled: smaller numbers, tougher monsters, closer fights.
+
+- **One scale for heroes and monsters.** Damage and health now follow fixed curves by level instead of monsters being sized from your current stats. Strong skills now first reach around 1,000 at about Floor 40. Expect roughly 15–50 at the start, a few hundred by Floor 13 and 600–950 around Floor 25. Big nukes and crits go higher.
+- **Monsters last longer and hit harder relative to you:**
+  - A normal enemy of your level takes about 8 basic hits, or 3–5 strong skill hits.
+  - Brutes take about 14, elites about 20, commanders about 40 and bosses about 180.
+  - A normal enemy's blow takes about 7% of your health. Brutes hit for about 11% and bosses for about 15%.
+- **Lower health for everyone.** Heroes start with about 55–90 health by class (90–150 at level 1 with starting gear) and gain less per level. Vitality gives 5 health per point instead of 10, and health on gear counts at 40%.
+- **Damage rebuilt:**
+  - Your hit power is now 3 + 1.1 per level, plus 30% of gear damage and 0.4 per point of your main attribute (0.1 for the other damage attributes).
+  - Skill mastery tops out at about +60% instead of +160%.
+  - Each skill level adds 5% instead of 18.5%.
+  - Item tooltips show what their damage and health are actually worth.
+- **Attributes grow by themselves.** Stat points are gone. Every level gives +1 to your class's main attribute and +1 Vitality (Paladins get +1 Strength instead). Your other attributes each have a chance to rise, favouring the two your subclass build recommends. Each level-up shows what you gained, and the character sheet shows each attribute's growth odds. Existing characters have their spent points folded into this automatic growth.
+- **Heals and shields come from the caster's power.** Heals, wards, regeneration, sanctuaries, barriers and party heals now give a flat amount based on the healer's level and damage, not a share of the target's health. A big-health tank needs more healing than a mage, and stronger healers heal more.
+
 ## 2.14.1
 
 New weapon looks, part two: swords, daggers, staves and bows. And enchanted weapons now take on their element.
