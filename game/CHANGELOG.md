@@ -2,6 +2,25 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.16.0
+
+Gathering and alchemy.
+
+- **Gathering.** Every dungeon floor except boss floors now has ore veins, old timber and wild flowers. Walk up and press F (or click) to mine, chop or pick; moving or getting hit stops you.
+  - Ore gives the forge's crafting metals: copper and bronze, then iron, then steel, silver and gold, then mithril and obsidian, and finally starmetal from fallen stars.
+  - Timber gives its woods: ash, oak, yew, ironwood and emberwood.
+  - Flowers are for potions. Red ones (Redcap Poppy, Bloodthorn, Heartbloom) make health potions; blue ones (Bluebell, Moonbell, Starlily) make mana potions.
+- **Node ranks.** Every node has a rank set by how deep you are. Ore and timber go up to rank 5, flowers to rank 3.
+- **Tools.** You need a tool of the node's rank or better: a Pickaxe for ore, a Hatchet for timber, a Sickle for flowers.
+  - Everyone starts with Copper tools.
+  - Upgrade them at the material stores in the Cinder Forge through Iron, Steel, Mithril and Starmetal. Each step costs Cinders and materials of the rank below.
+  - A tool better than the node needs works faster and sometimes yields more.
+- **Alchemy.** The cauldron in the Ashbloom Apothecary is now an alchemy station.
+  - Brew health or mana potions in **Low**, **Normal** or **High** quality.
+  - Low takes rank-1 flowers, Normal rank-2 and High rank-3 plus Ooze Gel to bind it.
+  - Each brew makes two potions. You can brew one at a time or five at once.
+- **Alchemy improves as you brew.** Every level gives an 8% chance of an extra potion, and from levels 4 and 8 each brew needs one flower fewer.
+
 ## 2.15.3
 
 Gelatinous slimes.
