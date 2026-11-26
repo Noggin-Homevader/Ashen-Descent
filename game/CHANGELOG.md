@@ -2,6 +2,11 @@
 
 Each release's section becomes its release notes in the launcher. Add a section for the new version before tagging.
 
+## 2.17.1
+
+- Far-view models made in Blender for dragons (all four kinds), minotaurs, bears, wolves, imps and the gobtaur's horse. When the game lightens monsters for distance or smoothness, these keep their silhouette, horns, frills, wings, spine and belly plates and armour instead of melting into smooth blobs; only scales, teeth, claws and eyelids are left off.
+- On high graphics, monsters keep full detail further from you (light models only start past about twice the old distance), and slow-frame easing keeps nearby monsters at normal detail longer.
+
 ## 2.17.0
 
 - Dragons are four different creatures now, each with its own Blender-built body on the shared dragon rig:
