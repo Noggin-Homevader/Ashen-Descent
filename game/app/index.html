@@ -1234,8 +1234,8 @@ function hurtM(m,d){if(m.hp<=0)return;d=Math.max(1,Math.round(d*(1-(m.ar||0))));
 function MPFR(e,dt){e.mpt=(e.mpt||0)-dt;if(e.mpt<=0){e.mpt=R(1.2,2.8);e.mpf=Math.random()<.55}return e.mpf}
 function MFIND(e,rg){let b=null,bd=1e9;for(const m of MIN){if(m.t=='banner'||m.hp<=0)continue;const d=dist(e,m),ar=(m.tank?rg+120:rg)+e.r+m.r;if(d<ar&&d<bd){b=m;bd=d}}return b?{b,bd}:null}
 function RMH(e,dt){const f=MFIND(e,e.rng);if(!f)return false;if(!MPFR(e,dt)&&f.bd>e.r+f.b.r+40)return false;if(f.bd>e.rng+f.b.r)return false;if(e.cd<=0){e.cd=1.8*(e.cdm||1);e.at=.2;hurtM(f.b,e.dm*(e.wk>0?.6:1)*.8);for(let i=0;i<8;i++)pt(e.x+(f.b.x-e.x)*i/8,e.y+(f.b.y-e.y)*i/8,e.mage?'#c58cf0':'#e8d8a0',3,.3,0,0)}return true}
-function MH(e,dt,q){const f=MFIND(e,190);if(!f)return false;const b=f.b,bd=f.bd,reach=e.r+b.r+10+(e.rch||0);if(!MPFR(e,dt)&&bd>reach+6)return false;if(bd>reach){const l=bd||1;e.x+=(b.x-e.x)/l*e.sp*q*dt;e.y+=(b.y-e.y)/l*e.sp*q*dt;return true}
-if(e.wu>0){e.wu-=dt;if(e.wu<=0){e.at=.18;hurtM(b,e.dm*(e.wk>0?.6:1))}}else if(e.cd<=0){e.cd=1*(e.cdm||1);e.wu=e.t=='brute'?.6:.32}return true}
+function MH(e,dt,q){const f=MFIND(e,190);if(!f)return false;const b=f.b,bd=f.bd,reach=e.r+b.r+4+EREACH(e);if(!MPFR(e,dt)&&bd>reach+6)return false;if(bd>reach){const l=bd||1;e.x+=(b.x-e.x)/l*e.sp*q*dt;e.y+=(b.y-e.y)/l*e.sp*q*dt;return true}
+if(e.wu>0){e.wu-=dt;if(e.wu<=0){e.at=.18;hurtM(b,e.dm*(e.wk>0?.6:1))}}else if(e.cd<=0){e.cd=1*(e.cdm||1);e.wu=EWU(e)}return true}
 function mvm(m,tx,ty,sp,dt){const d=Math.hypot(tx-m.x,ty-m.y)||1;if(d<3)return;m.x+=(tx-m.x)/d*sp*dt;m.y+=(ty-m.y)/d*sp*dt;m.mv=1}
 function MNU(dt){if(!MIN.length)return;
 for(const m of MIN){m.life-=dt;m.cd-=dt;m.fl-=dt;m.at-=dt;m.mv=0;const T=MT[m.t];
@@ -2475,7 +2475,7 @@ if(P&&PA.length<1500)for(const p of PR)if(p.f=='p'&&p.ty&&Math.random()<.8&&Math
 if(e.rng&&!e.boss&&MIN.length&&!(e.tn>0)&&RMH(e,dt)){}else if(e.rng){AIR(e,d,dx,dy,q,dt);
 {const nw=Date.now()/1000;if(e.cd<=0&&!e.cleric&&e.los){if(nw<(GT[e.pk]||0))e.cd=R(.15,.3);else GT[e.pk]=nw+R(.45,.8)}}
 if((e.mage||e.cleric)&&e.cd<=0&&(!DGG||e.los||e.cleric)&&ECAST(e,d)){}else if(e.cd<=0&&d<e.rng+60&&(!DGG||e.los)){if(e.mage){e.cd=3;e.at=.34;ZN.push({x:P.x,y:P.y,t:1,r:44,src:e,t0:Date.now(),dm:e.dm*1.3})}else{e.cd=1.8*(e.cdm||1);e.at=.2;PR.push({x:e.x,y:e.y,...LV(e,d,180),f:'e',src:e,k:e.dm,life:2,...EPK_(e)})}}}
-else if(!e.boss&&MIN.length&&!(e.tn>0)&&MH(e,dt,q)){}else if(d>e.r+12+(e.rch||0)){e.wu=0;MV(e,d,dx,dy,q,dt)}else if(e.wu>0){e.wu-=dt;if(e.wu<=0){e.at=.18;if(dist(e,P)<e.r+24+(e.rch||0)){HSRC={e,how:'melee'};hitP(e.dm*(e.wk>0?.6:1));if(e.sk2)ZSKH(e);if(e.race=='slime')P.slw=1.5;if(e.vr)VHIT(e)}}}else if(e.cd<=0){if(!e.boss&&!e.uq&&E.reduce((n,o)=>n+(o!=e&&o.pk==e.pk&&!o.rng&&o.wu>0?1:0),0)>=(fl>8?3:2)){e.cd=R(.2,.45)}else{e.cd=1*(e.cdm||1);e.wu=e.t=='brute'?.6:.32}}
+else if(!e.boss&&MIN.length&&!(e.tn>0)&&MH(e,dt,q)){}else if(d>EENG(e)&&!(e.wu>0)){e.wu=0;MV(e,d,dx,dy,q,dt)}else if(e.wu>0){e.wu-=dt;if(e.wu<=0){e.at=.18;ELUNGE(e);if(dist(e,P)<EENG(e)+8){HSRC={e,how:'melee'};hitP(e.dm*(e.wk>0?.6:1));if(e.sk2)ZSKH(e);if(e.race=='slime')P.slw=1.5;if(e.vr)VHIT(e)}}}else if(e.cd<=0){if(!e.boss&&!e.uq&&E.reduce((n,o)=>n+(o!=e&&o.pk==e.pk&&!o.rng&&o.wu>0?1:0),0)>=(fl>8?3:2)){e.cd=R(.2,.45)}else{e.cd=1*(e.cdm||1);e.wu=EWU(e)}}else ESTRAFE(e,d,dx,dy,q,dt)
 if(e.boss&&(e.bc=(e.bc??3)-dt)<=0){e.bc=3.5;for(let i=0;i<8;i++){const a=i*Math.PI/4;PR.push({x:e.x,y:e.y,vx:Math.cos(a)*150,vy:Math.sin(a)*150,f:'e',src:e,k:e.dm*.6,life:2.5,c:'#ffb347'})}}
 if(e.race=='bat'&&e.ag){const w=Math.sin(Date.now()/230+(e.id||0)*3)*85*dt;e.x+=-dy*w;e.y+=dx*w}if(e.race=='golem'&&!e.cmd&&!e.grd&&d<130){e.gs=(e.gs??2.5)-dt;if(e.gs<=0){e.gs=6;e.at=.34;ZN.push({x:e.x,y:e.y,t:.9,r:92,src:e,t0:Date.now(),dm:e.dm*1.5});shake(2)}}e.x=Math.max(10,Math.min(W-10,e.x));e.y=Math.max(50,Math.min(H-10,e.y));push(e,e.r*.6);if(e.boss&&(e.sc=(e.sc??4)-dt)<=0){e.sc=5;ZN.push({x:P.x,y:P.y,t:1.1,r:75,src:e,t0:Date.now(),dm:e.dm*1.6})}}}catch(_er){if(window.errNote)errNote('monster',_er)}finally{P=_r}}else mpGW(dt);
 if(CMDR&&!CMDS&&E.includes(CMDR)&&dist(CMDR,P)<480){CMDS=1;toast('War horns sound... a Commander and his guard are near');shake(4)}mpG()||SEP();MNU(dt);CP.forEach(c=>c.t-=dt);CP=CP.filter(c=>c.t>0);for(const p of PR.slice()){HOME(p,dt);p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.hx){const h=p.hx;h.a=(h.a||0)+dt;const sp_=Math.hypot(p.vx,p.vy)||1,off=Math.sin(h.a*h.fr+h.ph)*h.am*Math.min(1,h.a*5);p.x+=-p.vy/sp_*(off-(h.l||0));p.y+=p.vx/sp_*(off-(h.l||0));h.l=off}p.life-=dt;pz(p.x,p.y,G3.on?18:0,p.c2&&Math.random()<.4?p.c2:p.c,(p.sz||4)*.5,.22+.05*(p.tr||0),0,0,R(-6,6),0,1);let rm=p.life<=0||p.x<0||p.x>W||p.y<0||p.y>H||OB.some(o=>dist(p,o)<o.r*.8)||(DGG&&cellAt(p.x,p.y)==1)||WBLK(p);
@@ -15491,6 +15491,37 @@ var SKLODPRE={"9848:19308":"AQCQAJIAkAC/ABEAkAARAJIAAQCSAJUAAQCVAAIAkgARABIAkgAS
 SKLODF=function(g){if(g._lod!==undefined)return g._lod;g._lod=null;const b=SKLODPRE[g.nv+':'+g.nt];if(!b)return null;
  try{const s=atob(b),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);const ix=new Uint16Array(u.buffer),used=new Uint8Array(g.nv);for(let i=0;i<ix.length;i++)used[ix[i]]=1;
   const vl=[];for(let v=0;v<g.nv;v++)if(used[v])vl.push(v);g._lod={ix:Uint32Array.from(ix),nt:ix.length/3,vl:Int32Array.from(vl)}}catch(e){g._lod=null}return g._lod};
+/* ================= REACH, WIND-UPS AND SPACING FOR MELEE FOES =================
+   Every melee foe now fights at the reach of what it is swinging: a goblin with a dagger has to step right in, a spear
+   holds you off at length, a scythe or greatsword sweeps from further out, and beasts strike at the reach of their
+   bite, claws or horns. Each weapon has its own wind-up (quick daggers and bites, slow greatswords and horns) shown by
+   a red ring at the edge of its reach; once a swing is committed it lands where it lands, so stepping out of the ring
+   makes it miss. Between swings foes no longer pile onto you: they hold at their reach and circle, giving ground if
+   pressed. Monsters are also kept to sensible sizes: a creature's drawn height is capped by its rank, so mutated
+   brutes and great drakes stop towering over the screen (their hit area is unchanged). */
+var EREACHW={dagger:14,sword:26,axe:26,mace:24,spear:52,scythe:40,greatsword:38,staff:22,wand:18};
+var EREACHB={wolf:22,bat:10,spider:24,slime:8,gobtaur:40,dragon:44,bear:28,crab:34,imp:16,minotaur:44,golem:36};
+var EWUW={dagger:.2,sword:.3,axe:.4,mace:.42,spear:.34,scythe:.5,greatsword:.55,staff:.32,wand:.28};
+var EWUB={wolf:.28,bat:.2,spider:.3,slime:.35,gobtaur:.45,dragon:.5,bear:.45,crab:.4,imp:.25,minotaur:.55,golem:.6};
+function EREACH(e){if(e._rc!==undefined)return e._rc;let r=BEAST[e.race]?(EREACHB[e.race]??20):(EREACHW[e.wp]??22);
+ if(e.race=='dragon'&&e.dr){r*={whelp:.55,drake:1,wyvern:1.05,wyrm:1.15,elder:1.3}[e.dr.k]||1}if(e.t=='brute')r*=1.15;if(e.boss)r*=1.2;return e._rc=r}
+function EENG(e){return e.r+14+EREACH(e)}
+function EWU(e){let w=BEAST[e.race]?(EWUB[e.race]??.32):(EWUW[e.wp]??.32);if(e.t=='brute')w+=.12;if(e.boss)w+=.05;e._wu0=w;return w}
+/* the strike: thrusting weapons and beasts lunge a little way in */
+function ELUNGE(e){const th=BEAST[e.race]||e.wp=='spear'||e.wp=='dagger';if(!th)return;const d=dist(e,P)||1,L=Math.min(EREACH(e)*.35,Math.max(0,d-e.r-10));e.x+=(P.x-e.x)/d*L;e.y+=(P.y-e.y)/d*L}
+/* between swings: hold at reach and circle; back off if crowded right onto the target */
+function ESTRAFE(e,d,dx,dy,q,dt){const R_=EENG(e);if(e.sdir===undefined)e.sdir=Math.random()<.5?1:-1;e.sft=(e.sft??R(1.2,2.6))-dt;if(e.sft<=0){e.sft=R(1.2,2.6);if(Math.random()<.4)e.sdir*=-1}
+ const sp=e.sp*q*.42;let mx=-dy*e.sdir*sp,my=dx*e.sdir*sp;if(d<R_*.8){mx-=dx*e.sp*q*.8;my-=dy*e.sp*q*.8}else if(d>R_*.98){mx+=dx*sp*.6;my+=dy*sp*.6}
+ if(DGG&&typeof cellAt=='function'&&cellAt(e.x+mx*dt*4,e.y+my*dt*4)==1){e.sdir*=-1;return}e.x+=mx*dt;e.y+=my*dt;e.mv=1}
+/* ---- drawn size caps ---- */
+var RH={goblin:.88,orc:1.08,skeleton:.96,cultist:1,wraith:1.05,wolf:.72,bat:.5,spider:.56,slime:.4,golem:1.8,gobtaur:2,dragon:1.05,bear:1.4,crab:.7,imp:.6,minotaur:1.84};
+var RHB={dragon:25.8};
+var HCAP={grunt:1.45,brute:1.85,mut:1.85,grd:1.85,cmd:2.05,uq:2.2,boss:2.7};
+function VSC(e){if(e._vsc!==undefined&&e._vr==e.r)return e._vsc;const base=RHB[e.race]||16*((RD[e.race]&&RD[e.race].sz)||1),hv=(RH[e.race]||1)*e.r/base,
+ ro=e.boss||e.hb?'boss':e.uq?'uq':e.cmd?'cmd':e.grd?'grd':e.mut?'mut':e.t=='brute'?'brute':'grunt',c=HCAP[ro];e._vr=e.r;return e._vsc=hv>c?c/hv:1}
+{const _em=enemyMesh;enemyMesh=function(e,uh,dp){const r=_em.call(this,e,uh*VSC(e),dp);
+ try{if(dp===undefined&&e.wu>0&&!e.rng&&window.SPG&&SPG.ring){const w0=e._wu0||.32,p=Math.max(0,Math.min(1,1-e.wu/w0)),R_=EENG(e);
+  SPG.ring(e.x,e.y,R_*(.35+.65*p),.6,1.3+1.2*p,.4,CHM.K('#ff3a22'),.55+.45*p,Math.max(16,Math.round(R_/4)),0,.9)}}catch(_){}return r}}
 
 function ovIsBook(){try{const f=$('ovc').firstElementChild;return!!(f&&f.classList.contains('tome2'))}catch(e){return false}}
 
